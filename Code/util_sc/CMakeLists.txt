@@ -3,12 +3,24 @@
 include_directories(include_util_sc)
 
 set(UTIL_SC_SRC_FILES
-        src_util_sc/crypto_help.c
+        crypto_help.c
+        mota_smartcard.c
+        subroutines.c
+        system_funcs.c
 )
 
 set(UTIL_SC_INCLUDE_FILES
+        include_util_sc/abc4T_types.h
+        include_util_sc/APDU_types.h
+        include_util_sc/defs_types.h
+        include_util_sc/defs_consts.h
+        include_util_sc/defs_errs.h
+        include_util_sc/defs_ins.h
         include_util_sc/crypto_help.h
-) #CLion adds h files to project only if explecitly referenced and used
+        include_util_sc/mota_smartcard.h
+        include_util_sc/subroutines.h
+        include_util_sc/system_funcs.h
+) #CLion/IDEs add header files to project only if explecitly referenced and used
 
 
 add_library(util_sc ${UTIL_SC_SRC_FILES} ${UTIL_SC_INCLUDE_FILES})
