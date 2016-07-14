@@ -1,11 +1,11 @@
-# UTIL_SC
+# UTIL SmartCard
 
 include_directories(include_util_sc)
 
 set(UTIL_SC_SRC_FILES
         crypto_help.c
         mota_smartcard.c
-        subroutines.c
+        #subroutines.c
         system_funcs.c
 )
 
