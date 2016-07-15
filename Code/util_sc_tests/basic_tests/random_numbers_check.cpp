@@ -2,7 +2,7 @@
 #include <defs_types.h>
 #include <crypto_help.h>
 
-TEST(random_number_generation, Gen_8_Byte_rnd) {
+TEST(RandomNumberGenerationTest, Gen8Bytesrnd) {
     BYTE buffer[8];
     for (int i = 0; i < 8; i++) {
         buffer[i] = 0xff;
