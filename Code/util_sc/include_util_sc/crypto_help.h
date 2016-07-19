@@ -9,7 +9,7 @@ extern "C" {
 #endif
 
 void mGetRandomNumber(BYTE result[8]);
-
+void mBlockCopyFixedLength(BYTE blockLength, BYTE *blockSource, BYTE *blockDest);
 
 
 #ifdef __cplusplus

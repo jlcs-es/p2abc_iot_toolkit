@@ -1,8 +1,12 @@
 #include <gtest/gtest.h>
-#include <defs_types.h>
 #include <crypto_help.h>
+#include <system_funcs.h>
+
 
 TEST(RandomNumberGenerationTest, Gen8Bytesrnd) {
+
+    init_seed(1);
+
     BYTE buffer[8];
     for (int i = 0; i < 8; i++) {
         buffer[i] = 0xff;
