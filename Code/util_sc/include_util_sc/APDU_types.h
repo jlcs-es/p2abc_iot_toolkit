@@ -2,6 +2,7 @@
 #define __APDU_TYPES_H
 
 #include "defs_types.h"
+#include "defs_consts.h"
 
 #ifdef __cplusplus
 extern "C" {
