@@ -1,6 +1,9 @@
 #include <system_funcs.h>
-#include "crypto_help.h"
+#include "m_adapted_API.h"
 #include <string.h>
+#include <stdlib.h>
+
+///TODO: ordenar por orden alfabético para mejor consulta
 
 void mGetRandomNumber(BYTE result[8]){
     int i;
@@ -23,4 +26,19 @@ void mBlockCopyFixedLength(BYTE blockLength, BYTE *blockSource, BYTE *blockDest)
     ///Si memmove no está disponible en todas las plataformas, hacer fachada en system_funcs.h e implementar
 
 
+}
+
+void mExitSW(const WORD sw){
+//#define exitSW(w12) \
+//  do { SW12 = w12; __code(__SYSTEM, 4); } while (0)
+//
+//#ifdef __FUNCTION_PROTOTYPES
+//    void multosExitSW (const WORD sw);
+//#else
+//#define multosExitSW(sw) \
+//    __code (__SYSTEM, 5, sw)
+//#endif
+
+    ///FIXME: por ahora salimos del programa, pero debe llamar a una función que devuelva al lector de tarjetas el código Status Word
+    exit(sw);
 }

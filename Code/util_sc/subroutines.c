@@ -6,8 +6,12 @@
 
 
 
-#include <crypto_help.h>
+#include <m_adapted_API.h>
 #include <string.h>
+#include <defs_consts.h>
+#include <defs_errs.h>
+#include <global_vars.h>
+
 
 /************************************************************************************************************************************************
  * void getRandomBytes(BYTE* buffer, unsigned int size)
@@ -43,152 +47,152 @@ void getRandomBytes(BYTE* buffer, unsigned int size) {
  * caller. Otherwise, it sends a SW != 0x9000. This routine does NOT
  * check whether pin_trials > 0.
  ************************************************************************************************************************************************/
-//
-//void checkPin(BYTE* tested_pin) {
-//
-//    if (memcmp(tested_pin, pin, PIN_SIZE) == 0) {
-//        pin_trials = MAX_PIN_TRIALS;
-//        return;
-//    }
-//
-//    // if this point is reached, the pin is incorrect. We eventually
-//    // exit.
-//
-//    pin_trials -= 1;
-//
-//    if (pin_trials == 0) {
-//        mode = MODE_LOCKED;
-//        exitSW(ERR_INCORRECT_PIN_AND_CARD_LOCKED);
-//    }
-//
-//    exitSW(ERR_INCORRECT_PIN);
-//
-//}
-//
-///************************************************************************************************************************************************
-// * void checkPuk(BYTE* tested_puk)
-// *
-// * If tested_puk == pin, this routine returns to the
-// * caller. Otherwise, it sends a SW != 0x9000. This routine does NOT
-// * check whether puk_trials > 0.
-// ************************************************************************************************************************************************/
-//
-//void checkPuk(BYTE* tested_puk) {
-//
-//    if (memcmp(tested_puk, puk, PUK_SIZE) == 0) {
-//        puk_trials = MAX_PUK_TRIALS;
-//        return;
-//    }
-//
-//    // if this point is reached, the puk is incorrect. We eventually
-//    // exit.
-//
-//    puk_trials -= 1;
-//
-//    if (puk_trials == 0) {
-//        mode = MODE_DEAD;
-//        exitSW(ERR_INCORRECT_PUK_AND_CARD_DEAD);
-//    }
-//
-//    exitSW(ERR_INCORRECT_PUK);
-//
-//}
-//
-//
-//
-//
-///************************************************************************************************************************************************
-// * unsigned int sizeDecode(BYTE *s)
-// *
-// * Take a n-byte table of BYTEs and returns
-// * 2^8 * s[0] + s[1]. This assumes that SIZE_SIZE == 2.
-// ************************************************************************************************************************************************/
-//
-//unsigned int sizeDecode(BYTE *s) {
-//
-//    return (unsigned int)( (((WORD)(s[0]))<<8) + s[1]);
-//
-//}
-//
-///************************************************************************************************************************************************
-// * void sizeEncode(BYTE *s, unsigned int size) {
-// *
-// * This is the inverse of sizeDecode
-// ************************************************************************************************************************************************/
-//
-//void sizeEncode(BYTE *s, unsigned int size) {
-//
-//    s[1] = size & 0xFF;
-//    s[0] = (size >> 8) & 0xFF;
-//
-//}
-//
-///************************************************************************************************************************************************
-// * void getKey(BYTE *key, key_id)
-// *
-// ************************************************************************************************************************************************/
-//
-//void getKey(BYTE *key, unsigned int *key_size, const BYTE key_id) {
-//
-//    if (key_id > NUM_ISSUERS)
-//        exitSW(ERR_KEY_ID_OUTSIDE_RANGE);
-//
-//    if (!auth_keys_sizes[key_id])
-//        exitSW(ERR_AUTHENTICATION_KEY_DOES_NOT_EXIST);
-//
-//    *key_size = auth_keys_sizes[key_id];
-//    memcpy(key, auth_keys[key_id], auth_keys_sizes[key_id]);
-//
-//}
-//
-///************************************************************************************************************************************************
-// * void publicKeyEncrypt(BYTE* key, unsigned int key_size)
-// *
-// * Overwrites : temp_buffer, temp_buffer_size ???
-// ************************************************************************************************************************************************/
-//
-//void publicKeyEncrypt(BYTE* key, unsigned int key_size) {
-//
-//    if (temp_buffer_size > key_size - 43)
-//        exitSW(ERR_AUTHENTICATION_KEY_TOO_SHORT);
-//
-//    encryption(temp_buffer, &temp_buffer_size, temp_buffer, temp_buffer_size, key, key_size);
-//
-//}
-//
-///************************************************************************************************************************************************
-// * void encryption(BYTE* dst, unsigned int* dst_size, const BYTE *src, unsigned int src_size, BYTE *key, unsigned int key_size)
-// *
-// * Overwrites : pad, temp_rand_size,
-// ************************************************************************************************************************************************/
-//
-//void encryption(BYTE* dst, unsigned int* dst_size, const BYTE *src, const unsigned int src_size, const BYTE *key, const unsigned int key_size) {
-//
-//    BYTE exponent[1] = {3};
-//
-//    temp_rand_size = key_size - 35 - src_size; // should be 83
-//
-//#ifdef TEST_MODE
-//    memset(mem_session.pad+3+src_size, 0xbc, temp_rand_size);
-//#else
-//    getRandomBytes(mem_session.pad+3+src_size, temp_rand_size);
-//#endif
-//
-//    mem_session.pad[0] = 0x00;
-//    sizeEncode(mem_session.pad+1, src_size);
-//    memcpy(mem_session.pad+3, src, src_size);
-//    pad_size = key_size-32; // should be 96
-//
-//    SHA256(mem_session.pad+pad_size, pad_size, mem_session.pad); // compute (pad || h)
-//
-//    crxModularExponentiation(1, key_size, exponent, (BYTE*)key, mem_session.pad, dst);
-//
-//    *dst_size = key_size;
-//
-//    temp_rand_size = 0;
-//
-//}
-//
+
+void checkPin(BYTE* tested_pin) {
+
+    if (memcmp(tested_pin, pin, PIN_SIZE) == 0) {
+        pin_trials = MAX_PIN_TRIALS;
+        return;
+    }
+
+    // if this point is reached, the pin is incorrect. We eventually
+    // exit.
+
+    pin_trials -= 1;
+
+    if (pin_trials == 0) {
+        mode = MODE_LOCKED;
+        mExitSW(ERR_INCORRECT_PIN_AND_CARD_LOCKED);
+    }
+
+    mExitSW(ERR_INCORRECT_PIN);
+
+}
+
+/************************************************************************************************************************************************
+ * void checkPuk(BYTE* tested_puk)
+ *
+ * If tested_puk == pin, this routine returns to the
+ * caller. Otherwise, it sends a SW != 0x9000. This routine does NOT
+ * check whether puk_trials > 0.
+ ************************************************************************************************************************************************/
+
+void checkPuk(BYTE* tested_puk) {
+
+    if (memcmp(tested_puk, puk, PUK_SIZE) == 0) {
+        puk_trials = MAX_PUK_TRIALS;
+        return;
+    }
+
+    // if this point is reached, the puk is incorrect. We eventually
+    // exit.
+
+    puk_trials -= 1;
+
+    if (puk_trials == 0) {
+        mode = MODE_DEAD;
+        mExitSW(ERR_INCORRECT_PUK_AND_CARD_DEAD);
+    }
+
+    mExitSW(ERR_INCORRECT_PUK);
+
+}
+
+
+
+
+/************************************************************************************************************************************************
+ * unsigned int sizeDecode(BYTE *s)
+ *
+ * Take a n-byte table of BYTEs and returns
+ * 2^8 * s[0] + s[1]. This assumes that SIZE_SIZE == 2.
+ ************************************************************************************************************************************************/
+
+unsigned int sizeDecode(BYTE *s) {
+
+    return (unsigned int)( (((WORD)(s[0]))<<8) + s[1]);
+
+}
+
+/************************************************************************************************************************************************
+ * void sizeEncode(BYTE *s, unsigned int size) {
+ *
+ * This is the inverse of sizeDecode
+ ************************************************************************************************************************************************/
+
+void sizeEncode(BYTE *s, unsigned int size) {
+
+    s[1] = size & 0xFF;
+    s[0] = (size >> 8) & 0xFF;
+
+}
+
+/************************************************************************************************************************************************
+ * void getKey(BYTE *key, key_id)
+ *
+ ************************************************************************************************************************************************/
+
+void getKey(BYTE *key, unsigned int *key_size, const BYTE key_id) {
+
+    if (key_id > NUM_ISSUERS)
+        mExitSW(ERR_KEY_ID_OUTSIDE_RANGE);
+
+    if (!auth_keys_sizes[key_id])
+        mExitSW(ERR_AUTHENTICATION_KEY_DOES_NOT_EXIST);
+
+    *key_size = auth_keys_sizes[key_id];
+    memcpy(key, auth_keys[key_id], auth_keys_sizes[key_id]);
+
+}
+
+/************************************************************************************************************************************************
+ * void publicKeyEncrypt(BYTE* key, unsigned int key_size)
+ *
+ * Overwrites : temp_buffer, temp_buffer_size ???
+ ************************************************************************************************************************************************/
+
+void publicKeyEncrypt(BYTE* key, unsigned int key_size) {
+
+    if (temp_buffer_size > key_size - 43)
+        mExitSW(ERR_AUTHENTICATION_KEY_TOO_SHORT);
+
+    encryption(temp_buffer, &temp_buffer_size, temp_buffer, temp_buffer_size, key, key_size);
+
+}
+
+/************************************************************************************************************************************************
+ * void encryption(BYTE* dst, unsigned int* dst_size, const BYTE *src, unsigned int src_size, BYTE *key, unsigned int key_size)
+ *
+ * Overwrites : pad, temp_rand_size,
+ ************************************************************************************************************************************************/
+
+void encryption(BYTE* dst, unsigned int* dst_size, const BYTE *src, const unsigned int src_size, const BYTE *key, const unsigned int key_size) {
+
+    BYTE exponent[1] = {3};
+
+    temp_rand_size = key_size - 35 - src_size; // should be 83
+
+#ifdef TEST_MODE
+    memset(mem_session.pad+3+src_size, 0xbc, temp_rand_size);
+#else
+    getRandomBytes(mem_session.pad+3+src_size, temp_rand_size);
+#endif
+
+    mem_session.pad[0] = 0x00;
+    sizeEncode(mem_session.pad+1, src_size);
+    memcpy(mem_session.pad+3, src, src_size);
+    pad_size = key_size-32; // should be 96
+
+    SHA256(mem_session.pad+pad_size, pad_size, mem_session.pad); // compute (pad || h)
+
+    crxModularExponentiation(1, key_size, exponent, (BYTE*)key, mem_session.pad, dst);
+
+    *dst_size = key_size;
+
+    temp_rand_size = 0;
+
+}
+
 ///************************************************************************************************************************************************
 // * void extract(const BYTE *key, const unsigned int key_size)
 // ************************************************************************************************************************************************/

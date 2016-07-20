@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <crypto_help.h>
+#include <m_adapted_API.h>
 
 TEST(BlockCopyTest, CopyFixedLength8Bytes) {
     BYTE bufferDst[8];

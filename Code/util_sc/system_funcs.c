@@ -1,15 +1,5 @@
-/*
-* System: x86
-*/
-
-/*
- * System specific implementation.
- * Change it with the Contiki library when needed.
- */
-
 #include "system_funcs.h"
 #include <stdlib.h>
-#include <time.h>
 
 
 void init_seed(unsigned seed){
@@ -18,5 +8,11 @@ void init_seed(unsigned seed){
 
 
 BYTE random_byte(){
+/*
+ * System specific implementation.
+ * Change it with the Contiki library when needed.
+ */
     return (BYTE)(rand() % 256);
 }
+
+
