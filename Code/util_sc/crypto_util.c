@@ -21,3 +21,7 @@ This primitive calculates the SHA-1, SHA-224, SHA-256, SHA-384 or SHA-512
  *
  *
  */
+
+
+/// TODO: en vez de usar SHA256, implementar la adaptación de la API SecureHash de multos
+/// (SHA: Secure Hash Algorithm), que es la llamada 0xcf más el valor 32

@@ -1,5 +1,5 @@
-#ifndef P2ABCE_IDEMIX_CONTIKI_GLOBAL_VARS_H
-#define P2ABCE_IDEMIX_CONTIKI_GLOBAL_VARS_H
+#ifndef __GLOBAL_VARS_H
+#define __GLOBAL_VARS_H
 
 #include <defs_types.h>
 #include <defs_consts.h>
@@ -43,7 +43,7 @@ extern WORD SW12;               /* SW1 in MSB, SW2 in LSB. */
 
 extern unsigned int temp_size; // not used in subroutines
 
-extern unsigned int challenge_size = 0;
+extern unsigned int challenge_size;
 
 extern unsigned int pad_size;
 extern BYTE authKeyId;
@@ -62,7 +62,11 @@ extern BYTE temp_status;
 extern BYTE *temp_modulus;
 extern unsigned int temp_modulus_size;
 extern BYTE d;
-extern BYTE exit;
+//extern BYTE mExit;
+// NOTE: redifined from "exit"
+// TODO: RENOMBRAR exit EN EL CÓDIGO IMPORTADO
+// NOTE: en main.c solo lo usa en #ifdef SODER y comentado indicando que ya no se usa.
+// NOTE: en su lugar usa ExitSW
 extern unsigned int temp_blob_index;
 extern unsigned int temp_blobcount;
 extern unsigned int temp_uri_index;
@@ -170,27 +174,27 @@ extern BLOB_CATALOG_ITEM blob_catalog[MAX_NUMBER_OF_BLOBS];
 
 
 
-extern BYTE master_backup_key[MASTER_BACKUP_KEY_SIZE] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+extern BYTE master_backup_key[MASTER_BACKUP_KEY_SIZE];
 
 
-extern BYTE root_code[ACCESS_CODE_SIZE] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+extern BYTE root_code[ACCESS_CODE_SIZE];
 
 
-extern BYTE resurrection_key[RESURRECTION_KEY_SIZE] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+extern BYTE resurrection_key[RESURRECTION_KEY_SIZE];
 
-extern BYTE pin_trials = MAX_PIN_TRIALS;
-extern BYTE puk_trials = MAX_PUK_TRIALS;
+extern BYTE pin_trials;
+extern BYTE puk_trials;
 extern BYTE device_id[ID_SIZE];
 extern unsigned int x_size;
 extern BYTE device_key[MAX_SMALLINT_SIZE];
 extern BYTE puk[PUK_SIZE];
 extern BYTE pin[PIN_SIZE];
-extern BYTE mode = MODE_VIRGIN;
+extern BYTE mode;
 extern BYTE auth_keys[NUM_AUTH_KEYS][MAX_BIGINT_SIZE];
 extern unsigned int auth_keys_sizes[NUM_AUTH_KEYS]; // auth_keys_exist[key_id] > 0 iff the key exists, 0 otherwise
 extern BYTE buffer[BUFFER_MAX_SIZE];
-extern unsigned int buffer_size = 0;
-extern BYTE authData = 0;
+extern unsigned int buffer_size;
+extern BYTE authData;
 extern GROUP groups[NUM_GROUPS];
 #if NUM_COUNTERS > 0
 extern COUNTER counters[NUM_COUNTERS];
@@ -222,4 +226,4 @@ extern BYTE temp_key[MAX_BIGINT_SIZE];
 }
 #endif
 
-#endif //P2ABCE_IDEMIX_CONTIKI_GLOBAL_VARS_H
+#endif //__GLOBAL_VARS_H

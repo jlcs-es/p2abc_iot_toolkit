@@ -1,5 +1,6 @@
 #include <global_vars.h>
 
+
 /* Internal system variables. */
 BYTE ProtocolFlags;
 BYTE ProtocolType;
@@ -48,7 +49,7 @@ BYTE temp_status;
 BYTE *temp_modulus;
 unsigned int temp_modulus_size;
 BYTE d;
-BYTE exit;
+//BYTE mExit; //NOTE: redifined from "exit" for type errors
 unsigned int temp_blob_index;
 unsigned int temp_blobcount;
 unsigned int temp_uri_index;

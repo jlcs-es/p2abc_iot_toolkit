@@ -30,7 +30,7 @@ void getRandomBytes(BYTE* buffer, unsigned int size) {
         mBlockCopyFixedLength(8, temp_buffer, buffer + i - 8);
     }
 
-    if( 0 > 8-i+size || 8-i+size < 8 ){
+    if( 8-i+size < 8 ){ //unsigned size > 0
 
         mGetRandomNumber(temp_buffer);
         mBlockCopyFixedLength(8-i+size, temp_buffer, buffer + i - 8);
