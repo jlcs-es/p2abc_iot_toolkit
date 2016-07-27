@@ -151,47 +151,47 @@ void getKey(BYTE *key, unsigned int *key_size, const BYTE key_id) {
  * Overwrites : temp_buffer, temp_buffer_size ???
  ************************************************************************************************************************************************/
 
-void publicKeyEncrypt(BYTE* key, unsigned int key_size) {
-
-    if (temp_buffer_size > key_size - 43)
-        mExitSW(ERR_AUTHENTICATION_KEY_TOO_SHORT);
-
-    encryption(temp_buffer, &temp_buffer_size, temp_buffer, temp_buffer_size, key, key_size);
-
-}
-
-/************************************************************************************************************************************************
- * void encryption(BYTE* dst, unsigned int* dst_size, const BYTE *src, unsigned int src_size, BYTE *key, unsigned int key_size)
- *
- * Overwrites : pad, temp_rand_size,
- ************************************************************************************************************************************************/
-
-void encryption(BYTE* dst, unsigned int* dst_size, const BYTE *src, const unsigned int src_size, const BYTE *key, const unsigned int key_size) {
-
-    BYTE exponent[1] = {3};
-
-    temp_rand_size = key_size - 35 - src_size; // should be 83
-
-#ifdef TEST_MODE
-    memset(mem_session.pad+3+src_size, 0xbc, temp_rand_size);
-#else
-    getRandomBytes(mem_session.pad+3+src_size, temp_rand_size);
-#endif
-
-    mem_session.pad[0] = 0x00;
-    sizeEncode(mem_session.pad+1, src_size);
-    memcpy(mem_session.pad+3, src, src_size);
-    pad_size = key_size-32; // should be 96
-
-    SHA256(mem_session.pad+pad_size, pad_size, mem_session.pad); // compute (pad || h)
-
-    crxModularExponentiation(1, key_size, exponent, (BYTE*)key, mem_session.pad, dst);
-
-    *dst_size = key_size;
-
-    temp_rand_size = 0;
-
-}
+//void publicKeyEncrypt(BYTE* key, unsigned int key_size) {
+//
+//    if (temp_buffer_size > key_size - 43)
+//        mExitSW(ERR_AUTHENTICATION_KEY_TOO_SHORT);
+//
+//    encryption(temp_buffer, &temp_buffer_size, temp_buffer, temp_buffer_size, key, key_size);
+//
+//}
+//
+///************************************************************************************************************************************************
+// * void encryption(BYTE* dst, unsigned int* dst_size, const BYTE *src, unsigned int src_size, BYTE *key, unsigned int key_size)
+// *
+// * Overwrites : pad, temp_rand_size,
+// ************************************************************************************************************************************************/
+//
+//void encryption(BYTE* dst, unsigned int* dst_size, const BYTE *src, const unsigned int src_size, const BYTE *key, const unsigned int key_size) {
+//
+//    BYTE exponent[1] = {3};
+//
+//    temp_rand_size = key_size - 35 - src_size; // should be 83
+//
+//#ifdef TEST_MODE
+//    memset(mem_session.pad+3+src_size, 0xbc, temp_rand_size);
+//#else
+//    getRandomBytes(mem_session.pad+3+src_size, temp_rand_size);
+//#endif
+//
+//    mem_session.pad[0] = 0x00;
+//    sizeEncode(mem_session.pad+1, src_size);
+//    memcpy(mem_session.pad+3, src, src_size);
+//    pad_size = key_size-32; // should be 96
+//
+//    SHA256(mem_session.pad+pad_size, pad_size, mem_session.pad); // compute (pad || h)
+//
+//    crxModularExponentiation(1, key_size, exponent, (BYTE*)key, mem_session.pad, dst);
+//
+//    *dst_size = key_size;
+//
+//    temp_rand_size = 0;
+//
+//}
 
 ///************************************************************************************************************************************************
 // * void extract(const BYTE *key, const unsigned int key_size)

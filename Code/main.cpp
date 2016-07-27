@@ -3,6 +3,7 @@
 #include <m_adapted_API.h>
 #include <iomanip>
 #include <subroutines.h>
+#include <crypto_util.h>
 
 using namespace std;
 
@@ -45,13 +46,23 @@ void testRandom85Bytes(){
     for (int i = 0; i < 85; i++) {
         cout << "0x" << hex << setfill('0') << setw(2) << (unsigned)buffer[i] << ", ";
     }
+    cout << endl;
 }
+
+
+
+
 
 int main() {
     cout << "Hello, World!" << endl;
 
+    cout << sizeof(BYTE) << " - " << sizeof(WORD) << endl;
+    cout << sizeof(SBYTE) << " - " << sizeof(SWORD) << endl;
+    cout << sizeof(DWORD) << " - " << sizeof(SDWORD) << endl;
+
     //testRandom8Bytes();
-    testRandom85Bytes();
+    //testRandom85Bytes();
+
 
     return 0;
 }
