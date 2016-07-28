@@ -1,6 +1,8 @@
 #include <gtest/gtest.h>
 #include <subroutines.h>
 #include <system_funcs.h>
+#include <global_vars.h>
+#include <iostream>
 
 TEST(RandomBytesTest, Gen85Bytesrnd) {
 
@@ -27,4 +29,24 @@ TEST(RandomBytesTest, Gen85Bytesrnd) {
     for(int i=0; i<85; i++)
         EXPECT_EQ(bufferExp[i], buffer[i]);
 
+}
+
+
+
+TEST(CheckPinTest, TryWrongPin) {
+    BYTE pin1[] = {0x12, 0x34, 0x56, 0x78};
+    BYTE pin2[] = {0xff, 0xee, 0xdd, 0xcc};
+    for(int i=0; i<PIN_SIZE; i++){
+        pin[i] = pin1[i];
+    }
+
+
+
+    for(int j=1; j<MAX_PIN_TRIALS; j++)
+        EXPECT_DEATH(checkPin(pin2), "40707") << "pin_trials: " << (unsigned)pin_trials << std::endl;
+    EXPECT_DEATH(checkPin(pin2), "40708") << "pin_trials: " << (unsigned)pin_trials << std::endl;
+    EXPECT_DEATH(checkPin(pin2), "40708") << "pin_trials: " << (unsigned)pin_trials << std::endl;
+    // FIXME: con cada muerte del proceso, pin_trials se reinicializa, hay que modificarlo aquí también para probar como
+    // si el estado se mantuviera. O probar ya con una salida que no implique matar el proceso porque en la tarjeta
+    // deberá ser también permanente.
 }

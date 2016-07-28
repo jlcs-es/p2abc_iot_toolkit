@@ -76,3 +76,10 @@ TEST(SecureHashTest, Not32) {
         EXPECT_EQ(0xab, buf[i]);
 
 }
+
+
+
+
+TEST(ExitSWDeathTest, Code101) {
+    EXPECT_EXIT(mExitSW(101), ::testing::ExitedWithCode(101), ".*");
+}

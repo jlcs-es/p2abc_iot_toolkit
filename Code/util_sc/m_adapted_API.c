@@ -42,7 +42,7 @@ void mExitSW(const WORD sw){
     //#endif
 
     //FIXME: por ahora -salimos* del programa, pero debe llamar a una función que devuelva al lector de tarjetas el código Status Word
-    printf("%u", sw);
+    fprintf(stderr, "%u\n", sw);
     exit(sw);
 }
 
