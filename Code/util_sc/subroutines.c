@@ -160,12 +160,12 @@ void getKey(BYTE *key, unsigned int *key_size, const BYTE key_id) {
 //
 //}
 //
-///************************************************************************************************************************************************
-// * void encryption(BYTE* dst, unsigned int* dst_size, const BYTE *src, unsigned int src_size, BYTE *key, unsigned int key_size)
-// *
-// * Overwrites : pad, temp_rand_size,
-// ************************************************************************************************************************************************/
-//
+/************************************************************************************************************************************************
+ * void encryption(BYTE* dst, unsigned int* dst_size, const BYTE *src, unsigned int src_size, BYTE *key, unsigned int key_size)
+ *
+ * Overwrites : pad, temp_rand_size,
+ ************************************************************************************************************************************************/
+
 //void encryption(BYTE* dst, unsigned int* dst_size, const BYTE *src, const unsigned int src_size, const BYTE *key, const unsigned int key_size) {
 //
 //    BYTE exponent[1] = {3};
@@ -183,7 +183,8 @@ void getKey(BYTE *key, unsigned int *key_size, const BYTE key_id) {
 //    memcpy(mem_session.pad+3, src, src_size);
 //    pad_size = key_size-32; // should be 96
 //
-//    SHA256(mem_session.pad+pad_size, pad_size, mem_session.pad); // compute (pad || h)
+//    //Deprecated: SHA256(mem_session.pad+pad_size, pad_size, mem_session.pad); // compute (pad || h)
+//    mSecureHash(pad_size, 32, mem_session.pad+pad_size, mem_session.pad); // SHA256 compute (pad || h)
 //
 //    crxModularExponentiation(1, key_size, exponent, (BYTE*)key, mem_session.pad, dst);
 //
