@@ -63,6 +63,7 @@ void checkPin(BYTE* tested_pin) {
     if (pin_trials == 0) {
         mode = MODE_LOCKED;
         mExitSW(ERR_INCORRECT_PIN_AND_CARD_LOCKED);
+        return;
     }
 
     mExitSW(ERR_INCORRECT_PIN);
@@ -92,6 +93,7 @@ void checkPuk(BYTE* tested_puk) {
     if (puk_trials == 0) {
         mode = MODE_DEAD;
         mExitSW(ERR_INCORRECT_PUK_AND_CARD_DEAD);
+        return;
     }
 
     mExitSW(ERR_INCORRECT_PUK);
@@ -166,33 +168,33 @@ void getKey(BYTE *key, unsigned int *key_size, const BYTE key_id) {
  * Overwrites : pad, temp_rand_size,
  ************************************************************************************************************************************************/
 
-//void encryption(BYTE* dst, unsigned int* dst_size, const BYTE *src, const unsigned int src_size, const BYTE *key, const unsigned int key_size) {
-//
-//    BYTE exponent[1] = {3};
-//
-//    temp_rand_size = key_size - 35 - src_size; // should be 83
-//
-//#ifdef TEST_MODE
-//    memset(mem_session.pad+3+src_size, 0xbc, temp_rand_size);
-//#else
-//    getRandomBytes(mem_session.pad+3+src_size, temp_rand_size);
-//#endif
-//
-//    mem_session.pad[0] = 0x00;
-//    sizeEncode(mem_session.pad+1, src_size);
-//    memcpy(mem_session.pad+3, src, src_size);
-//    pad_size = key_size-32; // should be 96
-//
-//    //Deprecated: SHA256(mem_session.pad+pad_size, pad_size, mem_session.pad); // compute (pad || h)
-//    mSecureHash(pad_size, 32, mem_session.pad+pad_size, mem_session.pad); // SHA256 compute (pad || h)
-//
-//    crxModularExponentiation(1, key_size, exponent, (BYTE*)key, mem_session.pad, dst);
-//
-//    *dst_size = key_size;
-//
-//    temp_rand_size = 0;
-//
-//}
+void encryption(BYTE* dst, unsigned int* dst_size, const BYTE *src, const unsigned int src_size, const BYTE *key, const unsigned int key_size) {
+
+    BYTE exponent[1] = {3};
+
+    temp_rand_size = key_size - 35 - src_size; // should be 83
+
+#ifdef TEST_MODE
+    memset(mem_session.pad+3+src_size, 0xbc, temp_rand_size);
+#else
+    getRandomBytes(mem_session.pad+3+src_size, temp_rand_size);
+#endif
+
+    mem_session.pad[0] = 0x00;
+    sizeEncode(mem_session.pad+1, src_size);
+    memcpy(mem_session.pad+3, src, src_size);
+    pad_size = key_size-32; // should be 96
+
+    //Deprecated: SHA256(mem_session.pad+pad_size, pad_size, mem_session.pad); // compute (pad || h)
+    mSecureHash(pad_size, 32, mem_session.pad+pad_size, mem_session.pad); // SHA256 compute (pad || h)
+
+    crxModularExponentiation(1, key_size, exponent, (BYTE*)key, mem_session.pad, dst);
+
+    *dst_size = key_size;
+
+    temp_rand_size = 0;
+
+}
 
 ///************************************************************************************************************************************************
 // * void extract(const BYTE *key, const unsigned int key_size)

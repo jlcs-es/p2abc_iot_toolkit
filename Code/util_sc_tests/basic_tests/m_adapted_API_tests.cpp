@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include <m_adapted_API.h>
-#include <include_util_sc/crypto_util.h>
+#include <crypto_util.h>
 
 TEST(BlockCopyTest, CopyFixedLength8Bytes) {
     BYTE bufferDst[8];
@@ -80,6 +80,10 @@ TEST(SecureHashTest, Not32) {
 
 
 
-TEST(ExitSWDeathTest, Code101) {
-    EXPECT_EXIT(mExitSW(101), ::testing::ExitedWithCode(101), ".*");
+TEST(ExitSW, Code101) {
+    ::testing::internal::CaptureStderr();
+    mExitSW(101);
+    std::string output = ::testing::internal::GetCapturedStderr();
+    EXPECT_EQ("101", output);
 }
+

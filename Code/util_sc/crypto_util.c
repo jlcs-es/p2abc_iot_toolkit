@@ -147,3 +147,87 @@ void sha256_final(SHA256_CTX *ctx, BYTE hash[])
         hash[i + 28] = (ctx->state[7] >> (24 - i * 8)) & 0x000000ff;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/********************************************************************/
+/*********************crxModularExponentiation***********************/
+/********************************************************************/
+
+
+
+// multos.h
+
+//    #ifdef __FUNCTION_PROTOTYPES
+//    void multosModularExponentiation (WORD exponentLength, WORD modulusLength,
+//                                      BYTE *exponent, BYTE *modulus, BYTE *input,
+//                                      BYTE *output);
+//    #else
+//    #define multosModularExponentiation(exponentLength, modulusLength, exponent, modulus, input, output) \
+//    do \
+//    { \
+//        __push (__typechk(WORD, exponentLength)); \
+//        __push (__typechk(WORD, modulusLength)); \
+//        __push (__typechk(BYTE *, exponent)); \
+//        __push (__typechk(BYTE *, modulus)); \
+//        __push (__typechk(BYTE *, input)); \
+//        __push (__typechk(BYTE *, output)); \
+//        __code (__PRIM, __PRIM_MODULAR_EXPONENTIATION); \
+//    } while (0)
+//    #endif
+
+
+//  #define __PRIM_MODULAR_EXPONENTIATION               0xC8
+
+
+// main.h
+
+//    #define crxModularExponentiation(exponentLength, modulusLength, exponent, modulus, input, output) \
+//      if (exponentLength > modulusLength) exitSW(0x9F30); \
+//      multosModularExponentiation(exponentLength, modulusLength, exponent, modulus, input, output)
+
+
+// MDRM
+
+//    Modular Exponentiation / RSA Sign
+//    This primitive performs a modular exponentiation operation, the basis of the RSA algorithm. This version of the primitive will execute with full countermeasures to protect the algorithm.
+//      Page 200
+//      [...]
+
+
+
+// CAPI
+
+
+//    4.79 multosModularExponentiation
+//    void multosModularExponentiation (WORD exponentLength, WORD modulusLength, BYTE *exponent, BYTE *modulus, BYTE *input, BYTE *output)
+//    The parameters are:
+//     WORD exponentLength: the length of the exponent used
+//     WORD modulusLength: the length of the modulus
+//     BYTE *exponent: address of the exponent
+//     BYTE *modulus: address of the modulus
+//     BYTE *input: address of the input value
+//     BYTE *output: address of where to write the result of the operation
+//    This function performs a modular exponentiation. Note that the values held at modulus, input and output are all considered to be of size modulusLength.
+//    This is an interface to the primitive Modular Exponentiation.
+//
+
+
+
+// WIKIPEDIA
+
+//    https://en.wikipedia.org/wiki/Modular_exponentiation#Right-to-left_binary_method
+

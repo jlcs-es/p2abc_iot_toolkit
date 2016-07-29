@@ -30,6 +30,11 @@ void mBlockCopyFixedLength(BYTE blockLength, BYTE *blockSource, BYTE *blockDest)
 
 }
 
+
+/**
+ *
+ * @param sw The parameter is a word value indicating the value of the status word.
+ */
 void mExitSW(const WORD sw){
     //#define exitSW(w12) \
     //  do { SW12 = w12; __code(__SYSTEM, 4); } while (0)
@@ -40,10 +45,12 @@ void mExitSW(const WORD sw){
     //#define multosExitSW(sw) \
     //    __code (__SYSTEM, 5, sw)
     //#endif
+    //
+    //This function exits smartcard application with status word of sw.
 
-    //FIXME: por ahora -salimos* del programa, pero debe llamar a una función que devuelva al lector de tarjetas el código Status Word
-    fprintf(stderr, "%u\n", sw);
-    exit(sw);
+    //FIXME: por ahora imprimimos en stderr, pero debe: terminar la comunicación actual de tarjeta-lector, pero no perder el estado de la tarjeta, como el número de intentos restantes de insertar el pin, etc.
+    fprintf(stderr, "%u", sw);
+    // TODO: send SW as response to reader.
 }
 
 

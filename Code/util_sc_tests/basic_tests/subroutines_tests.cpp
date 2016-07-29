@@ -40,13 +40,55 @@ TEST(CheckPinTest, TryWrongPin) {
         pin[i] = pin1[i];
     }
 
+    for(int j=1; j<MAX_PIN_TRIALS; j++) {
+        ::testing::internal::CaptureStderr();
+        checkPin(pin2);
+        std::string output = ::testing::internal::GetCapturedStderr();
+        EXPECT_EQ("40707", output);
+    }
 
+    ::testing::internal::CaptureStderr();
+    checkPin(pin2);
+    std::string output3 = ::testing::internal::GetCapturedStderr();
+    EXPECT_EQ("40708", output3);
 
-    for(int j=1; j<MAX_PIN_TRIALS; j++)
-        EXPECT_DEATH(checkPin(pin2), "40707") << "pin_trials: " << (unsigned)pin_trials << std::endl;
-    EXPECT_DEATH(checkPin(pin2), "40708") << "pin_trials: " << (unsigned)pin_trials << std::endl;
-    EXPECT_DEATH(checkPin(pin2), "40708") << "pin_trials: " << (unsigned)pin_trials << std::endl;
-    // FIXME: con cada muerte del proceso, pin_trials se reinicializa, hay que modificarlo aquí también para probar como
-    // si el estado se mantuviera. O probar ya con una salida que no implique matar el proceso porque en la tarjeta
-    // deberá ser también permanente.
 }
+
+
+
+TEST(CheckPukTest, TryWrongPuk) {
+    BYTE puk1[] = {0x12, 0x34, 0x56, 0x78, 0x9a, 0xbc, 0xde, 0xf0};
+    BYTE puk2[] = {0xff, 0xee, 0xdd, 0xcc, 0xbb, 0xaa, 0x99, 0x88};
+    for(int i=0; i<PUK_SIZE; i++){
+        puk[i] = puk1[i];
+    }
+
+    for(int j=1; j<MAX_PUK_TRIALS; j++) {
+        ::testing::internal::CaptureStderr();
+        checkPuk(puk2);
+        std::string output = ::testing::internal::GetCapturedStderr();
+        EXPECT_EQ("40709", output);
+    }
+
+    ::testing::internal::CaptureStderr();
+    checkPuk(puk2);
+    std::string output3 = ::testing::internal::GetCapturedStderr();
+    EXPECT_EQ("40710", output3);
+
+}
+
+
+TEST(SizeDecodeTest, Value10010110) {
+    BYTE s[] = {0x56,0xab};
+    EXPECT_EQ(22187, sizeDecode(s));
+}
+
+
+TEST(SizeEncodeTest, Value22187) {
+    BYTE exp[] = {0x56, 0xab};
+    BYTE s[] = {0xff, 0xff};
+    sizeEncode(s, 22187);
+    EXPECT_EQ(exp[0], s[0]);
+    EXPECT_EQ(exp[1], s[1]);
+}
+
