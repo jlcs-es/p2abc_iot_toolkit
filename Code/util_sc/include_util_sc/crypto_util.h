@@ -13,12 +13,12 @@ extern "C" {
 /******************************SHA256********************************/
 /********************************************************************/
 
-/****************************** MACROS ******************************/
+// MACROS
 #define SHA256_BLOCK_SIZE 32            // SHA256 outputs a 32 byte digest
 
-/**************************** DATA TYPES ****************************/
-//BYTE;             // 8-bit byte
-//DWORD;            // 32-bit word, change to "long" for 16-bit machines
+// DATA TYPES
+
+//BYTE; 8-bit byte   //DWORD; 32-bit word
 typedef struct {
     BYTE data[64];
     DWORD datalen;
@@ -26,10 +26,19 @@ typedef struct {
     DWORD state[8];
 } SHA256_CTX;
 
-/*********************** FUNCTION DECLARATIONS **********************/
+// FUNCTION DECLARATIONS
 void sha256_init(SHA256_CTX *ctx);
 void sha256_update(SHA256_CTX *ctx, const BYTE data[], WORD len);
 void sha256_final(SHA256_CTX *ctx, BYTE hash[]);
+
+
+
+
+/********************************************************************/
+/**********************Big Integer Arithmetic************************/
+/********************************************************************/
+
+void shift_right(BYTE *arr, WORD length);
 
 
 

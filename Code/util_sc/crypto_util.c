@@ -8,7 +8,7 @@
 /******************************SHA256********************************/
 /********************************************************************/
 
-/****************************** MACROS ******************************/
+// MACROS
 #define ROTLEFT(a,b) (((a) << (b)) | ((a) >> (32-(b))))
 #define ROTRIGHT(a,b) (((a) >> (b)) | ((a) << (32-(b))))
 
@@ -19,7 +19,7 @@
 #define SIG0(x) (ROTRIGHT(x,7) ^ ROTRIGHT(x,18) ^ ((x) >> 3))
 #define SIG1(x) (ROTRIGHT(x,17) ^ ROTRIGHT(x,19) ^ ((x) >> 10))
 
-/**************************** VARIABLES *****************************/
+// VARIABLES
 static const DWORD k[64] = {
         0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
         0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
@@ -31,7 +31,7 @@ static const DWORD k[64] = {
         0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
 };
 
-/*********************** FUNCTION DEFINITIONS ***********************/
+// FUNCTION DEFINITIONS
 void sha256_transform(SHA256_CTX *ctx, const BYTE data[])
 {
     DWORD a, b, c, d, e, f, g, h, i, j, t1, t2, m[64];
@@ -152,8 +152,21 @@ void sha256_final(SHA256_CTX *ctx, BYTE hash[])
 
 
 
+/********************************************************************/
+/**********************Big Integer Arithmetic************************/
+/********************************************************************/
 
+void shift_right(BYTE *arr, WORD length)
+{
 
+    WORD i;
+    for (i = length-1;  i > 0;  --i)
+    {
+        arr[i] = (arr[i] >> 1) | ((arr[i-1] << 7) & 128);
+    }
+    arr[0] = arr[0] >> 1;
+
+}
 
 
 

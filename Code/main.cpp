@@ -8,30 +8,30 @@
 using namespace std;
 
 
+void imprimirHexadecimal(BYTE *buffer, int length){
+    for (int i = 0; i < length; i++) {
+        cout << hex << setfill('0') << setw(2) << (unsigned)buffer[i] << " ";
+    }
+    cout << endl;
+}
+
 void testRandom8Bytes(){
     cout << "·\ttestRandom8Bytes" << endl << endl;
 
     BYTE buffer[8];
-
     for (int i = 0; i < 8; i++) {
         buffer[i] = 0xff;
-        cout << hex << setfill('0') << setw(2) << (unsigned)buffer[i] << " ";
     }
-    cout << endl;
+
+    imprimirHexadecimal(buffer, 8);
 
     mGetRandomNumber(buffer);
 
-    for (int i = 0; i < 8; i++) {
-        cout << hex << setfill('0') << setw(2) << (unsigned)buffer[i] << " ";
-    }
-    cout << endl;
+    imprimirHexadecimal(buffer, 8);
 
     mGetRandomNumber(buffer);
 
-    for (int i = 0; i < 8; i++) {
-        cout << hex << setfill('0') << setw(2) << (unsigned)buffer[i] << " ";
-    }
-    cout << endl;
+    imprimirHexadecimal(buffer, 8);
 
 
 }
@@ -43,10 +43,7 @@ void testRandom85Bytes(){
     }
     getRandomBytes(buffer, 85);
 
-    for (int i = 0; i < 85; i++) {
-        cout << "0x" << hex << setfill('0') << setw(2) << (unsigned)buffer[i] << ", ";
-    }
-    cout << endl;
+    imprimirHexadecimal(buffer, 85);
 }
 
 
@@ -56,12 +53,12 @@ void testRandom85Bytes(){
 int main() {
     cout << "Hello, World!" << endl;
 
-    cout << sizeof(BYTE) << " - " << sizeof(WORD) << endl;
-    cout << sizeof(SBYTE) << " - " << sizeof(SWORD) << endl;
-    cout << sizeof(DWORD) << " - " << sizeof(SDWORD) << endl;
+    cout << "BYTE: " << sizeof(BYTE) << " - SBYTE: "<< sizeof(SBYTE)<< endl;
+    cout << "WORD: " << sizeof(WORD) << " - SWORD: " << sizeof(SWORD)  << endl;
+    cout << "DWORD: "<< sizeof(DWORD) << " - SDWORD: " << sizeof(SDWORD) << endl;
 
-    //testRandom8Bytes();
-    //testRandom85Bytes();
+
+
 
 
     return 0;

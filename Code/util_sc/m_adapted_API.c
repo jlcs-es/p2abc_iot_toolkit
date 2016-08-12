@@ -7,6 +7,12 @@
 
 ///TODO: ordenar por orden alfabético para mejor consulta
 
+
+
+/**
+ * Generate 8 random bytes stored in \a result
+ * @param result Buffer to store the random bytes
+ */
 void mGetRandomNumber(BYTE result[8]){
     int i;
     for (i = 0; i < 8; i++) {
@@ -15,14 +21,21 @@ void mGetRandomNumber(BYTE result[8]){
 }
 
 
-void mBlockCopyFixedLength(BYTE blockLength, BYTE *blockSource, BYTE *blockDest){
 /**
- * An alternative multosBlockCopyFixedLength function is implemented that interfaces to the primitive Memory Copy Fixed Length
- * Memory Copy Fixed Length
- *   This primitive copies a block of bytes of a fixed length from one location to another.
- *   The argument Length is the number of bytes to copy.
- *   This primitive works correctly even if the blocks overlap  ///--> memmove vs memcpy
+ * Copy a block of bytes of a fixed length from one location to another.
+ * Should work correctly even if the blocks overlap.
+ * @param blockLength Number of bytes to copy.
+ * @param blockSource Source of bytes to be copied.
+ * @param blockDest Destination of copied bytes.
  */
+void mBlockCopyFixedLength(BYTE blockLength, BYTE *blockSource, BYTE *blockDest){
+
+//  An alternative multosBlockCopyFixedLength function is implemented that interfaces to the primitive Memory Copy Fixed Length
+//  Memory Copy Fixed Length
+//    This primitive copies a block of bytes of a fixed length from one location to another.
+//    The argument Length is the number of bytes to copy.
+//    This primitive works correctly even if the blocks overlap  ///--> memmove vs memcpy
+//
 
     memmove(blockDest, blockSource, blockLength);
     //NOTE: Si memmove no está disponible en todas las plataformas, hacer fachada en system_funcs.h e implementar
@@ -51,6 +64,8 @@ void mExitSW(const WORD sw){
     //FIXME: por ahora imprimimos en stderr, pero debe: terminar la comunicación actual de tarjeta-lector, pero no perder el estado de la tarjeta, como el número de intentos restantes de insertar el pin, etc.
     fprintf(stderr, "%u", sw);
     // TODO: send SW as response to reader.
+    // TODO: los tests deberán tener en cuenta el fin de ejecución
+    // Note: muchas funciones necesitan que mExitSW termine la ejecución del programa, o al menos petición actual.
 }
 
 

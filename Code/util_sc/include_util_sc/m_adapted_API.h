@@ -1,3 +1,10 @@
+/**
+ * ADAPTED MULTOS CAPI
+ * Multos' C API adapted to be used in our software smartcard.
+ * Only the needed functions were implemented.
+ * Every adapted function changes its name from multosFooBar() to mFooBar()
+ */
+
 #ifndef __M_ADAPTED_API_H
 #define __M_ADAPTED_API_H
 
