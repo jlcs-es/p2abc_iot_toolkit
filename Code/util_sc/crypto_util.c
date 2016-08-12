@@ -169,8 +169,116 @@ void shift_right(BYTE *arr, WORD length)
 }
 
 
+BOOL isZero(BYTE *arr, WORD length)
+{
+    int i;
+    for(i=0; i<length; i++)
+    {
+        if(arr[i]!=0)
+            return 0;
+    }
+    return 1;
+}
+
+void fillZeros(BYTE *arr, WORD length)
+{
+    int i;
+    for(i=0; i<length; i++)
+    {
+        arr[i]=0;
+    }
+}
 
 
+BOOL isEqual(BYTE *arr1, BYTE *arr2, WORD length)
+{
+    int i;
+    for(i=0; i<length; i++)
+    {
+        if(arr1[i]!=arr2[i])
+            return 0;
+    }
+    return 1;
+}
+
+
+void module(BYTE *base, BYTE *modulus, WORD modulusLength)
+{
+    //TODO
+}
+
+/**
+ * Stores in arr2 the value of (arr1*arr2) mod modulus
+ * @param arr1
+ * @param arr2
+ * @param modulus
+ * @param length
+ */
+void modular_product(BYTE *arr1, BYTE *arr2, BYTE *modulus, WORD length)
+{
+
+}
+
+// TODO: tener en cuenta si las operaciones permiten usar el mismo array de parámetro y salida
+
+
+void modular_exponentiation(WORD exponentLength, WORD modulusLength,
+                            BYTE *exponent, BYTE *modulus,
+                            BYTE *base, BYTE *result)
+{
+    fillZeros(result, modulusLength);
+    if(isZero(modulus, modulusLength))
+    {
+        return;     // if modulus = 1 then return 0
+    }
+
+    result[modulusLength-1]=1; // result := 1   // Multos is big endian
+
+    module(base, modulus, modulusLength);  // base := base mod modulus
+
+
+    while(!isZero(exponent, exponentLength))    // while exponent > 0
+    {
+        if((exponent[exponentLength-1] & 1) == 1)   // if (exponent mod 2 == 1):
+        {
+            modular_product(base, result, modulus, modulusLength);  // result := (result * base) mod modulus
+        }
+
+        shift_right(exponent, exponentLength);  // exponent := exponent >> 1
+
+        modular_product(base, base, modulus, modulusLength);    // base := (base * base) mod modulus
+
+    }
+
+    // return result
+
+}
+
+
+// TODO revisar de la implementación de BigInteger que dice esto:
+
+//    Even more time consuming are exponentiations combined with modulus.
+// Following method is not really optimal in speed but illustrates pretty
+// well how exponentiation can be combined with the modulus:
+//
+//    INPUT: Base b, Exponent exp and Modulus m
+//            OUTPUT: Result C = b ^ exp (mod m)
+//    C = 1
+//
+//    while exp != 0 do
+//    begin
+//    if (exp & 0x01) then C = b * C (mod m)
+//
+//    b = b * b (mod m)
+//
+//    exp = exp >> 1
+//    end
+//
+//            Using the Montgomery Exponentiation Algorithm we can speed up the proceeding. A good description is given in Handbook of Applied Cryptography. The Montgomery Multiplication is explained by algorithm 14.36 and can be done as follows:
+//
+//    INPUT: Base b, Exponent exp and Modulus m
+//            OUTPUT: Result C = b ^ exp (mod m)
+//
 
 
 
