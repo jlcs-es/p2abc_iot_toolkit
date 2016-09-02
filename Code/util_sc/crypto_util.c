@@ -220,6 +220,10 @@ void modular_product(BYTE *arr1, BYTE *arr2, BYTE *modulus, WORD length)
 }
 
 // TODO: tener en cuenta si las operaciones permiten usar el mismo array de parámetro y salida
+// TODO: usar arrays auxiliares para la solución, que no sobrescriban parámetros dados.
+// TODO: Una vez funcionen las operaciones, intentar que puedan superponerse los arrays, y entonces
+// TODO: sólo habrá que cambiar modular_exp que lo usa, poniendo como buffer de salida uno de los
+// TODO: buffers de operador, que es mejor de cara a dar la opción a cómo usarlo y a que sea óptimo cuando pueda.
 
 
 void modular_exponentiation(WORD exponentLength, WORD modulusLength,
