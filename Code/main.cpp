@@ -10,7 +10,7 @@ using namespace std;
 
 void imprimirHexadecimal(BYTE *buffer, int length){
     for (int i = 0; i < length; i++) {
-        cout << hex << setfill('0') << setw(2) << (unsigned)buffer[i] << " ";
+        cout << "0x" << hex << setfill('0') << setw(2) << (unsigned)buffer[i] << ", ";
     }
     cout << endl;
 }
@@ -58,7 +58,13 @@ int main() {
     cout << "DWORD: "<< sizeof(DWORD) << " - SDWORD: " << sizeof(SDWORD) << endl;
 
 
+    BYTE buffer[1024];
+    for (int i = 0; i < 1024; i++) {
+        buffer[i] = 0xff;
+    }
+    getRandomBytes(buffer, 1024);
 
+    imprimirHexadecimal(buffer, 1024);
 
 
     return 0;

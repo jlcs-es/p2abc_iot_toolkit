@@ -201,20 +201,55 @@ BOOL isEqual(BYTE *arr1, BYTE *arr2, WORD length)
     return 1;
 }
 
+void copyFromTo(BYTE *src, BYTE *dst, WORD lenght)
+{
+    for(WORD i=0; i<lenght; ++i){
+        dst[i] = src[i];
+    }
+}
+
 
 void module(BYTE *base, BYTE *modulus, WORD modulusLength)
 {
     //TODO
 }
 
+
+void modular_add(BYTE *result, BYTE *arr1, BYTE *arr2, BYTE *modulus, WORD length)
+{
+    // Apply modulo to the operands
+    module(arr1, modulus, length);
+    module(arr2, modulus, length);
+
+    WORD carry = 0;
+    for(WORD i=length - 1; i>=0; --i){      // Big Endian
+        carry = arr1[i] + arr2[i] + carry;
+        result[i] = carry & 0xFF;
+        carry >> 8;
+    }
+    //  if carry is != 0 after the loop, it means that result can't store the addition initialy and the module will fail
+    if(carry!=0){
+        BYTE auxArr[length+1];
+        copyFromTo(result, auxArr+1, length); //copy result to the last positions of auxArr
+        auxArr[0] = carry & 0xFF;
+        module(auxArr, modulus, length+1);
+        copyFromTo(auxArr+1, result, length);
+    }
+    else {
+        module(result, modulus, length);
+    }
+}
+
+
 /**
- * Stores in arr2 the value of (arr1*arr2) mod modulus
+ * Stores in result the value of (arr1*arr2) mod modulus
+ * Initialy the buffers must not supperpose
  * @param arr1
  * @param arr2
  * @param modulus
  * @param length
  */
-void modular_product(BYTE *arr1, BYTE *arr2, BYTE *modulus, WORD length)
+void modular_product(BYTE *result, BYTE *arr1, BYTE *arr2, BYTE *modulus, WORD length)
 {
 
 }
@@ -240,17 +275,21 @@ void modular_exponentiation(WORD exponentLength, WORD modulusLength,
 
     module(base, modulus, modulusLength);  // base := base mod modulus
 
+    BYTE aux[modulusLength];
+
 
     while(!isZero(exponent, exponentLength))    // while exponent > 0
     {
         if((exponent[exponentLength-1] & 1) == 1)   // if (exponent mod 2 == 1):
         {
-            modular_product(base, result, modulus, modulusLength);  // result := (result * base) mod modulus
+            modular_product(aux, base, result, modulus, modulusLength);  // result := (result * base) mod modulus
+            //todo asign aux to ..
         }
 
         shift_right(exponent, exponentLength);  // exponent := exponent >> 1
 
-        modular_product(base, base, modulus, modulusLength);    // base := (base * base) mod modulus
+        modular_product(aux, base, base, modulus, modulusLength);    // base := (base * base) mod modulus
+        //todo asign aux to ..
 
     }
 

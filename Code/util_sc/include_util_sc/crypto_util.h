@@ -39,6 +39,12 @@ void sha256_final(SHA256_CTX *ctx, BYTE hash[]);
 /********************************************************************/
 
 void shift_right(BYTE *arr, WORD length);
+BOOL isZero(BYTE *arr, WORD length);
+void fillZeros(BYTE *arr, WORD length);
+BOOL isEqual(BYTE *arr1, BYTE *arr2, WORD length);
+void copyFromTo(BYTE *src, BYTE *dst, WORD lenght);
+void module(BYTE *base, BYTE *modulus, WORD modulusLength);
+void modular_add(BYTE *result, BYTE *arr1, BYTE *arr2, BYTE *modulus, WORD length);
 
 
 
