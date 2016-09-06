@@ -192,13 +192,23 @@ void fillZeros(BYTE *arr, WORD length)
 
 BOOL isEqual(BYTE *arr1, BYTE *arr2, WORD length)
 {
-    int i;
+    WORD i;
     for(i=0; i<length; i++)
     {
         if(arr1[i]!=arr2[i])
             return 0;
     }
     return 1;
+}
+
+BOOL isGreater(BYTE *arr1, BYTE *arr2, WORD length)
+{
+    for(WORD i=0; i<length; ++i){ //Big endian
+        if(arr1[i]>arr2[i])
+            return 1;
+        if(arr1[i]<arr2[i])
+            return 0;
+    }
 }
 
 void copyFromTo(BYTE *src, BYTE *dst, WORD lenght)
@@ -208,35 +218,85 @@ void copyFromTo(BYTE *src, BYTE *dst, WORD lenght)
     }
 }
 
-
-void module(BYTE *base, BYTE *modulus, WORD modulusLength)
+/**
+ * Calculates result = base mod modulus
+ * Allows superposition for buffers
+ * @param result
+ * @param base
+ * @param modulus
+ * @param modulusLength
+ */
+void module(BYTE *result, BYTE *base, BYTE *modulus, WORD modulusLength)
 {
-    //TODO
+    //note: seguramente muy mejorable
+    while(isGreater(base, modulus, modulusLength)){
+        subtract(result, base, modulus, modulusLength);
+    }
+}
+
+
+
+/**
+ * Subtract arr1 - arr2 and store result in result. Allows superposition for buffers.
+ * @param result
+ * @param arr1
+ * @param arr2
+ * @param length
+ */
+void subtract(BYTE *result, BYTE *arr1, BYTE *arr2, WORD length)
+{
+
+    SWORD carry = 0;
+    BYTE borrow = 0;
+    for(WORD i=length-1; i>0; --i){      // Big Endian
+        carry = arr1[i] - arr2[i] - borrow;
+        borrow = 0;
+        if(carry<0) {
+            carry += 256; // 0b100000000
+            borrow = 1;
+        }
+        result[i] = carry & 0xFF;
+    }
+    // WORD is unsigned, so testing i>=0 in the for loop does not stop the loop
+    carry = arr1[0] - arr2[0] - borrow;
+    if(carry<0) {
+        carry += 256; // 0b100000000
+    }
+    result[0] = carry & 0xFF;
 }
 
 
 void modular_add(BYTE *result, BYTE *arr1, BYTE *arr2, BYTE *modulus, WORD length)
 {
     // Apply modulo to the operands
-    module(arr1, modulus, length);
-    module(arr2, modulus, length);
+    module(arr1, arr1, modulus, length);
+    module(arr2, arr2, modulus, length);
 
     WORD carry = 0;
-    for(WORD i=length - 1; i>=0; --i){      // Big Endian
+    for(WORD i=length-1; i>0; --i){      // Big Endian
         carry = arr1[i] + arr2[i] + carry;
         result[i] = carry & 0xFF;
-        carry >> 8;
+        carry = carry >> 8;
     }
+    carry = arr1[0] + arr2[0] + carry; // WORD is unsigned, so testing i>=0 in the for loop does not stop the loop
+    result[0] = carry & 0xFF;
+    carry = carry >> 8;
+
     //  if carry is != 0 after the loop, it means that result can't store the addition initialy and the module will fail
     if(carry!=0){
+        // avoid overflows
         BYTE auxArr[length+1];
         copyFromTo(result, auxArr+1, length); //copy result to the last positions of auxArr
         auxArr[0] = carry & 0xFF;
-        module(auxArr, modulus, length+1);
+        BYTE auxMod[length+1];
+        copyFromTo(modulus, auxMod+1, length);
+        auxMod[0] = 0x00;
+
+        module(auxArr, auxArr, auxMod, length+1);
         copyFromTo(auxArr+1, result, length);
     }
     else {
-        module(result, modulus, length);
+        module(result, result, modulus, length);
     }
 }
 
@@ -273,7 +333,7 @@ void modular_exponentiation(WORD exponentLength, WORD modulusLength,
 
     result[modulusLength-1]=1; // result := 1   // Multos is big endian
 
-    module(base, modulus, modulusLength);  // base := base mod modulus
+    module(base, base, modulus, modulusLength);  // base := base mod modulus
 
     BYTE aux[modulusLength];
 

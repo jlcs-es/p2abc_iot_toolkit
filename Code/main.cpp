@@ -58,14 +58,5 @@ int main() {
     cout << "DWORD: "<< sizeof(DWORD) << " - SDWORD: " << sizeof(SDWORD) << endl;
 
 
-    BYTE buffer[1024];
-    for (int i = 0; i < 1024; i++) {
-        buffer[i] = 0xff;
-    }
-    getRandomBytes(buffer, 1024);
-
-    imprimirHexadecimal(buffer, 1024);
-
-
     return 0;
 }
