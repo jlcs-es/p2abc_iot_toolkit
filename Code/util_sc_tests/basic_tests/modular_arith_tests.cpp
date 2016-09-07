@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <crypto_util.h>
+#include <big_integer_arithmetic.h>
 #include <iostream>
 
 using namespace std;
