@@ -18,6 +18,7 @@ BOOL isGreater(BYTE *arr1, BYTE *arr2, WORD length);
 
 void module(BYTE *result, BYTE *base, BYTE *modulus, WORD modulusLength);
 void subtract(BYTE *result, BYTE *arr1, BYTE *arr2, WORD length);
+void add(BYTE *result, BYTE *arr1, BYTE *arr2, WORD length);
 void modular_add(BYTE *result, BYTE *arr1, BYTE *arr2, BYTE *modulus, WORD length);
 void product(BYTE *result, BYTE *arr1, BYTE *arr2, WORD length);
 void modular_product(BYTE *result, BYTE *arr1, BYTE *arr2, BYTE *modulus, WORD length);
