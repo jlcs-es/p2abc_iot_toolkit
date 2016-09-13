@@ -9,7 +9,11 @@ set(UTIL_SC_SRC_FILES
         system_funcs.c
         global_vars.c
         crypto_util.c
-        big_integer_arithmetic.c)
+        big_integer_arithmetic.c
+
+        debug.cpp
+
+        )
 
 set(UTIL_SC_INCLUDE_FILES
         include_util_sc/defs_types.h
@@ -25,6 +29,9 @@ set(UTIL_SC_INCLUDE_FILES
         include_util_sc/global_vars.h
         include_util_sc/crypto_util.h
         include_util_sc/big_integer_arithmetic.h
+
+        include_util_sc/debug.h
+
         ) #CLion/IDEs add header files to project only if explecitly referenced and used
 
 

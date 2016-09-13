@@ -4,7 +4,8 @@
 /******************************************************************************/
 /******************************************************************************/
 
-
+// TODO
+// El memcpy no me gusta, sustituir para no depender de librerías ni más estándar
 
 #include <m_adapted_API.h>
 #include <string.h>

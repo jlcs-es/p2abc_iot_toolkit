@@ -11,6 +11,24 @@ void imprimirHexadecimal(BYTE *buffer, int length){
     cout << endl;
 }
 
+
+TEST(BigIntegerArithmeticTest, ShiftRight){
+    BYTE buffer[8] = {0b10000000, 0b11100101, 0b00011000, 0b11111111, 0b00000000, 0b01010101, 0b10101010, 0b00110011};
+    BYTE expBuf[8] = {0b01000000, 0b01110010, 0b10001100, 0b01111111, 0b10000000, 0b00101010, 0b11010101, 0b00011001};
+    shift_right(buffer, 8);
+    for (int i = 0; i < 8; i++)
+        EXPECT_EQ(expBuf[i], buffer[i]);
+}
+
+TEST(BigIntegerArithmeticTest, ShiftLeft10){
+    BYTE buffer[8] = {0b10000000, 0b11100101, 0b00011000, 0b11111111, 0b00000000, 0b01010101, 0b10101010, 0b00110011};
+    BYTE expBuf[8] = {0b10010100, 0b01100011, 0b11111100, 0b00000001, 0b01010110, 0b10101000, 0b11001100, 0b00000000};
+    shiftLeftbyN(buffer, 8, 10);
+    for (int i = 0; i < 8; i++)
+        EXPECT_EQ(expBuf[i], buffer[i]);
+}
+
+
 TEST(ModularAdditionTest, Test1) {
     //TODO: en java usar big integer para sacar la solución
     WORD length = 128;
@@ -69,4 +87,123 @@ TEST(ModuleTest, Test1) {
     module(base, base, modulus, length);
     for(int i=0; i<length; i++)
         EXPECT_EQ(expected[i], base[i]);
+}
+
+
+
+TEST(ProductTest, Length2) {
+    WORD length = 2;
+    BYTE result[2*length]; fillZeros(result, 2*length);
+    BYTE arr1[] = {0xa7, 0xf1};
+    BYTE arr2[] = {0x9f, 0x88};
+    BYTE expected[] = {0x68, 0xa7, 0xe7, 0x08};
+
+    product(result, arr1, arr2, length);
+
+    for(int i=0; i<2*length; i++)
+        EXPECT_EQ(expected[i], result[i]);
+
+}
+
+
+TEST(ProductTest, Length3) {
+    WORD length = 3;
+    BYTE result[2*length]; fillZeros(result, 2*length);
+    BYTE arr1[] = {0xa7, 0xf1, 0xd9};
+    BYTE arr2[] = {0x9f, 0x88, 0x67};
+    BYTE expected[] = {0x68, 0xa8, 0xb1, 0xd4, 0x96, 0x4f};
+
+    product(result, arr1, arr2, length);
+
+    for(int i=0; i<2*length; i++)
+        EXPECT_EQ(expected[i], result[i]);
+
+}
+
+
+TEST(ProductTest, Length4) {
+    WORD length = 4;
+    BYTE result[2*length]; fillZeros(result, 2*length);
+    BYTE arr1[] = {0xa7, 0xf1, 0xd9, 0x2a};
+    BYTE arr2[] = {0x9f, 0x88, 0x67, 0xbd};
+    BYTE expected[] = {0x68, 0xa8, 0xb2, 0x6a, 0xc0, 0x3d, 0x3a, 0x02};
+
+    cout << endl;
+    imprimirHexadecimal(arr1, length);
+    imprimirHexadecimal(arr2, length);
+    product(result, arr1, arr2, length);
+    imprimirHexadecimal(result, 2*length);
+    cout << endl;
+
+    for(int i=0; i<2*length; i++)
+        EXPECT_EQ(expected[i], result[i]);
+
+}
+
+
+TEST(ProductTest, Length10) {
+    WORD length = 10;
+    BYTE result[2*length]; fillZeros(result, 2*length);
+    BYTE arr1[] = {0xa7, 0xf1, 0xd9, 0x2a, 0x3f, 0x94, 0x11, 0x47, 0x2b, 0x83};
+    BYTE arr2[] = {0x9f, 0x88, 0x67, 0xbd, 0x5c, 0x14, 0x0e, 0x58, 0xdc, 0x2f};
+    BYTE expected[] = {0x68, 0xa8, 0xb2, 0x6b, 0x24, 0x44, 0x23, 0x83, 0x90, 0xb5, 0xae, 0x72, 0xe3, 0x26, 0x3a, 0x1c, 0x74, 0x7d, 0x91, 0x0d};
+
+    cout << endl;
+    imprimirHexadecimal(arr1, length);
+    imprimirHexadecimal(arr2, length);
+    product(result, arr1, arr2, length);
+    imprimirHexadecimal(result, 2*length);
+    cout << endl;
+
+    for(int i=0; i<2*length; i++)
+        EXPECT_EQ(expected[i], result[i]);
+
+}
+
+
+
+
+TEST(ModularProductTest, Length3) {
+    WORD length = 3;
+    BYTE result[length]; fillZeros(result, length);
+    BYTE arr1[] = {0xa7, 0xf1, 0xd9};
+    BYTE arr2[] = {0x9f, 0x88, 0x67};
+    BYTE modulus[] = {0x88, 0x67, 0xbd};
+    BYTE expected[] = {0x3A, 0xBF, 0x80};
+
+    cout << endl;
+    imprimirHexadecimal(arr1, length);
+    imprimirHexadecimal(arr2, length);
+
+    modular_product(result, arr1, arr2, modulus, length);
+
+    imprimirHexadecimal(result, length);
+    cout << endl;
+
+    for(int i=0; i<length; i++)
+        EXPECT_EQ(expected[i], result[i]);
+
+}
+
+
+
+
+TEST(ModularProductTest, Length10) {
+    WORD length = 10;
+    BYTE result[length]; fillZeros(result, length);
+    BYTE arr1[] = {0xa7, 0xf1, 0xd9, 0x2a, 0x3f, 0x94, 0x11, 0x47, 0x2b, 0x83};
+    BYTE arr2[] = {0x9f, 0x88, 0x67, 0xbd, 0x5c, 0x14, 0x0e, 0x58, 0xdc, 0x2f};
+    BYTE modulus[] = {0xff, 0x10, 0x00, 0x00, 0x00, 0x00, 0x88, 0x67, 0xbd, 0x1a};
+    BYTE expected[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x66, 0xb9, 0x04, 0x8f};
+
+    cout << endl;
+    imprimirHexadecimal(arr1, length);
+    imprimirHexadecimal(arr2, length);
+    modular_product(result, arr1, arr2, modulus, length);
+    imprimirHexadecimal(result, length);
+    cout << endl;
+
+    for(int i=0; i<length; i++)
+        EXPECT_EQ(expected[i], result[i]);
+
 }

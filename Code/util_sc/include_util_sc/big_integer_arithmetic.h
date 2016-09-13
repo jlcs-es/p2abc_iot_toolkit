@@ -3,14 +3,18 @@
 
 #include "defs_types.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /********************************************************************/
 /**********************Big Integer Arithmetic************************/
 /********************************************************************/
 
 void shift_right(BYTE *arr, WORD length);
+void shiftLeftbyN(BYTE *arr, WORD length, WORD N);
 void fillZeros(BYTE *arr, WORD length);
-void copyFromTo(BYTE *src, BYTE *dst, WORD lenght);
+void copyFromTo(BYTE *src, BYTE *dst, WORD length);
 
 BOOL isZero(BYTE *arr, WORD length);
 BOOL isEqual(BYTE *arr1, BYTE *arr2, WORD length);
@@ -23,6 +27,11 @@ void modular_add(BYTE *result, BYTE *arr1, BYTE *arr2, BYTE *modulus, WORD lengt
 void product(BYTE *result, BYTE *arr1, BYTE *arr2, WORD length);
 void modular_product(BYTE *result, BYTE *arr1, BYTE *arr2, BYTE *modulus, WORD length);
 void modular_exponentiation(WORD exponentLength, WORD modulusLength, BYTE *exponent, BYTE *modulus, BYTE *base, BYTE *result);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif //__INTEGER_ARITHMETIC_H
 

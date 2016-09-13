@@ -152,37 +152,6 @@ void sha256_final(SHA256_CTX *ctx, BYTE hash[])
 
 
 
-
-
-// TODO revisar de la implementación de BigInteger que dice esto:
-
-//    Even more time consuming are exponentiations combined with modulus.
-// Following method is not really optimal in speed but illustrates pretty
-// well how exponentiation can be combined with the modulus:
-//
-//    INPUT: Base b, Exponent exp and Modulus m
-//            OUTPUT: Result C = b ^ exp (mod m)
-//    C = 1
-//
-//    while exp != 0 do
-//    begin
-//    if (exp & 0x01) then C = b * C (mod m)
-//
-//    b = b * b (mod m)
-//
-//    exp = exp >> 1
-//    end
-//
-//            Using the Montgomery Exponentiation Algorithm we can speed up the proceeding. A good description is given in Handbook of Applied Cryptography. The Montgomery Multiplication is explained by algorithm 14.36 and can be done as follows:
-//
-//    INPUT: Base b, Exponent exp and Modulus m
-//            OUTPUT: Result C = b ^ exp (mod m)
-//
-
-
-
-
-
 /********************************************************************/
 /*********************crxModularExponentiation***********************/
 /********************************************************************/

@@ -1,5 +1,6 @@
-#include "big_integer_arithmetic.h"
+#include <big_integer_arithmetic.h>
 
+#include "debug.h"
 
 /********************************************************************/
 /**********************Big Integer Arithmetic************************/
@@ -17,6 +18,42 @@ void shift_right(BYTE *arr, WORD length)
 
 }
 
+/**
+ * Shift left n bits, with n < 8
+ * @param arr
+ * @param length
+ * @param n
+ */
+void shiftLeftbyn(BYTE *arr, WORD length, WORD n){
+    // Suppose n < 8
+    WORD i;
+    BYTE aux[8] = {0b00000000, 0b00000001, 0b00000011, 0b00000111, 0b00001111, 0b00011111, 0b00111111, 0b01111111 };
+    for (i = 0;  i < length - 1;  ++i)
+    {
+        arr[i] = (arr[i] << n) | ((arr[i+1] >> (8-n)) & aux[n]);
+    }
+    arr[length-1] = arr[length-1] << n;
+}
+
+
+/**
+ * Shift left N bits, N < length
+ * @param arr
+ * @param length
+ * @param N
+ */
+void shiftLeftbyN(BYTE *arr, WORD length, WORD N){
+    WORD n = N % 8;
+    WORD M = N / 8;
+    for(WORD i=0; i<length-M; ++i){
+        arr[i] = arr[i+M];
+    }
+    for(WORD i=length-M; i<length; ++i){
+        arr[i] = 0;
+    }
+    shiftLeftbyn(arr, length-M, n); // length-M: no need to shift the zeros
+}
+
 void fillZeros(BYTE *arr, WORD length)
 {
     int i;
@@ -26,9 +63,9 @@ void fillZeros(BYTE *arr, WORD length)
     }
 }
 
-void copyFromTo(BYTE *src, BYTE *dst, WORD lenght)
+void copyFromTo(BYTE *src, BYTE *dst, WORD length)
 {
-    for(WORD i=0; i<lenght; ++i){
+    for(WORD i=0; i<length; ++i){
         dst[i] = src[i];
     }
 }
@@ -77,12 +114,35 @@ BOOL isGreater(BYTE *arr1, BYTE *arr2, WORD length)
  * @param modulus
  * @param modulusLength
  */
-void module(BYTE *result, BYTE *base, BYTE *modulus, WORD modulusLength)
+void module(BYTE *result, BYTE *base, BYTE *modulus, WORD length)
 {
     //note: seguramente muy mejorable
-    while(isGreater(base, modulus, modulusLength)){
-        subtract(result, base, modulus, modulusLength);
+//    copyFromTo(base, result, length);
+//    while(isGreater(result, modulus, length)){
+//        subtract(result, result, modulus, length);
+//    }
+
+    BYTE pls[2] = {0x00};
+
+    BYTE quotient[length]; fillZeros(quotient, length);
+    BYTE divisor[length]; copyFromTo(modulus, divisor, length);
+    BYTE dividend[length]; copyFromTo(base, dividend, length);
+    while(!isZero(divisor, length)){
+        if(isGreater(dividend, divisor, length)){
+            shiftLeftbyn(quotient, length, 1); quotient[length-1] |= 0x01; // insert bit 1 in less sign. position to quotient
+            subtract(dividend, dividend, divisor, length);
+        }
+        else{
+            shiftLeftbyn(quotient, length, 1); // insert bit 0 in less sign. position to quotient
+        }
+        imprimirHexadecimal(pls, 1);
+        imprimirHexadecimal(dividend, length);
+        imprimirHexadecimal(divisor, length);
+        imprimirHexadecimal(quotient, length);
+        imprimirHexadecimal(pls, 1);
+        shift_right(divisor, length);
     }
+    copyFromTo(dividend, result, length);
 }
 
 /**
@@ -192,19 +252,31 @@ void product(BYTE *result, BYTE *arr1, BYTE *arr2, WORD length)
 
     // Base case
     if(length <= 2){
+        BYTE aux[2*length];
         WORD num1 = 0;
         WORD num2 = 0;
-        if(length == 2){
-            num1 += arr1[0] << 8;
-            num2 += arr2[0] << 8;
+        for(WORD i=0; i<length; ++i){
+            num1 += ((WORD)arr1[i]) << (8*(length-i-1));
+            num2 += ((WORD)arr2[i]) << (8*(length-i-1));
         }
-        num1 += arr1[1];
-        num2 += arr2[1];
-
-        DWORD product = num1 * num2;
-
-        for(WORD i = 0; i < 4; i++){    //Fixme
-            result[i] = product >> ((3-i)*8);
+        // in a 4 bytes DWORD the product won't overflow
+        DWORD mult = num1*num2;
+        for(WORD i = 0; i < length*2; i++){    // Store the solution
+            result[i] = mult >> (8*(length*2-i-1));
+        }
+        return;
+    }
+    if(length == 3){ // result of 6 bytes, arr1 and arr2 of 3 bytes, we know there won't be overflow, but add expects 1 more byte in the result
+        BYTE m[length*2]; fillZeros(m, length*2); copyFromTo(arr1, m+length, length);
+        BYTE n[length*2]; fillZeros(n, length*2); copyFromTo(arr2, n+length, length);
+        BYTE temp[length*2+1];
+        while(!isZero(n, length*2)){
+            if(n[length*2-1] & 0x01){
+                add(temp, result, m, length*2);
+                copyFromTo(temp+1, result, length*2);
+            }
+            shiftLeftbyn(m, length*2, 1);
+            shift_right(n, length*2);
         }
         return;
     }
@@ -212,17 +284,18 @@ void product(BYTE *result, BYTE *arr1, BYTE *arr2, WORD length)
     // Divide and conquer
 
     WORD m2 = length/2;
-    WORD l; // Max between m2 or length-m2
+    WORD h; // Max between m2 or length-m2
     BYTE offset = 0; // When copying the halves, the upper half may need an offset if m2<length-m2
     if(m2 == length-m2){
-        l = m2;
+        h = m2;
     } else { // m2 = length/2, so length-m2 is the highest
-        l = length-m2;
+        h = length-m2;
         offset = 1;
     }
 
-    BYTE high1[l], low1[l];
-    BYTE high2[l], low2[l];
+    BYTE high1[h], low1[h];
+    BYTE high2[h], low2[h];
+    //TODO: can be improved for low and high to point directly without copyfromto
 
     copyFromTo(arr1, high1+offset, m2);
     copyFromTo(arr2, high2+offset, m2);
@@ -235,37 +308,57 @@ void product(BYTE *result, BYTE *arr1, BYTE *arr2, WORD length)
 
     // end division of arrays
 
+    // arrays high1, low1, high2, low2 of length h
 
-    BYTE z0[l*2];
-    BYTE z1[(l+1)*2];
-    BYTE z2[l*2];
+    // We will end up with 4h length arrays, and an auxiliar 4h+1 array
+    // finally we have to truncate to 2*length, the result arrays length.
+    // 4h ~>= 2length
 
-    product(z0, low1, low2, length-m2); // z0 = karatsuba(low1,low2)
-    product(z2, high1, high2, m2); // z2 = karatsuba(high1,high2)
+    BYTE z0[4*h]; fillZeros(z0, 4*h); WORD z0Offset1 = 2*h; WORD z0Offset2 = 2*h-2;
+    BYTE z2[4*h]; fillZeros(z2, 4*h); WORD z2Offset1 = 2*h; WORD z2Offset2 = 2*h-2;
+    BYTE aux1[h+1], aux2[h+2]; // TODO: this can be combined and reused for memory optimization
+    BYTE z1[4*h]; fillZeros(z1, 4*h); WORD z1Offset1 = 2*h-2;
+    BYTE aux3[4*h+1]; fillZeros(aux3, 4*h+1);
+    BYTE aux4[4*h]; fillZeros(aux4, 4*h);
 
+
+    // z0 = karatsuba(low1,low2)
+    product(z0+z0Offset1, low1, low2, h);
+    // z2 = karatsuba(high1,high2)
+    product(z2+z2Offset1, high1, high2, h);
     // z1 = karatsuba((low1+high1),(low2+high2))
-    BYTE aux1[l+1], aux2[l+2];
-    add(aux1, low1, high1, l);
-    add(aux2, low2, high2, l);
-    product(z1, aux1, aux2, l+1);
-    subtract(z1, z1, z2, l+1); //FIXME: z2 mide l !!
-    subtract(z1, z1, z0, l+1); //FIXME: z0 mide l !!
+    add(aux1, low1, high1, h);
+    add(aux2, low2, high2, h);
+    product(z1+z1Offset1, aux1, aux2, h+1);
+
 
     // return (z2*10^(2*m2))+((z1-z2-z0)*10^(m2))+(z0)
 
+    // z1 = (z1-z2-z0)
+    subtract(z1+z1Offset1, z1+z1Offset1, z2+z2Offset2, 2*h+2);
+    subtract(z1+z1Offset1, z1+z1Offset1, z0+z0Offset2, 2*h+2);
 
 
-    // Combine the three products to get the final result.
-    // return P1*(1<<(2*sh)) + (P3 - P1 - P2)*(1<<sh) + P2; sh = length-m2
-    // return P1 << 2*sh + (P3-P1-P2) << sh + P2
+    //   z2 << 2*h
+    shiftLeftbyN(z2, 4*h, 8*2*h); // N bits
+    // + z1 << h
+    shiftLeftbyN(z1, 4*h, 8*h); // N bits
+    // + z0
 
-    // comparar con la de gmplib porque indica una posible optimización de ahorrarse una suma
+    add(aux3, z0, z1, 4*h);
+    copyFromTo(aux3+1, aux4, 4*h);
+    fillZeros(aux3, 4*h+1);
+    add(aux3, aux4, z2, 4*h);
+
+    // Truncate from 4h+1 to 2*length
+    WORD diff = 4*h+1 - 2*length;
+    copyFromTo(aux3+diff, result, 2*length);
+
 
 }
 
 /**
  * Stores in result the value of (arr1*arr2) mod modulus
- * Initialy the buffers must not supperpose
  * @param arr1
  * @param arr2
  * @param modulus
@@ -274,17 +367,17 @@ void product(BYTE *result, BYTE *arr1, BYTE *arr2, WORD length)
 void modular_product(BYTE *result, BYTE *arr1, BYTE *arr2, BYTE *modulus, WORD length)
 {
     //Module
-
+    BYTE aux1[length], aux2[length]; fillZeros(aux1, length); fillZeros(aux2, length);
+    module(aux1, arr1, modulus, length);
+    module(aux2, arr2, modulus, length);
     //Product
-
+    BYTE temp[2*length]; fillZeros(temp, 2*length);
+    product(temp, aux1, aux2, length);
     //Module
+    BYTE auxMod[2*length]; fillZeros(auxMod, 2*length); copyFromTo(modulus, auxMod+length, length);
+    module(temp, temp, auxMod, 2*length);
+    copyFromTo(temp+length, result, length);
 }
-
-// TODO: tener en cuenta si las operaciones permiten usar el mismo array de parámetro y salida
-// TODO: usar arrays auxiliares para la solución, que no sobrescriban parámetros dados.
-// TODO: Una vez funcionen las operaciones, intentar que puedan superponerse los arrays, y entonces
-// TODO: sólo habrá que cambiar modular_exp que lo usa, poniendo como buffer de salida uno de los
-// TODO: buffers de operador, que es mejor de cara a dar la opción a cómo usarlo y a que sea óptimo cuando pueda.
 
 
 void modular_exponentiation(WORD exponentLength, WORD modulusLength,
@@ -301,21 +394,16 @@ void modular_exponentiation(WORD exponentLength, WORD modulusLength,
 
     module(base, base, modulus, modulusLength);  // base := base mod modulus
 
-    BYTE aux[modulusLength];
-
-
     while(!isZero(exponent, exponentLength))    // while exponent > 0
     {
-        if((exponent[exponentLength-1] & 1) == 1)   // if (exponent mod 2 == 1):
+        if(exponent[exponentLength-1] & 0x01)   // if (exponent mod 2 == 1):
         {
-            modular_product(aux, base, result, modulus, modulusLength);  // result := (result * base) mod modulus
-            //todo asign aux to ..
+            modular_product(result, base, result, modulus, modulusLength);  // result := (result * base) mod modulus
         }
 
         shift_right(exponent, exponentLength);  // exponent := exponent >> 1
 
-        modular_product(aux, base, base, modulus, modulusLength);    // base := (base * base) mod modulus
-        //todo asign aux to ..
+        modular_product(base, base, base, modulus, modulusLength);    // base := (base * base) mod modulus
 
     }
 
