@@ -9,8 +9,10 @@ set(UTIL_SC_SRC_FILES
         system_funcs.c
         global_vars.c
         crypto_util.c
-        big_integer_arithmetic.c
+        arithmetic_util.c
+        arithmetic_implementation_v1.c
 
+        mini-gmp.c
         debug.cpp
 
         )
@@ -28,11 +30,16 @@ set(UTIL_SC_INCLUDE_FILES
         include_util_sc/system_funcs.h
         include_util_sc/global_vars.h
         include_util_sc/crypto_util.h
-        include_util_sc/big_integer_arithmetic.h
+        include_util_sc/arithmetic_util.h
+        include_util_sc/arithmetic_implementation_v1.h
 
+        include_util_sc/mini-gmp.h
         include_util_sc/debug.h
 
         ) #CLion/IDEs add header files to project only if explecitly referenced and used
+
+
+add_definitions( -DMINI_GMP )
 
 
 add_library(util_sc ${UTIL_SC_SRC_FILES} ${UTIL_SC_INCLUDE_FILES})

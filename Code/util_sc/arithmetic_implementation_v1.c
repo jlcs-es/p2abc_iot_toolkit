@@ -1,10 +1,8 @@
-#include <big_integer_arithmetic.h>
+#include <arithmetic_implementation_v1.h>
 
 #include "debug.h"
 
-/********************************************************************/
-/**********************Big Integer Arithmetic************************/
-/********************************************************************/
+
 
 void shift_right(BYTE *arr, WORD length)
 {
@@ -105,6 +103,29 @@ BOOL isGreater(BYTE *arr1, BYTE *arr2, WORD length)
 }
 
 
+void division(BYTE *quotient, BYTE *dividend, BYTE *divisor, WORD length){
+    fillZeros(quotient, length);
+    BYTE remainder[length]; copyFromTo(dividend, remainder, length);
+    BYTE divisorAux[length]; copyFromTo(divisor, divisorAux, length);
+
+    BYTE pls[1] = {0x00};
+
+    while(!isZero(divisor, length)){
+        if(isGreater(remainder, divisorAux, length)){
+            shiftLeftbyn(quotient, length, 1); quotient[length-1] |= 0x01; // insert bit 1 in less sign. position to quotient
+            subtract(remainder, remainder, divisorAux, length);
+        }
+        else{
+            shiftLeftbyn(quotient, length, 1); // insert bit 0 in less sign. position to quotient
+        }
+        /*imprimirHexadecimal(pls, 1);
+        imprimirHexadecimal(remainder, length);
+        imprimirHexadecimal(divisorAux, length);
+        imprimirHexadecimal(quotient, length);
+        imprimirHexadecimal(pls, 1);*/
+        shift_right(divisorAux, length);
+    }
+}
 
 /**
  * Calculates result = base mod modulus
@@ -380,9 +401,8 @@ void modular_product(BYTE *result, BYTE *arr1, BYTE *arr2, BYTE *modulus, WORD l
 }
 
 
-void modular_exponentiation(WORD exponentLength, WORD modulusLength,
-                            BYTE *exponent, BYTE *modulus,
-                            BYTE *base, BYTE *result)
+void modular_exponentiation(BYTE *result, BYTE *base, BYTE *exponent, BYTE *modulus,
+                            WORD modulusLength, WORD exponentLength)
 {
     fillZeros(result, modulusLength);
     if(isZero(modulus, modulusLength))

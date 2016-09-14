@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <big_integer_arithmetic.h>
+#include <arithmetic_implementation_v1.h>
 #include <iostream>
 
 using namespace std;
@@ -128,12 +128,7 @@ TEST(ProductTest, Length4) {
     BYTE arr2[] = {0x9f, 0x88, 0x67, 0xbd};
     BYTE expected[] = {0x68, 0xa8, 0xb2, 0x6a, 0xc0, 0x3d, 0x3a, 0x02};
 
-    cout << endl;
-    imprimirHexadecimal(arr1, length);
-    imprimirHexadecimal(arr2, length);
     product(result, arr1, arr2, length);
-    imprimirHexadecimal(result, 2*length);
-    cout << endl;
 
     for(int i=0; i<2*length; i++)
         EXPECT_EQ(expected[i], result[i]);
@@ -148,12 +143,12 @@ TEST(ProductTest, Length10) {
     BYTE arr2[] = {0x9f, 0x88, 0x67, 0xbd, 0x5c, 0x14, 0x0e, 0x58, 0xdc, 0x2f};
     BYTE expected[] = {0x68, 0xa8, 0xb2, 0x6b, 0x24, 0x44, 0x23, 0x83, 0x90, 0xb5, 0xae, 0x72, 0xe3, 0x26, 0x3a, 0x1c, 0x74, 0x7d, 0x91, 0x0d};
 
-    cout << endl;
-    imprimirHexadecimal(arr1, length);
-    imprimirHexadecimal(arr2, length);
+    // cout << endl;
+    // imprimirHexadecimal(arr1, length);
+    // imprimirHexadecimal(arr2, length);
     product(result, arr1, arr2, length);
-    imprimirHexadecimal(result, 2*length);
-    cout << endl;
+    // imprimirHexadecimal(result, 2*length);
+    // cout << endl;
 
     for(int i=0; i<2*length; i++)
         EXPECT_EQ(expected[i], result[i]);
@@ -206,4 +201,24 @@ TEST(ModularProductTest, Length10) {
     for(int i=0; i<length; i++)
         EXPECT_EQ(expected[i], result[i]);
 
+}
+
+
+TEST(DivisionTest, Test1) {
+    WORD length = 8;
+    BYTE result[length]; fillZeros(result, length);
+    BYTE arr1[] = {0x68, 0xa8, 0xb2, 0x6a, 0xc0, 0x3d, 0x3a, 0x02};
+    BYTE arr2[] = {0x00, 0x00, 0xab, 0x00, 0x9f, 0x88, 0x67, 0xbd};
+    BYTE expected[] = {0x00, 0x00, 0x00, 0x00, 0xa7, 0xf1, 0xd9, 0x2a};
+
+    cout << endl;
+    imprimirHexadecimal(arr1, length);
+    imprimirHexadecimal(arr2, length);
+    imprimirHexadecimal(expected, length);
+    division(result, arr1, arr2, length);
+    imprimirHexadecimal(result, length);
+    cout << endl;
+
+    for(int i=0; i<length; i++)
+        EXPECT_EQ(expected[i], result[i]);
 }
