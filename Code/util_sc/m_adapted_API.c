@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <crypto_util.h>
+#include <arithmetic_util.h>
 
 ///TODO: ordenar por orden alfabético para mejor consulta
 
@@ -86,4 +87,24 @@ void mSecureHash(WORD msgLen, WORD hashLen, BYTE *hashOut, BYTE *msgIn) {
     sha256_update(&ctx, msgIn, msgLen);
     sha256_final(&ctx, hashOut);
 
+}
+
+
+/**    4.79 multosModularExponentiation
+ *   void multosModularExponentiation (WORD exponentLength, WORD modulusLength, BYTE *exponent, BYTE *modulus, BYTE *input, BYTE *output)
+ * This function performs a modular exponentiation.
+ * Note that the values held at modulus, input and output are all considered to be of size modulusLength.
+ * @param exponentLength: the length of the exponent used
+ * @param modulusLength: the length of the modulus
+ * @param exponent: address of the exponent
+ * @param modulus: address of the modulus
+ * @param input: address of the input value
+ * @param output: address of where to write the result of the operation
+ */
+void mModularExponentiation (WORD exponentLength, WORD modulusLength, BYTE *exponent, BYTE *modulus, BYTE *input, BYTE *output) {
+    if (exponentLength > modulusLength) mExitSW(0x9F30); // From crxModularExponentiation:
+    //    #define crxModularExponentiation(exponentLength, modulusLength, exponent, modulus, input, output) \
+    //      if (exponentLength > modulusLength) exitSW(0x9F30); \
+    //      multosModularExponentiation(exponentLength, modulusLength, exponent, modulus, input, output)
+    modularExponentiation(output, input, exponent, modulus, modulusLength, exponentLength);
 }

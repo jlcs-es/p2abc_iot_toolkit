@@ -22,6 +22,7 @@ void mGetRandomNumber(BYTE result[8]);
 void mBlockCopyFixedLength(BYTE blockLength, BYTE *blockSource, BYTE *blockDest);
 void mExitSW(const WORD sw);
 void mSecureHash(WORD msgLen, WORD hashLen, BYTE *hashOut, BYTE *msgIn);
+void mModularExponentiation (WORD exponentLength, WORD modulusLength, BYTE *exponent, BYTE *modulus, BYTE *input, BYTE *output);
 
 
 #ifdef __cplusplus

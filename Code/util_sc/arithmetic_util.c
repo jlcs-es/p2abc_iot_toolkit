@@ -13,6 +13,13 @@
 
 #include <mini-gmp.h>
 
+WORD getResultSizeInBytes(mpz_t op){
+    WORD bytes = mpz_sizeinbase(op, 2) / 8;
+    if(mpz_sizeinbase(op, 2) % 8){
+        bytes++;
+    }
+    return bytes;
+}
 
 void multiplication(BYTE *result, BYTE *arr1, BYTE *arr2, WORD length){
     mpz_t factor1, factor2, rop;
@@ -22,10 +29,12 @@ void multiplication(BYTE *result, BYTE *arr1, BYTE *arr2, WORD length){
 
     mpz_mul(rop, factor1, factor2);
 
-    //FIXME: mpz_export le da igual el tamaño de result, hay que
-    //calcular el offset sobre result* para que escriba, y poner
-    //el resto a ceros.
-    mpz_export(result, NULL, 1, sizeof(result[0]), 0, 0, rop);
+
+    WORD offset = 2*length - getResultSizeInBytes(rop);
+    for(WORD i=0; i<offset; ++i){
+        result[i]=0;
+    }
+    mpz_export(result + offset, NULL, 1, sizeof(result[0]), 0, 0, rop);
 }
 
 
@@ -41,7 +50,12 @@ void modularMultiplication(BYTE *result, BYTE *arr1, BYTE *arr2, BYTE *modulus, 
     mpz_mul(rop, factor1, factor2);
     mpz_mod(rop, rop, mod);
 
-    mpz_export(result, NULL, 1, sizeof(result[0]), 0, 0, rop);
+
+    WORD offset = length - getResultSizeInBytes(rop);
+    for(WORD i=0; i<offset; ++i){
+        result[i]=0;
+    }
+    mpz_export(result + offset, NULL, 1, sizeof(result[0]), 0, 0, rop);
 
 }
 
@@ -55,7 +69,12 @@ void modularExponentiation(BYTE *result, BYTE *base, BYTE *exponent, BYTE *modul
 
     mpz_powm(rop, b, exp, mod);
 
-    mpz_export(result, NULL, 1, sizeof(result[0]), 0, 0, rop);
+
+    WORD offset = modulusLength - getResultSizeInBytes(rop);
+    for(WORD i=0; i<offset; ++i){
+        result[i]=0;
+    }
+    mpz_export(result + offset, NULL, 1, sizeof(result[0]), 0, 0, rop);
 
 }
 
