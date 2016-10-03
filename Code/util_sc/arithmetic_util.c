@@ -79,6 +79,26 @@ void modularExponentiation(BYTE *result, BYTE *base, BYTE *exponent, BYTE *modul
 }
 
 
+void modularReduction(BYTE *result, BYTE *operand, BYTE *modulus, WORD operandLength, WORD modulusLength){
+    mpz_t rop, base, mod;
+    mpz_init(rop); mpz_init(base); mpz_init(mod);
+    mpz_import(base, operandLength, 1, sizeof(operand[0]), 0, 0, operand);
+    mpz_import(mod, modulusLength, 1, sizeof(modulus[0]), 0, 0, modulus);
+
+
+    mpz_mod(rop, base, mod);
+
+    WORD offset = modulusLength - getResultSizeInBytes(rop);
+    for(WORD i=0; i<offset; ++i){
+        result[i]=0;
+    }
+    mpz_export(result + offset, NULL, 1, sizeof(result[0]), 0, 0, rop);
+
+    // TODO: test
+
+}
+
+
 
 
 
@@ -104,6 +124,11 @@ void modularMultiplication(BYTE *result, BYTE *arr1, BYTE *arr2, BYTE *modulus, 
 
 void modularExponentiation(BYTE *result, BYTE *base, BYTE *exponent, BYTE *modulus, WORD modulusLength, WORD exponentLength){
     modular_exponentiation(result, base, exponent, modulus, modulusLength, exponentLength);
+}
+
+
+void modularReduction(BYTE *result, BYTE *operand, BYTE *modulus, WORD operandLength, WORD modulusLength){
+    // TODO
 }
 
 #endif

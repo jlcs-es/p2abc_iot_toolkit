@@ -4,15 +4,20 @@
 /******************************************************************************/
 /******************************************************************************/
 
-// TODO
-// El memcpy no me gusta, sustituir para no depender de librerías ni más estándar
+// TODO : memcpy y memset pasarlos a system_funcs.h
+// El memcpy no me gusta, sustituir para no depender de librerías ni demás estándar (std*)
+// TODO : la documentación ¿pasarla al .h?
 
+// NOTE : cómo adaptar algunas APIs
 // para pasar de SHA256 a mSecureHash:
 // mSecureHash(segundo argumento, 32, primer argumento, tercer argumento);
 
+
+/////
+
 #include <subroutines.h>
 #include <m_adapted_API.h>
-#include <string.h>
+#include <system_funcs.h>
 #include <defs_consts.h>
 #include <defs_errs.h>
 #include <global_vars.h>
@@ -485,7 +490,7 @@ void singleOrDoubleExpo(BYTE issuer_id, BYTE *e1, unsigned int e1_size, BYTE *e2
     if (temp_gen_1_size >= temp_modulus_size) {
         // reduce the buffer modulo m
         // void multosModularReduction (WORD operandLength, WORD modulusLength, BYTE *operand, BYTE *modulus);
-        multosModularReduction(temp_gen_1_size, temp_modulus_size, buffer+MAX_BIGINT_SIZE-temp_gen_1_size, temp_modulus+MAX_BIGINT_SIZE-temp_modulus_size);
+        mModularReduction(temp_gen_1_size, temp_modulus_size, buffer+MAX_BIGINT_SIZE-temp_gen_1_size, temp_modulus+MAX_BIGINT_SIZE-temp_modulus_size); // ** Adapted for util_sc ** //
         temp_gen_1_size = temp_modulus_size;
     }
 
@@ -508,7 +513,7 @@ void singleOrDoubleExpo(BYTE issuer_id, BYTE *e1, unsigned int e1_size, BYTE *e2
 
         if (temp_gen_2_size >= temp_modulus_size) {
             // reduce the buffer modulo m
-            multosModularReduction(temp_gen_2_size, temp_modulus_size, buffer+MAX_BIGINT_SIZE-temp_gen_2_size, temp_modulus+MAX_BIGINT_SIZE-temp_modulus_size);
+            mModularReduction(temp_gen_2_size, temp_modulus_size, buffer+MAX_BIGINT_SIZE-temp_gen_2_size, temp_modulus+MAX_BIGINT_SIZE-temp_modulus_size);  // ** Adapted for util_sc ** //
             temp_gen_2_size = temp_modulus_size;
         }
 
@@ -610,9 +615,9 @@ void singleResponse(BYTE *k, unsigned int k_size, BYTE *c, unsigned int c_size, 
         // reduce c and u mod q and compute c*u mod q and put the result in temp_buffer
         // void multosModularReduction (WORD operandLength, WORD modulusLength, BYTE *operand, BYTE *modulus);
         if (c_size >= q_size)
-            multosModularReduction (c_size, q_size, temp_buffer+MAX_SMALLINT_SIZE-c_size, q+MAX_SMALLINT_SIZE-q_size);
+            mModularReduction (c_size, q_size, temp_buffer+MAX_SMALLINT_SIZE-c_size, q+MAX_SMALLINT_SIZE-q_size);   // ** Adapted for util_sc ** //
         if (u_size >= q_size)
-            multosModularReduction (u_size, q_size, temp_buffer+2*MAX_SMALLINT_SIZE-u_size, q+MAX_SMALLINT_SIZE-q_size);
+            mModularReduction (u_size, q_size, temp_buffer+2*MAX_SMALLINT_SIZE-u_size, q+MAX_SMALLINT_SIZE-q_size); // ** Adapted for util_sc ** //
 
         // compute c * u mod q
         // Due to the fact that multosModularMultiplication stores the MSB
@@ -625,7 +630,7 @@ void singleResponse(BYTE *k, unsigned int k_size, BYTE *c, unsigned int c_size, 
 
         // void multosModularReduction (WORD operandLength, WORD modulusLength, BYTE *operand, BYTE *modulus);
         if (c_size + u_size >= q_size)
-            multosModularReduction (c_size + u_size, q_size, temp_buffer + 2*MAX_SMALLINT_SIZE - c_size - u_size, q + MAX_SMALLINT_SIZE - q_size);
+            mModularReduction (c_size + u_size, q_size, temp_buffer + 2*MAX_SMALLINT_SIZE - c_size - u_size, q + MAX_SMALLINT_SIZE - q_size);   // ** Adapted for util_sc ** //
 
         //temp_buffer_size = q_size; // the least significant byte of c*u mod q is in temp_buffer_size[2*MAX_SMALLINT_SIZE-1] and there are at most q_size significant bytes
 
@@ -633,11 +638,11 @@ void singleResponse(BYTE *k, unsigned int k_size, BYTE *c, unsigned int c_size, 
 
         memcpy(temp_buffer, k, MAX_SMALLINT_SIZE);
         if (k_size >= q_size)
-            multosModularReduction (k_size,
+            mModularReduction (k_size,
                                     q_size,
                                     temp_buffer + MAX_SMALLINT_SIZE - k_size, /* k */
                                     q           + MAX_SMALLINT_SIZE - q_size  /* q */
-            );
+            );  // ** Adapted for util_sc ** //
 
         // we want to compute k - cu mod q, we already have k mod q in temp_buffer[0..MAX_SMALLINT_SIZE-1] and cu mod q in temp_buffer[MAX_SMALLINT_SIZE..2*MAX_SMALLINT_SIZE-1]
 
@@ -708,7 +713,7 @@ void scopeExclusiveGenerator(BYTE *scope, unsigned int scope_size, BYTE *m, unsi
 
         // void multosModularReduction (WORD operandLength, WORD modulusLength, BYTE *operand, BYTE *modulus);
         if (buffer_size >= m_size) {
-            multosModularReduction (buffer_size, m_size, buffer+MAX_BIGINT_SIZE-buffer_size, m+MAX_BIGINT_SIZE-m_size);
+            mModularReduction (buffer_size, m_size, buffer+MAX_BIGINT_SIZE-buffer_size, m+MAX_BIGINT_SIZE-m_size);  // ** Adapted for util_sc ** //
             buffer_size = m_size;
         }
 

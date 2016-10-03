@@ -22,6 +22,8 @@ extern "C" {
 /* implementation will be slower than any platform specific code.   */
 /********************************************************************/
 
+// TODO: result should be able to overlap with the operands
+
 
 /**
  * Calculates result = arr1 * arr2
@@ -54,6 +56,19 @@ void modularMultiplication(BYTE *result, BYTE *arr1, BYTE *arr2, BYTE *modulus, 
  * @param exponentLength
  */
 void modularExponentiation(BYTE *result, BYTE *base, BYTE *exponent, BYTE *modulus, WORD modulusLength, WORD exponentLength);
+
+
+/**
+ * Calculates result = operand mod modulus
+ * result and operand can be overlapped
+ * @param result Array of size modulusLength.
+ * @param operand Array of size operandLength.
+ * @param modulus Array of size modulusLength.
+ * @param operandLength
+ * @param modulusLength
+ */
+void modularReduction(BYTE *result, BYTE *operand, BYTE *modulus, WORD operandLength, WORD modulusLength);
+
 
 
 #ifdef __cplusplus

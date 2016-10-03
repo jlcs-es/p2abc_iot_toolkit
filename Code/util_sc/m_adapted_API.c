@@ -1,12 +1,11 @@
 #include <system_funcs.h>
-#include "m_adapted_API.h"
-#include <string.h>
+#include <m_adapted_API.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <crypto_util.h>
 #include <arithmetic_util.h>
 
-///TODO: ordenar por orden alfabético para mejor consulta
+// TODO : ordenar por orden alfabético para mejor consulta
+// TODO : llevar el doxygen al .h
 
 
 
@@ -31,16 +30,7 @@ void mGetRandomNumber(BYTE result[8]){
  */
 void mBlockCopyFixedLength(BYTE blockLength, BYTE *blockSource, BYTE *blockDest){
 
-//  An alternative multosBlockCopyFixedLength function is implemented that interfaces to the primitive Memory Copy Fixed Length
-//  Memory Copy Fixed Length
-//    This primitive copies a block of bytes of a fixed length from one location to another.
-//    The argument Length is the number of bytes to copy.
-//    This primitive works correctly even if the blocks overlap  ///--> memmove vs memcpy
-//
-
-    memmove(blockDest, blockSource, blockLength);
-    //NOTE: Si memmove no está disponible en todas las plataformas, hacer fachada en system_funcs.h e implementar
-
+    mem_move(blockDest, blockSource, blockLength);
 
 }
 
@@ -102,9 +92,89 @@ void mSecureHash(WORD msgLen, WORD hashLen, BYTE *hashOut, BYTE *msgIn) {
  * @param output: address of where to write the result of the operation
  */
 void mModularExponentiation (WORD exponentLength, WORD modulusLength, BYTE *exponent, BYTE *modulus, BYTE *input, BYTE *output) {
-    if (exponentLength > modulusLength) mExitSW(0x9F30); // From crxModularExponentiation:
-    //    #define crxModularExponentiation(exponentLength, modulusLength, exponent, modulus, input, output) \
-    //      if (exponentLength > modulusLength) exitSW(0x9F30); \
-    //      multosModularExponentiation(exponentLength, modulusLength, exponent, modulus, input, output)
+
+    if (exponentLength > modulusLength)
+        mExitSW(0x9F30); // From crxModularExponentiation original implementation
+
     modularExponentiation(output, input, exponent, modulus, modulusLength, exponentLength);
+
 }
+
+
+void mModularReduction (WORD operandLength, WORD modulusLength, BYTE *operand, BYTE *modulus){
+
+    modularReduction(operand, operand, modulus, operandLength, modulusLength);
+
+}
+
+/////
+// TODO : funciones a falta de ser adaptadas:
+//////
+
+///
+//  USO encontrado: único
+//
+
+//    // void multosModularMultiplication (WORD modulusLength, BYTE *modulus, BYTE *block1, BYTE *block2);
+//    // We set the first bytes of buffer and temp_buffer to 0. This is
+//    // necessary for the crxModularMultiplication routine. We expect
+//    // temp_modulus to already have zero's on the left-most bytes.
+//    memset(buffer, 0, MAX_BIGINT_SIZE-temp_modulus_size);
+//    memset(temp_buffer, 0, MAX_BIGINT_SIZE-temp_modulus_size);
+//    crxModularMultiplication(temp_modulus_size,   /* modulus size */
+//        temp_modulus,        /* modulus */
+//        buffer,              /* buffer */
+//        temp_buffer);        /* temp   */  // this overwrites buffer
+//
+
+// TODO : de los memset podemos (creo) sacar dónde empiezan los bits significativos
+// en resumen: crx espera buffers de tamaño fijo donde en el final están los valores, y
+// multosCAPI espera arrays ya de tamaño el modulusLength y los maneja tal cual
+// Pasar a multosCAPI la dirección de la parte del final del buffer que se le da a
+// crx y listo, se puede usar los mismos buffers que el código original pero llamando
+// a una función que no depende de ellos.
+
+/*
+ * void crxModularMultiplication (WORD mLength, BYTE *m, BYTE *a, BYTE *b)
+ *
+ * We expect both 'a' and 'b' to be already reduced modulo 'm'.
+ *
+ * We expect 'a' to be a buffer of size BUFFER_MAX_SIZE, the
+ * significant bytes being stored on
+ *
+ * a[MAX_BIGINT_SIZE-mLength ... MAX_BIGINT_SIZE].
+ *
+ * Same for 'b'.
+ *
+ * The result is stored in
+ *
+ * a[MAX_BIGINT_SIZE-mLength ... MAX_BIGINT_SIZE].
+ *
+ * We expect 'm' to be a buffer of size MAX_BIGINT_SIZE, the
+ * significant bytes being stored on
+ *
+ * m[MAX_BIGINT_SIZE-mLength ... MAX_BIGINT_SIZE].
+ *
+ */
+
+
+/**
+
+
+ void multosModularMultiplication (WORD modulusLength, BYTE *modulus, BYTE *block1, BYTE *block2)
+The parameters are:
+ WORD modulusLength: the length of the modulus used
+ BYTE *modulus: address of the modulus
+ BYTE *block1: address of the first operand
+ BYTE *block2: address of the second operand
+
+
+ This function performs a modular multiplication. The result of the operation is written to block1.
+
+
+ This is an interface to the primitive Modular Multiplication.
+
+
+ The result overwrites the first operand.
+
+ */

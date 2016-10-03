@@ -1,5 +1,7 @@
 #include "system_funcs.h"
+
 #include <stdlib.h>
+#include <string.h>
 
 
 void init_seed(unsigned seed){
@@ -16,3 +18,8 @@ BYTE random_byte(){
 }
 
 
+void mem_move(BYTE * destination, BYTE * source, BYTE num){
+
+    memmove(destination, source, num);
+
+}
