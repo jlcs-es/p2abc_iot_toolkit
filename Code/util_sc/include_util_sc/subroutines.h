@@ -39,8 +39,8 @@ void encrypt(BYTE *password, BYTE label);
 void decrypt(BYTE *device_id_prim, BYTE *password, BYTE label);
 void print(void *s, unsigned int size);
 void output_large_data(void);
-void staticHighToSegment(void *low_addr, const void *high_addr, size_t size);
-void segmentToStaticHigh(void *high_addr, const void *low_addr, size_t size);
+void staticHighToSegment(void *low_addr, const void *high_addr, DWORD size);
+void segmentToStaticHigh(void *high_addr, const void *low_addr, DWORD size);
 
 
 #ifdef __cplusplus

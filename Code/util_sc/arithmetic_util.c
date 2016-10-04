@@ -103,7 +103,7 @@ void modularReduction(BYTE *result, BYTE *operand, BYTE *modulus, WORD operandLe
 
 
 #else // Default use sw generic provided implementation:
-
+// FIXME : if these functions can't overlap result, create the intermediate array
 /********************************************************************/
 /*   Implementation of the facade that delegates in SW BYTE arrays  */
 /* operations.                                                      */

@@ -4,16 +4,15 @@
 /******************************************************************************/
 /******************************************************************************/
 
-// TODO : memcpy y memset pasarlos a system_funcs.h
-// El memcpy no me gusta, sustituir para no depender de librerías ni demás estándar (std*)
 // TODO : la documentación ¿pasarla al .h?
 
 // NOTE : cómo adaptar algunas APIs
 // para pasar de SHA256 a mSecureHash:
 // mSecureHash(segundo argumento, 32, primer argumento, tercer argumento);
 
-
 /////
+
+
 
 #include <subroutines.h>
 #include <m_adapted_API.h>
@@ -60,7 +59,7 @@ void getRandomBytes(BYTE* buffer, unsigned int size) {
 
 void checkPin(BYTE* tested_pin) {
 
-    if (memcmp(tested_pin, pin, PIN_SIZE) == 0) {
+    if (mem_cmp(tested_pin, pin, PIN_SIZE) == 0) {  // ** Adapted for util_sc ** //
         pin_trials = MAX_PIN_TRIALS;
         return;
     }
@@ -90,7 +89,7 @@ void checkPin(BYTE* tested_pin) {
 
 void checkPuk(BYTE* tested_puk) {
 
-    if (memcmp(tested_puk, puk, PUK_SIZE) == 0) {
+    if (mem_cmp(tested_puk, puk, PUK_SIZE) == 0) {  // ** Adapted for util_sc ** //
         puk_trials = MAX_PUK_TRIALS;
         return;
     }
@@ -153,7 +152,7 @@ void getKey(BYTE *key, unsigned int *key_size, const BYTE key_id) {
         mExitSW(ERR_AUTHENTICATION_KEY_DOES_NOT_EXIST); // ** Adapted for util_sc ** //
 
     *key_size = auth_keys_sizes[key_id];
-    memcpy(key, auth_keys[key_id], auth_keys_sizes[key_id]);
+    mem_cpy(key, auth_keys[key_id], auth_keys_sizes[key_id]);   // ** Adapted for util_sc ** //
 
 }
 
@@ -191,7 +190,7 @@ void encryption(BYTE* dst, unsigned int* dst_size, const BYTE *src, const unsign
 
     mem_session.pad[0] = 0x00;
     sizeEncode(mem_session.pad+1, src_size);
-    memcpy(mem_session.pad+3, src, src_size);
+    mem_cpy(mem_session.pad+3, src, src_size);  // ** Adapted for util_sc ** //
     pad_size = key_size-32; // should be 96
 
     //Deprecated: SHA256(mem_session.pad+pad_size, pad_size, mem_session.pad); // compute (pad || h)
@@ -213,7 +212,7 @@ void extract(const BYTE *key, const unsigned int key_size) {
 
     extraction(key, key_size, buffer, &buffer_size, mem_session.challenge, challenge_size);
 
-    memset(mem_session.challenge, 0, CHALLENGE_MAX_SIZE);
+    mem_set(mem_session.challenge, 0, CHALLENGE_MAX_SIZE);  // ** Adapted for util_sc ** //
 
     if (buffer_size == 0)
         mExitSW(ERR_DATA_AUTHENTICATION_FAILURE); // ** Adapted for util_sc ** //
@@ -242,7 +241,7 @@ unsigned int extraction(const BYTE *n, const unsigned int n_size, BYTE *sig, uns
 
     if (n_size == *sig_size) {
 
-        memcpy(temp_buffer, challenge, challenge_size);
+        mem_cpy(temp_buffer, challenge, challenge_size);    // ** Adapted for util_sc ** //
         mModularExponentiation(1, n_size, exponent, (BYTE*)n, buffer, temp_buffer+challenge_size);  // ** Adapted for util_sc ** //
         temp_buffer_size = challenge_size + n_size;
 
@@ -261,10 +260,10 @@ unsigned int extraction(const BYTE *n, const unsigned int n_size, BYTE *sig, uns
         L    = sizeDecode(pad + 1);
         blob = pad + 3;
 
-        if (b != 0 || L < 1 || L > n_size - 35 || memcmp(hash_prime, hash, HASH_SIZE))
+        if (b != 0 || L < 1 || L > n_size - 35 || mem_cmp(hash_prime, hash, HASH_SIZE)) // ** Adapted for util_sc ** //
             mExitSW(ERR_DATA_AUTHENTICATION_FAILURE);   // ** Adapted for util_sc ** //
 
-        memcpy(sig, blob, L);
+        mem_cpy(sig, blob, L);  // ** Adapted for util_sc ** //
         *sig_size = L;
 
     } else {
@@ -272,7 +271,7 @@ unsigned int extraction(const BYTE *n, const unsigned int n_size, BYTE *sig, uns
         sigma = sig;
         m2    = sig + n_size;
 
-        memcpy(temp_buffer, challenge, challenge_size);
+        mem_cpy(temp_buffer, challenge, challenge_size);    // ** Adapted for util_sc ** //
         mModularExponentiation(1, n_size, exponent, (BYTE *)n, sigma, temp_buffer+challenge_size);  // ** Adapted for util_sc ** //
         temp_buffer_size = challenge_size + n_size;
 
@@ -281,13 +280,13 @@ unsigned int extraction(const BYTE *n, const unsigned int n_size, BYTE *sig, uns
         pad_size          = n_size - 32;
         challenge_and_pad = temp_buffer;
         pad               = temp_buffer + challenge_size;
-        memcpy(hash_, temp_buffer + challenge_size + pad_size, HASH_SIZE);
+        mem_cpy(hash_, temp_buffer + challenge_size + pad_size, HASH_SIZE);     // ** Adapted for util_sc ** //
 
 
         // We want temp_buffer to contain challenge||pad||m2
 
         m2_size = *sig_size - n_size;
-        memcpy(temp_buffer + challenge_size + pad_size, m2, m2_size);
+        mem_cpy(temp_buffer + challenge_size + pad_size, m2, m2_size);  // ** Adapted for util_sc ** //
         temp_buffer_size = challenge_size + pad_size + m2_size;
 
         // we hash
@@ -300,11 +299,11 @@ unsigned int extraction(const BYTE *n, const unsigned int n_size, BYTE *sig, uns
         m1      = pad + 3;
         m1_size = pad_size - 3;
 
-        if (b != 0 || L != n_size - 35 + m2_size || memcmp(hash_prime, hash_, HASH_SIZE))
+        if (b != 0 || L != n_size - 35 + m2_size || mem_cmp(hash_prime, hash_, HASH_SIZE))  // ** Adapted for util_sc ** //
             mExitSW(ERR_DATA_AUTHENTICATION_FAILURE);   // ** Adapted for util_sc ** //
 
-        memcpy(sig        , m1, m1_size);
-        memcpy(sig+m1_size, m2, m2_size);
+        mem_cpy(sig        , m1, m1_size);  // ** Adapted for util_sc ** //
+        mem_cpy(sig+m1_size, m2, m2_size);  // ** Adapted for util_sc ** //
         *sig_size = m1_size + m2_size;
 
     }
@@ -332,7 +331,7 @@ void checkBufferPrefix(BYTE ins, BYTE *datain, unsigned int datain_size) { // pr
 
     authData = 0;
 
-    if (buffer[0] != ins || memcmp(datain, buffer+1, datain_size)) // prefix = ins || datain
+    if (buffer[0] != ins || mem_cmp(datain, buffer+1, datain_size)) // prefix = ins || datain   // ** Adapted for util_sc ** //
         mExitSW(ERR_CMD_PARAMETERS_FAILED_ROOT_AUTHENTICATION); // ** Adapted for util_sc ** //
 
     if (buffer_size > prefix_size) {
@@ -384,15 +383,15 @@ void getGroupComponent(BYTE group_id, BYTE comptype) {
 
     switch(comptype) {
         case 0:
-            memcpy(buffer, groups[group_id].modulus + (MAX_BIGINT_SIZE-groups[group_id].modulus_size), groups[group_id].modulus_size);
+            mem_cpy(buffer, groups[group_id].modulus + (MAX_BIGINT_SIZE-groups[group_id].modulus_size), groups[group_id].modulus_size); // ** Adapted for util_sc ** //
             buffer_size = groups[group_id].modulus_size;
             break;
         case 1:
-            memcpy(buffer, groups[group_id].q + (MAX_SMALLINT_SIZE-groups[group_id].q_size), groups[group_id].q_size);
+            mem_cpy(buffer, groups[group_id].q + (MAX_SMALLINT_SIZE-groups[group_id].q_size), groups[group_id].q_size); // ** Adapted for util_sc ** //
             buffer_size = groups[group_id].q_size;
             break;
         case 2:
-            memcpy(buffer, groups[group_id].f + (MAX_BIGINT_SIZE-groups[group_id].f_size), groups[group_id].f_size);
+            mem_cpy(buffer, groups[group_id].f + (MAX_BIGINT_SIZE-groups[group_id].f_size), groups[group_id].f_size);   // ** Adapted for util_sc ** //
             buffer_size = groups[group_id].f_size;
             break;
         default:
@@ -418,7 +417,7 @@ void getGenerator(BYTE group_id, BYTE gen_id) {
     if (!generatorExists(group_id, gen_id))
         mExitSW(ERR_GENERATOR_DOES_NOT_EXIST);  // ** Adapted for util_sc ** //
 
-    memcpy(buffer, groups[group_id].g[gen_id-1], MAX_BIGINT_SIZE);
+    mem_cpy(buffer, groups[group_id].g[gen_id-1], MAX_BIGINT_SIZE); // ** Adapted for util_sc ** //
     buffer_size = groups[group_id].g_size[gen_id-1];
 
 }
@@ -505,7 +504,7 @@ void singleOrDoubleExpo(BYTE issuer_id, BYTE *e1, unsigned int e1_size, BYTE *e2
     // 9. if gen != 0 ...
     if (temp_gen_id_2 != 0) {
 
-        memcpy(temp_buffer, buffer, MAX_BIGINT_SIZE);
+        mem_cpy(temp_buffer, buffer, MAX_BIGINT_SIZE);  // ** Adapted for util_sc ** //
         temp_buffer_size = buffer_size; // = temp_modulus_size
 
         getGenerator(temp_group_id, temp_gen_id_2);
@@ -524,8 +523,8 @@ void singleOrDoubleExpo(BYTE issuer_id, BYTE *e1, unsigned int e1_size, BYTE *e2
         // We set the first bytes of buffer and temp_buffer to 0. This is
         // necessary for the crxModularMultiplication routine. We expect
         // temp_modulus to already have zero's on the left-most bytes.
-        memset(buffer, 0, MAX_BIGINT_SIZE-temp_modulus_size);
-        memset(temp_buffer, 0, MAX_BIGINT_SIZE-temp_modulus_size);
+        mem_set(buffer, 0, MAX_BIGINT_SIZE-temp_modulus_size);  // ** Adapted for util_sc ** //
+        mem_set(temp_buffer, 0, MAX_BIGINT_SIZE-temp_modulus_size); // ** Adapted for util_sc ** //
         crxModularMultiplication(temp_modulus_size,   /* modulus size */
                                  temp_modulus,        /* modulus */
                                  buffer,              /* buffer */
@@ -604,9 +603,9 @@ void singleResponse(BYTE *k, unsigned int k_size, BYTE *c, unsigned int c_size, 
 
     // put both c and u in temp_buffer
 
-    memset(temp_buffer, 0, 2*MAX_SMALLINT_SIZE);
-    memcpy(temp_buffer+MAX_SMALLINT_SIZE-c_size, c, c_size);
-    memcpy(temp_buffer+MAX_SMALLINT_SIZE, u, MAX_SMALLINT_SIZE);
+    mem_set(temp_buffer, 0, 2*MAX_SMALLINT_SIZE);   // ** Adapted for util_sc ** //
+    mem_cpy(temp_buffer+MAX_SMALLINT_SIZE-c_size, c, c_size);   // ** Adapted for util_sc ** //
+    mem_cpy(temp_buffer+MAX_SMALLINT_SIZE, u, MAX_SMALLINT_SIZE);   // ** Adapted for util_sc ** //
 
     if (q_size != 0) {
 
@@ -636,7 +635,7 @@ void singleResponse(BYTE *k, unsigned int k_size, BYTE *c, unsigned int c_size, 
 
         // put k in buffer. If necessary, reduce it modulo q
 
-        memcpy(temp_buffer, k, MAX_SMALLINT_SIZE);
+        mem_cpy(temp_buffer, k, MAX_SMALLINT_SIZE); // ** Adapted for util_sc ** //
         if (k_size >= q_size)
             mModularReduction (k_size,
                                     q_size,
@@ -647,7 +646,7 @@ void singleResponse(BYTE *k, unsigned int k_size, BYTE *c, unsigned int c_size, 
         // we want to compute k - cu mod q, we already have k mod q in temp_buffer[0..MAX_SMALLINT_SIZE-1] and cu mod q in temp_buffer[MAX_SMALLINT_SIZE..2*MAX_SMALLINT_SIZE-1]
 
         /* if k mod q < cu mod q, replace k by k + q */
-        if(memcmp(temp_buffer, temp_buffer+MAX_SMALLINT_SIZE, MAX_SMALLINT_SIZE) < 0) {
+        if(mem_cmp(temp_buffer, temp_buffer+MAX_SMALLINT_SIZE, MAX_SMALLINT_SIZE) < 0) {    // ** Adapted for util_sc ** //
             // we have that (k mod q) < (c*u mod q)
             // void multosBlockAdd (const BYTE blockLength, BYTE *block1, BYTE *block2, const BYTE *result);
             multosBlockAdd (MAX_SMALLINT_SIZE, temp_buffer, q, temp_buffer);
@@ -660,7 +659,7 @@ void singleResponse(BYTE *k, unsigned int k_size, BYTE *c, unsigned int c_size, 
                             temp_buffer+MAX_SMALLINT_SIZE,
                             temp_buffer);
 
-        memcpy(buffer+offset, temp_buffer+MAX_SMALLINT_SIZE-q_size, q_size);
+        mem_cpy(buffer+offset, temp_buffer+MAX_SMALLINT_SIZE-q_size, q_size);   // ** Adapted for util_sc ** //
         buffer_size = q_size+offset;
 
     } else {
@@ -678,18 +677,18 @@ void singleResponse(BYTE *k, unsigned int k_size, BYTE *c, unsigned int c_size, 
 
         // since c_size + u_size <= MAX_SMALLINT_SIZE, we can put the result back in the MAX_SMALLINT_SIZE first bytes of temp_buffer
 
-        memcpy(temp_buffer, temp_buffer+MAX_SMALLINT_SIZE, MAX_SMALLINT_SIZE);
+        mem_cpy(temp_buffer, temp_buffer+MAX_SMALLINT_SIZE, MAX_SMALLINT_SIZE); // ** Adapted for util_sc ** //
 
         // put k
 
-        memcpy(temp_buffer+MAX_SMALLINT_SIZE, k, MAX_SMALLINT_SIZE);
+        mem_cpy(temp_buffer+MAX_SMALLINT_SIZE, k, MAX_SMALLINT_SIZE);   // ** Adapted for util_sc ** //
 
         // compute (temp_buffer+MAX_SMALLINT_SIZE) - temp_buffer (i.e., k - cu), both buffers being made of MAX_INT_BYTES bytes
 
         multosBlockSubract(MAX_SMALLINT_SIZE, temp_buffer+MAX_SMALLINT_SIZE, temp_buffer, temp_buffer);
 
         buffer_size = k_size+offset;
-        memcpy(buffer+offset, temp_buffer+MAX_SMALLINT_SIZE-k_size, k_size);
+        mem_cpy(buffer+offset, temp_buffer+MAX_SMALLINT_SIZE-k_size, k_size);   // ** Adapted for util_sc ** //
 
     }
 
@@ -704,7 +703,7 @@ void singleResponse(BYTE *k, unsigned int k_size, BYTE *c, unsigned int c_size, 
 
 void scopeExclusiveGenerator(BYTE *scope, unsigned int scope_size, BYTE *m, unsigned int m_size, BYTE *f, unsigned int f_size) {
 
-    memset(buffer, 0, MAX_BIGINT_SIZE); // alloc for buffer: MAX_APDU_INPUT_DATA_SIZE bytes
+    mem_set(buffer, 0, MAX_BIGINT_SIZE); // alloc for buffer: MAX_APDU_INPUT_DATA_SIZE bytes    // ** Adapted for util_sc ** //
     // ** Adapted for util_sc ** // SHA256(buffer+MAX_BIGINT_SIZE-HASH_SIZE, scope_size, scope);
     mSecureHash(scope_size, 32, buffer+MAX_BIGINT_SIZE-HASH_SIZE, scope);   // ** Adapted for util_sc ** //
     buffer_size = HASH_SIZE;
@@ -778,7 +777,7 @@ void getBlobstoreInformations(unsigned int* first_available_index, unsigned int 
 
             (*blobcount)++;
 
-            if (uri != NULL && uri_size == blob_catalog[i].uri_size && memcmp(uri, blob_catalog[i].uri, uri_size) == 0) {
+            if (uri != NULL && uri_size == blob_catalog[i].uri_size && mem_cmp(uri, blob_catalog[i].uri, uri_size) == 0) {  // ** Adapted for util_sc ** //
                 *uri_index = i;
             }
 
@@ -802,11 +801,11 @@ void getBlobstoreInformations(unsigned int* first_available_index, unsigned int 
 void encrypt(BYTE *password, BYTE label) {
 
     temp_buffer_size = 0;
-    memcpy(temp_buffer+temp_buffer_size, master_backup_key, MASTER_BACKUP_KEY_SIZE);
+    mem_cpy(temp_buffer+temp_buffer_size, master_backup_key, MASTER_BACKUP_KEY_SIZE);   // ** Adapted for util_sc ** //
     temp_buffer_size += MASTER_BACKUP_KEY_SIZE;
-    memcpy(temp_buffer+temp_buffer_size, password, PASSWORD_SIZE);
+    mem_cpy(temp_buffer+temp_buffer_size, password, PASSWORD_SIZE); // ** Adapted for util_sc ** //
     temp_buffer_size += PASSWORD_SIZE;
-    memcpy(temp_buffer+temp_buffer_size, &label, 1);
+    mem_cpy(temp_buffer+temp_buffer_size, &label, 1);   // ** Adapted for util_sc ** //
     temp_buffer_size += 1;
 
     // ** Adapted for util_sc ** // SHA256(temp_buffer, temp_buffer_size, temp_buffer);
@@ -820,13 +819,13 @@ void encrypt(BYTE *password, BYTE label) {
     // create pad, make it start at temp_buffer+16
     pad_size = 0;
 
-    memset(temp_buffer+16+pad_size, 0, 4);
+    mem_set(temp_buffer+16+pad_size, 0, 4); // ** Adapted for util_sc ** //
     pad_size += 4;
 
-    memcpy(temp_buffer+16+pad_size, &buffer_size, 2);
+    mem_cpy(temp_buffer+16+pad_size, &buffer_size, 2);  // ** Adapted for util_sc ** //
     pad_size += 2;
 
-    memcpy(temp_buffer+16+pad_size, &device_id, ID_SIZE);
+    mem_cpy(temp_buffer+16+pad_size, &device_id, ID_SIZE);  // ** Adapted for util_sc ** //
     pad_size += ID_SIZE;
 
 #ifdef TEST_MODE
@@ -853,7 +852,7 @@ void encrypt(BYTE *password, BYTE label) {
 
     // right-pad buffer with 0x00 bytes until its size is a multiple of 16
     if ((buffer_size & 0xf) != 0) {  // mod 16
-        memset(buffer+buffer_size, 0, 16-(buffer_size & 0xf));
+        mem_set(buffer+buffer_size, 0, 16-(buffer_size & 0xf)); // ** Adapted for util_sc ** //
         buffer_size += (16-(buffer_size & 0xf));
     }
 
@@ -867,9 +866,9 @@ void encrypt(BYTE *password, BYTE label) {
     // temp_buffer contains K (16 bytes) || pad (16 bytes) || t (16 bytes) || k (16 bytes) || c0 (16 bytes) || c_1 (16 bytes) || ... || c_d (16 bytes)
 
     buffer_size = 0;
-    memcpy(buffer + buffer_size, temp_buffer+32, 16); // copy 't'
+    mem_cpy(buffer + buffer_size, temp_buffer+32, 16); // copy 't'  // ** Adapted for util_sc ** //
     buffer_size += 16;
-    memcpy(buffer + buffer_size, temp_buffer+80, 16*d); // copy c_1 || ... || c_d
+    mem_cpy(buffer + buffer_size, temp_buffer+80, 16*d); // copy c_1 || ... || c_d  // ** Adapted for util_sc ** //
     buffer_size += (16*d);
 
 }
@@ -889,11 +888,11 @@ void decrypt(BYTE *device_id_prim, BYTE *password, BYTE label) {
     unsigned int L;
 
     temp_buffer_size = 0;
-    memcpy(temp_buffer+temp_buffer_size, master_backup_key, MASTER_BACKUP_KEY_SIZE);
+    mem_cpy(temp_buffer+temp_buffer_size, master_backup_key, MASTER_BACKUP_KEY_SIZE);   // ** Adapted for util_sc ** //
     temp_buffer_size += MASTER_BACKUP_KEY_SIZE;
-    memcpy(temp_buffer+temp_buffer_size, password, PASSWORD_SIZE);
+    mem_cpy(temp_buffer+temp_buffer_size, password, PASSWORD_SIZE); // ** Adapted for util_sc ** //
     temp_buffer_size += PASSWORD_SIZE;
-    memcpy(temp_buffer+temp_buffer_size, &label, 1);
+    mem_cpy(temp_buffer+temp_buffer_size, &label, 1);   // ** Adapted for util_sc ** //
     temp_buffer_size += 1;
 
     // ** Adapted for util_sc ** // SHA256(temp_buffer, temp_buffer_size, temp_buffer);
@@ -909,7 +908,7 @@ void decrypt(BYTE *device_id_prim, BYTE *password, BYTE label) {
 
     // buffer contains : t (16 bytes) || c_1 (16 bytes) || ... || c_d (16 bytes)
 
-    memcpy(temp_buffer+32, buffer, 16);
+    mem_cpy(temp_buffer+32, buffer, 16);    // ** Adapted for util_sc ** //
 
     // temp_buffer contains : K (16 bytes) || nothing (16 bytes) || t (16 bytes)
 
@@ -919,13 +918,13 @@ void decrypt(BYTE *device_id_prim, BYTE *password, BYTE label) {
     // temp_buffer should contain : K (16 bytes) || pad (16 bytes) || t (16 bytes)
     // where pad = 0x00 0x00 0x00 0x00 || L (2 bytes) || deviceId' (2 bytes) || z (8 bytes)
 
-    memcpy(device_id_prim, temp_buffer+22, 2);
+    mem_cpy(device_id_prim, temp_buffer+22, 2); // ** Adapted for util_sc ** //
 
-    memset(mem_session.small_buffer, 0, 4);
-    if (memcmp(temp_buffer+16, mem_session.small_buffer, 4) != 0)
+    mem_set(mem_session.small_buffer, 0, 4);    // ** Adapted for util_sc ** //
+    if (mem_cmp(temp_buffer+16, mem_session.small_buffer, 4) != 0)  // ** Adapted for util_sc ** //
         mExitSW(ERR_INVALID_BACKUP_ARCHIVE);    // ** Adapted for util_sc ** //
 
-    memcpy(&L, temp_buffer+20, 2);
+    mem_cpy(&L, temp_buffer+20, 2); // ** Adapted for util_sc ** //
 
     if (L < 16*(d-1)+1 || L > 16*d)
         mExitSW(ERR_INVALID_BACKUP_ARCHIVE);    // ** Adapted for util_sc ** //
@@ -936,7 +935,7 @@ void decrypt(BYTE *device_id_prim, BYTE *password, BYTE label) {
 
     // temp_buffer contains : K (16 bytes) || pad (16 bytes) || t (16 bytes) || k (16 bytes) || c_0 (16 bytes)
 
-    memcpy(temp_buffer+80, buffer+16, 16*d);
+    mem_cpy(temp_buffer+80, buffer+16, 16*d);   // ** Adapted for util_sc ** //
 
     // temp_buffer contains : K (16 bytes) || pad (16 bytes) || t (16 bytes) || k (16 bytes) || c_0 (16 bytes) || c_1 (16 bytes) || ... || c_d (16 bytes)
 
@@ -945,8 +944,8 @@ void decrypt(BYTE *device_id_prim, BYTE *password, BYTE label) {
 
     // buffer contains : data_1 (16 bytes) || ... || data_d (16 bytes)
 
-    memset(mem_session.small_buffer, 0, 16*d - L);
-    if (memcmp(buffer+L, mem_session.small_buffer, 16*d - L) != 0)
+    mem_set(mem_session.small_buffer, 0, 16*d - L); // ** Adapted for util_sc ** //
+    if (mem_cmp(buffer+L, mem_session.small_buffer, 16*d - L) != 0) // ** Adapted for util_sc ** //
         mExitSW(ERR_INVALID_BACKUP_ARCHIVE);    // ** Adapted for util_sc ** //
 
     buffer_size = L;
@@ -960,7 +959,7 @@ void decrypt(BYTE *device_id_prim, BYTE *password, BYTE label) {
 
 void print(void *s, unsigned int size) {
 
-    memcpy(apdu_data.dataout, (BYTE *)s, size);
+    mem_cpy(apdu_data.dataout, (BYTE *)s, size);    // ** Adapted for util_sc ** //
 
     exitLa(size);
 
@@ -985,7 +984,7 @@ void output_large_data(void) {
 
     output_size = MIN(remaining_size, MAX_APDU_OUTPUT_DATA_SIZE);
 
-    memcpy(apdu_data.dataout, remaining_position, output_size);
+    mem_cpy(apdu_data.dataout, remaining_position, output_size);    // ** Adapted for util_sc ** //
 
     remaining_position = remaining_position + output_size;
     remaining_size -= output_size;
@@ -1013,20 +1012,20 @@ void output_large_data(void) {
  ******************************************************************************/
 
 /**
- * TODO
+ // TODO :
  * Estos dos se usan solo una vez cada uno en el main para leer y escribir blobs
  * por lo que una copia de arrays debería bastar.
  *
  */
 
 
-void segmentToStaticHigh(void *high_addr, const void *low_addr, size_t size)
+void segmentToStaticHigh(void *high_addr, const void *low_addr, DWORD size)    // ** Adapted for util_sc ** //
 {
 
     BYTE high_addr_32bits[4] = {0x00, 0x00, 0x00, 0x00};
 
     // compute high_addr_32bits
-    memcpy(high_addr_32bits+2, &high_addr, 2);
+    mem_cpy(high_addr_32bits+2, &high_addr, 2); // ** Adapted for util_sc ** //
 
     // call MEMORY COPY ADDITION STATIC (non atomic)
     __push ((__typechk(WORD, size))); // size of the data to copy
@@ -1045,13 +1044,13 @@ void segmentToStaticHigh(void *high_addr, const void *low_addr, size_t size)
  * starting at address low_addr.
  ******************************************************************************/
 
-void staticHighToSegment(void *low_addr, const void *high_addr, size_t size)
+void staticHighToSegment(void *low_addr, const void *high_addr, DWORD size)    // ** Adapted for util_sc ** //
 {
 
     BYTE high_addr_32bits[4] = {0x00, 0x00, 0x00, 0x00};
 
     // compute high_addr_32bits
-    memcpy(high_addr_32bits+2, &high_addr, 2);
+    mem_cpy(high_addr_32bits+2, &high_addr, 2); // ** Adapted for util_sc ** //
 
     // call MEMORY COPY ADDITION STATIC (non atomic)
     __push ((__typechk(WORD, size))); // size of the data to copy

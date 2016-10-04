@@ -1,8 +1,9 @@
 #include <system_funcs.h>
 #include <m_adapted_API.h>
-#include <stdio.h>
 #include <crypto_util.h>
 #include <arithmetic_util.h>
+// TODO: quitar:
+#include <stdio.h>
 
 // TODO : ordenar por orden alfabético para mejor consulta
 // TODO : llevar el doxygen al .h
@@ -104,6 +105,13 @@ void mModularExponentiation (WORD exponentLength, WORD modulusLength, BYTE *expo
 void mModularReduction (WORD operandLength, WORD modulusLength, BYTE *operand, BYTE *modulus){
 
     modularReduction(operand, operand, modulus, operandLength, modulusLength);
+
+}
+
+
+void mModularMultiplication (WORD modulusLength, BYTE *modulus, BYTE *block1, BYTE *block2){
+
+    modularMultiplication(block1, block1, block2, modulus, modulusLength);
 
 }
 
