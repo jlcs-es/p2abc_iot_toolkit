@@ -519,17 +519,21 @@ void singleOrDoubleExpo(BYTE issuer_id, BYTE *e1, unsigned int e1_size, BYTE *e2
         mModularExponentiation(e2_size, temp_modulus_size, e2+MAX_SMALLINT_SIZE-e2_size, temp_modulus+MAX_BIGINT_SIZE-temp_modulus_size, buffer+MAX_BIGINT_SIZE-temp_modulus_size, buffer+MAX_BIGINT_SIZE-temp_modulus_size);   // ** Adapted for util_sc ** //
         buffer_size = temp_modulus_size;
 
-        // void multosModularMultiplication (WORD modulusLength, BYTE *modulus, BYTE *block1, BYTE *block2);
-        // We set the first bytes of buffer and temp_buffer to 0. This is
-        // necessary for the crxModularMultiplication routine. We expect
-        // temp_modulus to already have zero's on the left-most bytes.
-        mem_set(buffer, 0, MAX_BIGINT_SIZE-temp_modulus_size);  // ** Adapted for util_sc ** //
+        // ** Adapted for util_sc ** //
+            // void multosModularMultiplication (WORD modulusLength, BYTE *modulus, BYTE *block1, BYTE *block2);
+            // We set the first bytes of buffer and temp_buffer to 0. This is
+            // necessary for the crxModularMultiplication routine. We expect
+            // temp_modulus to already have zero's on the left-most bytes.
+        mem_set(buffer, 0, MAX_BIGINT_SIZE-temp_modulus_size);  // ** Adapted for util_sc ** // // could be deleted with the use of mModularMultiplication, but for safety, is kept
         mem_set(temp_buffer, 0, MAX_BIGINT_SIZE-temp_modulus_size); // ** Adapted for util_sc ** //
-        crxModularMultiplication(temp_modulus_size,   /* modulus size */
-                                 temp_modulus,        /* modulus */
-                                 buffer,              /* buffer */
-                                 temp_buffer);        /* temp   */  // this overwrites buffer
-
+        // ** Adapted for util_sc ** //
+            // crxModularMultiplication(temp_modulus_size,   /* modulus size */
+            //                         temp_modulus,        /* modulus */
+            //                         buffer,              /* buffer */
+            //                         temp_buffer);        /* temp   */  // this overwrites buffer
+        // ** Adapted for util_sc ** //
+        mModularMultiplication (temp_modulus_size, temp_modulus+MAX_BIGINT_SIZE-temp_modulus_size, buffer+MAX_BIGINT_SIZE-temp_modulus_size, temp_buffer+MAX_BIGINT_SIZE-temp_modulus_size); // this overwrites buffer  // ** Adapted for util_sc ** //
+        // NOTE : la implementación de crxModularMultiplication hay que estudiarla por si no hace una mult. mod. solo
     }
 
 }
