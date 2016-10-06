@@ -245,3 +245,140 @@ void mModularMultiplication (WORD modulusLength, BYTE *modulus, BYTE *block1, BY
 
 
 
+//      multosAESECBEncipher(temp_buffer+16, temp_buffer+32, 16, temp_buffer);
+
+//
+//    void multosAESECBEncipher (BYTE *plainText, BYTE *cipherText,
+//                               BYTE keyLength, BYTE *key)
+//    The parameters are:
+//     BYTE *plaintext: address of 16 bytes of plaintext (input)
+//     BYTE *cipherText: address of buffer to hold ciphertext (output)
+//     BYTE keyLength: length of key in bytes (input)
+//     BYTE *key: address of key to use (input)
+//    This is an interface to the primitive AES ECB Encipher.
+
+
+// Note : como usa un keylength de 16 es compatible con tiny-AES128-C de github
+
+
+
+
+/////////////////////
+
+
+
+//    // buffer = buffer1 || ... || buffer_d where size(buffer_i) = 16 bytes
+//
+//    // crxAESEncryptCBC(BYTE *ciphertext, const BYTE *iv, const BYTE *plaintext, WORD plaintext_size, const BYTE *key)
+//    crxAESEncryptCBC(temp_buffer+80, temp_buffer+64, buffer, buffer_size, temp_buffer+48);
+
+
+
+
+
+//
+//        #define crxAESEncryptCBC(ciphertext, iv, plaintext, plaintext_size, key) \
+//        do \
+//        { \
+//            __push (__typechk(BYTE, 0x10)); \
+//            __push (__typechk(BYTE *, iv)); \
+//            __push (__typechk(WORD, plaintext_size)); \
+//            __push (__typechk(BYTE *, key)); \
+//            __push (__typechk(BYTE, 0x10)); \
+//            __push (__typechk(BYTE *, ciphertext)); \
+//            __push (__typechk(BYTE *, plaintext)); \
+//            __code (__PRIM, 0xDB, 0x06, 0x02); \
+//        } while (0)
+//
+//        // crxAESDecryptCBC(BYTE *plaintext, const BYTE *iv, const BYTE *ciphertext, WORD ciphertext_size, const BYTE *key)
+//        #define crxAESDecryptCBC(plaintext, iv, ciphertext, ciphertext_size, key) \
+//        do \
+//        { \
+//            __push (__typechk(BYTE, 0x10)); \
+//            __push (__typechk(BYTE *, iv)); \
+//            __push (__typechk(WORD, ciphertext_size)); \
+//            __push (__typechk(BYTE *, key)); \
+//            __push (__typechk(BYTE, 0x10)); \
+//            __push (__typechk(BYTE *, plaintext)); \
+//            __push (__typechk(BYTE *, ciphertext)); \
+//            __code (__PRIM, 0xDA, 0x06, 0x02); \
+//        } while (0)
+//
+
+//
+//    AES ECB Decipher
+//            This primitive performs AES ECB Decipher on a sixteen byte block of memory in accordance with [FIPS197].
+//    PRIM 0xD6 NOTE : no es el mismo codigo
+//
+//    The 2 byte parameter KeyAddr is the starting address of the AES key to be used.
+//    The 1 byte parameter KeyLen is the length in bytes of the AES key at address KeyAddr.
+//    The 2 byte parameter OutputAddr is the starting address of the resultant 16-bytes of plaintext.
+//    The 2 byte parameter InputAddr is the starting address of the 16-bytes of ciphertext.
+
+//*****//
+
+
+//    Block Decipher
+//    This primitive performs a Block Decipher on a block of memory.
+// The algorithms that may be used are DES, Triple DES, SEED and AES in ECB and CBC modes of operation.
+//
+//  PRIM 0xDA, AlgorithmID, ChainingMode
+
+
+//   AlgorithmID : 0x06  AES
+//   Chaining Mode :  0x02  CBC
+
+
+// NOTE: CBC !! - si la clave es de 16bytes, 128bits, nos servirá tiny-AES128-C de github
+
+//  CBC mode
+//  CBC mode requires the addition of an Initialisation Vector of length
+// equal to the block size for the selected algorithm.
+// The size of the Initialisation Vector depends upon the specified algorithm, as follows.
+// AES: 16 bytes
+// The stack for this mode is:
+// IVLen : 0x10 = 16  ->  NOTE por AES??? pero no indica tamaño de clave, y no indica AES, eso lo indica 0x06 de AlgorithmID
+// IV
+//  InputLen specifies the number of bytes to decipher.  : plaintext_size / ciphertext_size
+//  KeyAddr is the address of the key(s) to be used. : key
+//
+// The size and format of the key at this address depends upon the specified algorithm, as follows.
+//  AES : one 16, 24 or 32 byte AES key.
+//
+//  KeyLen is the length in bytes of the key at address KeyAddr.  :  0x10  =  16bytes = NOTE AES128 !!!  nos servirá tiny-AES128-C de github OK !!!
+
+//  OutputAddr is the starting address of the resultant plaintext
+//  InputAddr is the start address of the ciphertext to be deciphered
+
+
+// NOTE   AES- 128 algorithms require that the ciphertext is a multiple of 16 bytes. If the ciphertext length does not meet these restrictions then the primitive will abend. Padding is not removed during the block decipher operation.
+// NOTE   AES- 128 algorithms require that the plaintext is a multiple of 16 bytes. If the plaintext length does not meet these restrictions then the primitive will abend.
+
+
+//*******//
+
+//
+//    void multosBlockEncipherCBC (const BYTE algorithm, WORD inputLength,
+//                                 BYTE *plainText, BYTE *cipherText,
+//                                 BYTE initialValueLength, BYTE *initialValue, BYTE keyLength, BYTE *key);
+//    The parameters are:
+//     const BYTE algorithm: 0x03 = DES, 0x04 = 3DES, 0x05 = SEED, 0x06 = AES 128bit (input)
+//     WORD inputLength: Length of plainText (input)
+//     BYTE *plainText: pointer to plain text to encipher (input)
+//     BYTE *cipherText: pointer to memory in which to write the cipher text output. (output)
+//     BYTE initialValueLength: length of the Initial Chaining Vector pointed to by initialValue (input)
+//     BYTE *initialValue: Pointer to ICV value (input)
+//     BYTE keyLength: length of key, depends on algorithm being used (input)
+//     BYTE *key: pointer to the key to use (input)
+//    This function enciphers the cipher text using the cipher block chaining method and supports a number of algorithms.
+//    This is an interface to the primitive Block Encipher.
+
+
+//
+//
+
+
+
+// NOTE : Solución, es para los crx multosBlockEncipherCBC con claves de 16 bytes (AES128)
+// NOTE : Solución, para multosAESECBEncipher, el que es, con sólo la opción de AES128 implementada (tipo el sha256 de más arriba)
+// NOTE : Se usa en SmartCard AES  ECB y CBC, pero siempre de 128bits, por lo que el proyecto de github sirve perfectamente a este caso
