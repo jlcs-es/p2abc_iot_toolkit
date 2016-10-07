@@ -23,6 +23,30 @@ extern "C" {
 /********************************************************************/
 
 
+
+
+/**
+ * Calculates result = arr1 + arr2
+ * Note that result is the same size as the addends
+ * @param result    Array of size length. Can overlap arr1 or arr2.
+ * @param arr1      Array of size length.
+ * @param arr2      Array of size length.
+ * @param length
+ */
+void addition(BYTE *result, BYTE *arr1, BYTE *arr2, WORD length);
+
+
+
+/**
+ * Calculates result = arr1 - arr2
+ * @param result    Array of size length. Can overlap arr1 or arr2.
+ * @param arr1      Array of size length.
+ * @param arr2      Array of size length.
+ * @param length
+ */
+void subtraction(BYTE *result, BYTE *arr1, BYTE *arr2, WORD length);
+
+
 /**
  * Calculates result = arr1 * arr2
  * @param result Array of size 2*length. Stores the solution. Can overlap arr1 or arr2.

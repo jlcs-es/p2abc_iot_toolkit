@@ -2,6 +2,7 @@
 #include <m_adapted_API.h>
 #include <crypto_util.h>
 #include <arithmetic_util.h>
+
 // TODO: quitar:
 #include <stdio.h>
 
@@ -116,124 +117,36 @@ void mModularMultiplication (WORD modulusLength, BYTE *modulus, BYTE *block1, BY
 }
 
 
+void mBlockMultiply (const WORD blockLength, BYTE *block1, BYTE *block2, BYTE *result){
+
+    multiplication(result, block1, block2, blockLength);
+
+}
 
 
 
-// TODO : considerar un API ampliada a razón de estos comentarios:
+void mBlockAdd (const WORD blockLength, BYTE *block1, BYTE *block2, const BYTE *result){
 
-// compute c * u mod q
-// Due to the fact that multosModularMultiplication stores the MSB
-// of the result on block1[0] (which is *not* how things should be
-// done), we replace this instruction with a simple
-// multiplication, followed by a modular reduction.
+    addition(result, block1, block2, blockLength);
+
+}
 
 
+void mBlockSubtract (const WORD blockLength, BYTE *block1, BYTE *block2, const BYTE *result){
 
-// Note : crxBlockMultiply### parece ser karatsuba, confirmar
+    subtraction(result, block2, block1, blockLength);
+    //    NOTE: result = block2 - block1
+    //    This function subtracts the value found in block1 to that found in block2 and places the difference
+    //    in the block indicated in result.
 
-
-
-
-
-//
-//    void multosBlockMultiply (const BYTE blockLength, BYTE *block1, BYTE *block2, BYTE *result)
-//    The parameters are:
-//     const BYTE blockLength: the size of the operands
-//     BYTE *block1: address of the first byte of block1
-//     BYTE *block2: address of the first byte of block2
-//     BYTE *result: address of the first byte of result
-//            This function multiplies the value held in block1 by that held in block2
-// and writes the result to the block result of size blockLength + blockLength.
-//    This is an interface to the primitive MultiplyN.
+}
 
 
 
 
-// NOTE : el tamaño es un BYTE, no un WORD !!
-// Note : Decisión de usar WORD y que no se necesite crxBlockMultiply127/128/256
-// como el cast sería de unsigned 8 bit a unsigned 16 bit es compatible con su uso de la CAPI
+void mAESECBEncipher (BYTE *plainText, BYTE *cipherText, BYTE keyLength, BYTE *key){
 
-
-
-
-
-
-///////////////////////
-
-//
-//    void multosBlockAdd (const BYTE blockLength, BYTE *block1, BYTE *block2, const BYTE *result)
-//    The parameters are:
-//     const BYTE blockLength: size of the blocks to add.
-//     BYTE *block1: address of the first block
-//     BYTE *block2: address of the second block
-//     const BYTE *result: address of the block that will hold the result of the operation
-//    This function adds the value found in block1 to that found in block2 and places the sum
-//    in the block indicated in the result parameter.
-//
-// Note that block1, block2 and result are all considered to be of size blockLength.
-//
-//
-//  This is an interface to the instruction ADDN.
-
-
-//
-//    ADDN
-//            This instruction adds the byte-block at the top of the stack to a byte-block specified by the label.
-//            If the label is omitted then the top two byte-blocks on the stack are used.
-//    Syntax    ADDN [label], block_length
-//    Remarks
-//        The block_length value is specified using a single byte. Therefore, the maximum length of a block is 255 bytes
-//
-//    The label, if present, may be either a named memory location, which the assembler will translate into
-//            a register / offset pair, or an explicit register / offset pair. If a label is not specified, then the
-//            operands of size block_length will be taken from the stack.
-//    The result of the addition will be written to the address corresponding to the label or, if no label is given,
-//    to the byte block immediately below the topmost block.
-//
-// In no case is the top byte block changed by the operation.
-//
-//   The operation will work if the two blocks overlap.
-//
-
-
-
-// Note : como antes: The block_length value is specified using a single byte.
-// Therefore, the maximum length of a block is 255 bytes
-// usamos WORD y que sea compatible en el futuro sin usar crx mierdas
-
-// NOTE: The operation will work if the two blocks overlap.
-
-
-
-
-
-
-
-
-
-///////////////////////
-
-
-
-//
-//    void multosBlockSubtract (const BYTE blockLength, BYTE *block1, BYTE *block2, const BYTE *result)
-//    The parameters are:
-//     const BYTE blockLength: size of the blocks to subtract. Both blocks must be the same size.
-//     BYTE *block1: address of the first block
-//     BYTE *block2: address of the second block
-//     const BYTE *result: address of the block that will hold the result of the operation
-//    This function subtracts the value found in block1 to that found in block2 and places the difference
-//    in the block indicated in result.
-//    This is an interface to the instruction SUBN.
-
-
-
-// SUBN
-//  The operation will work if the two blocks overlap.
-
-// NOTE: supondremos block2 - block1 como dice la API oficial y poner un FIXME en el código que lo usa y aquí
-// como antes: length BYTE a WORD, superponer
-
+}
 
 
 
@@ -382,3 +295,57 @@ void mModularMultiplication (WORD modulusLength, BYTE *modulus, BYTE *block1, BY
 // NOTE : Solución, es para los crx multosBlockEncipherCBC con claves de 16 bytes (AES128)
 // NOTE : Solución, para multosAESECBEncipher, el que es, con sólo la opción de AES128 implementada (tipo el sha256 de más arriba)
 // NOTE : Se usa en SmartCard AES  ECB y CBC, pero siempre de 128bits, por lo que el proyecto de github sirve perfectamente a este caso
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Note : Decisión de usar WORD y que no se necesite crxBlockMultiply127/128/256
+// como el cast sería de unsigned 8 bit a unsigned 16 bit es compatible con su uso de la CAPI
+
+
+// TODO : considerar un API ampliada a razón de estos comentarios:
+
+// compute c * u mod q
+// Due to the fact that multosModularMultiplication stores the MSB
+// of the result on block1[0] (which is *not* how things should be
+// done), we replace this instruction with a simple
+// multiplication, followed by a modular reduction.
+
+
+
+// Note : crxBlockMultiply### parece ser karatsuba, confirmar
+
+
+
+
+
+//
+//    void multosBlockMultiply (const BYTE blockLength, BYTE *block1, BYTE *block2, BYTE *result)
+//    The parameters are:
+//     const BYTE blockLength: the size of the operands
+//     BYTE *block1: address of the first byte of block1
+//     BYTE *block2: address of the first byte of block2
+//     BYTE *result: address of the first byte of result
+//            This function multiplies the value held in block1 by that held in block2
+// and writes the result to the block result of size blockLength + blockLength.
+//    This is an interface to the primitive MultiplyN.
+
+

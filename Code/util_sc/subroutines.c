@@ -6,9 +6,6 @@
 
 // TODO : la documentación ¿pasarla al .h?
 
-// NOTE : cómo adaptar algunas APIs
-// para pasar de SHA256 a mSecureHash:
-// mSecureHash(segundo argumento, 32, primer argumento, tercer argumento);
 
 /////
 
@@ -642,9 +639,9 @@ void singleResponse(BYTE *k, unsigned int k_size, BYTE *c, unsigned int c_size, 
         mem_cpy(temp_buffer, k, MAX_SMALLINT_SIZE); // ** Adapted for util_sc ** //
         if (k_size >= q_size)
             mModularReduction (k_size,
-                                    q_size,
-                                    temp_buffer + MAX_SMALLINT_SIZE - k_size, /* k */
-                                    q           + MAX_SMALLINT_SIZE - q_size  /* q */
+                               q_size,
+                               temp_buffer + MAX_SMALLINT_SIZE - k_size, /* k */
+                               q           + MAX_SMALLINT_SIZE - q_size  /* q */
             );  // ** Adapted for util_sc ** //
 
         // we want to compute k - cu mod q, we already have k mod q in temp_buffer[0..MAX_SMALLINT_SIZE-1] and cu mod q in temp_buffer[MAX_SMALLINT_SIZE..2*MAX_SMALLINT_SIZE-1]

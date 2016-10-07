@@ -21,6 +21,42 @@ WORD getResultSizeInBytes(mpz_t op){
     return bytes;
 }
 
+
+void addition(BYTE *result, BYTE *arr1, BYTE *arr2, WORD length){
+    mpz_t addend1, addend2, rop;
+    mpz_init(addend1); mpz_init(addend2); mpz_init(rop);
+    mpz_import(addend1, length, 1, sizeof(arr1[0]), 0, 0, arr1);
+    mpz_import(addend2, length, 1, sizeof(arr2[0]), 0, 0, arr2);
+
+    mpz_add(rop, addend1, addend2);
+
+
+    WORD offset = length - getResultSizeInBytes(rop);
+    for(WORD i=0; i<offset; ++i){
+        result[i]=0;
+    }
+    mpz_export(result + offset, NULL, 1, sizeof(result[0]), 0, 0, rop);
+}
+
+
+
+void subtraction(BYTE *result, BYTE *arr1, BYTE *arr2, WORD length){
+    mpz_t minuend, subtrahend, rop;
+    mpz_init(minuend); mpz_init(subtrahend); mpz_init(rop);
+    mpz_import(minuend, length, 1, sizeof(arr1[0]), 0, 0, arr1);
+    mpz_import(subtrahend, length, 1, sizeof(arr2[0]), 0, 0, arr2);
+
+    mpz_sub(rop, minuend, subtrahend); // rop = minuend - subtrahend
+
+
+    WORD offset = length - getResultSizeInBytes(rop);
+    for(WORD i=0; i<offset; ++i){
+        result[i]=0;
+    }
+    mpz_export(result + offset, NULL, 1, sizeof(result[0]), 0, 0, rop);
+}
+
+
 void multiplication(BYTE *result, BYTE *arr1, BYTE *arr2, WORD length){
     mpz_t factor1, factor2, rop;
     mpz_init(factor1); mpz_init(factor2); mpz_init(rop);

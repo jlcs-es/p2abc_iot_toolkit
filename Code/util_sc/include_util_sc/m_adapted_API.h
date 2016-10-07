@@ -26,10 +26,10 @@ extern "C" {
 /********************************************************************/
 /** This a Multos C API adaptation, restricted to the functions     */
 /* used in the P2ABC SW smartcards. The functions must be the same  */
-/* as in the CAPI documentation, changing multos for m              */
+/* as in the CAPI documentation, changing 'multos' with 'm'         */
 /********************************************************************/
-/** Provided implementation is in C, only depending on other        */
-/* provided files, so it can be platform independent.               */
+/** Provided implementation is written in pure C, only depending    */
+/* on other provided files, so it can be platform independent.      */
 /********************************************************************/
 
 void mGetRandomNumber(BYTE result[8]);
@@ -39,6 +39,10 @@ void mSecureHash(WORD msgLen, WORD hashLen, BYTE *hashOut, BYTE *msgIn);
 void mModularExponentiation (WORD exponentLength, WORD modulusLength, BYTE *exponent, BYTE *modulus, BYTE *input, BYTE *output);
 void mModularReduction (WORD operandLength, WORD modulusLength, BYTE *operand, BYTE *modulus);
 void mModularMultiplication (WORD modulusLength, BYTE *modulus, BYTE *block1, BYTE *block2);
+void mBlockMultiply (const WORD blockLength, BYTE *block1, BYTE *block2, BYTE *result);
+void mBlockAdd (const WORD blockLength, BYTE *block1, BYTE *block2, const BYTE *result);
+void mBlockSubtract (const WORD blockLength, BYTE *block1, BYTE *block2, const BYTE *result);
+
 
 
 #ifdef __cplusplus
