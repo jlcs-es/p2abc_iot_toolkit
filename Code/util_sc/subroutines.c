@@ -5,7 +5,10 @@
 /******************************************************************************/
 
 // TODO : la documentación ¿pasarla al .h?
-
+// FIXME : el uso de unsigned int en vez de WORD / DWORD y la posibilidad que no quepa en los WORD del size usual de multosFuncion()
+// según referencias de multos: "an integer is a machine word, which is 2 byte"
+// "An integer is a machine word and, in the case of MULTOS, this is 2 bytes"
+//
 
 /////
 
@@ -626,7 +629,10 @@ void singleResponse(BYTE *k, unsigned int k_size, BYTE *c, unsigned int c_size, 
         // multiplication, followed by a modular reduction.
 
         // void multosBlockMultiply (const BYTE blockLength, BYTE *block1, BYTE *block2, BYTE *result)
-        crxBlockMultiply127orLess (MAX_SMALLINT_SIZE-1, temp_buffer+1, temp_buffer+MAX_SMALLINT_SIZE+1, temp_buffer+2); // this puts the result in the right-most bytes of temp_buffer[0 ... 2*MAX_SMALLINT_SIZE-1]
+        // ** Adapted for util_sc ** //     crxBlockMultiply127orLess (MAX_SMALLINT_SIZE-1, temp_buffer+1, temp_buffer+MAX_SMALLINT_SIZE+1, temp_buffer+2); // this puts the result in the right-most bytes of temp_buffer[0 ... 2*MAX_SMALLINT_SIZE-1]
+        mBlockMultiply(MAX_SMALLINT_SIZE-1, temp_buffer+1, temp_buffer+MAX_SMALLINT_SIZE+1, temp_buffer+2); // this puts the result in the right-most bytes of temp_buffer[0 ... 2*MAX_SMALLINT_SIZE-1]     // ** Adapted for util_sc ** //
+        // FIXME : check comment vs function call
+
 
         // void multosModularReduction (WORD operandLength, WORD modulusLength, BYTE *operand, BYTE *modulus);
         if (c_size + u_size >= q_size)
@@ -650,15 +656,15 @@ void singleResponse(BYTE *k, unsigned int k_size, BYTE *c, unsigned int c_size, 
         if(mem_cmp(temp_buffer, temp_buffer+MAX_SMALLINT_SIZE, MAX_SMALLINT_SIZE) < 0) {    // ** Adapted for util_sc ** //
             // we have that (k mod q) < (c*u mod q)
             // void multosBlockAdd (const BYTE blockLength, BYTE *block1, BYTE *block2, const BYTE *result);
-            multosBlockAdd (MAX_SMALLINT_SIZE, temp_buffer, q, temp_buffer);
+            mBlockAdd(MAX_SMALLINT_SIZE, temp_buffer, q, temp_buffer);      // ** Adapted for util_sc ** //
         }
 
         // void multosBlockSubract (const BYTE blockLength, BYTE *block1, BYTE *block2, const BYTE *result);
         //multosBlockSubract (q_size, buffer+MAX_SMALLINT_SIZE-q_size, temp_buffer+MAX_SMALLINT_SIZE-q_size, buffer+MAX_SMALLINT_SIZE-q_size);
-        multosBlockSubract (MAX_SMALLINT_SIZE,
-                            temp_buffer,
-                            temp_buffer+MAX_SMALLINT_SIZE,
-                            temp_buffer);
+        mBlockSubtract (MAX_SMALLINT_SIZE,
+                        temp_buffer+MAX_SMALLINT_SIZE,
+                        temp_buffer,
+                        temp_buffer);   // block2-block1   // ** Adapted for util_sc ** //
 
         mem_cpy(buffer+offset, temp_buffer+MAX_SMALLINT_SIZE-q_size, q_size);   // ** Adapted for util_sc ** //
         buffer_size = q_size+offset;
@@ -674,7 +680,9 @@ void singleResponse(BYTE *k, unsigned int k_size, BYTE *c, unsigned int c_size, 
 
         // compute c*u, put it in temp_buffer[0 ... MAX_SMALLINT_SIZE-1]
         // void multosBlockMultiply (const BYTE blockLength, BYTE *block1, BYTE *block2, BYTE *result);
-        crxBlockMultiply127orLess (MAX_SMALLINT_SIZE-1, temp_buffer+1, temp_buffer+MAX_SMALLINT_SIZE+1, temp_buffer+2); // this puts the result in the right-most bytes of temp_buffer[0 ... 2*MAX_SMALLINT_SIZE-1]
+        // ** Adapted for util_sc ** //     crxBlockMultiply127orLess (MAX_SMALLINT_SIZE-1, temp_buffer+1, temp_buffer+MAX_SMALLINT_SIZE+1, temp_buffer+2); // this puts the result in the right-most bytes of temp_buffer[0 ... 2*MAX_SMALLINT_SIZE-1]
+        mBlockMultiply(MAX_SMALLINT_SIZE-1, temp_buffer+1, temp_buffer+MAX_SMALLINT_SIZE+1, temp_buffer+2);     // this puts the result in the right-most bytes of temp_buffer[0 ... 2*MAX_SMALLINT_SIZE-1]   // ** Adapted for util_sc ** //
+        // FIXME : check comment vs function call
 
         // since c_size + u_size <= MAX_SMALLINT_SIZE, we can put the result back in the MAX_SMALLINT_SIZE first bytes of temp_buffer
 
@@ -686,7 +694,7 @@ void singleResponse(BYTE *k, unsigned int k_size, BYTE *c, unsigned int c_size, 
 
         // compute (temp_buffer+MAX_SMALLINT_SIZE) - temp_buffer (i.e., k - cu), both buffers being made of MAX_INT_BYTES bytes
 
-        multosBlockSubract(MAX_SMALLINT_SIZE, temp_buffer+MAX_SMALLINT_SIZE, temp_buffer, temp_buffer);
+        mBlockSubtract(MAX_SMALLINT_SIZE, temp_buffer, temp_buffer+MAX_SMALLINT_SIZE, temp_buffer); // block2-block1    // ** Adapted for util_sc ** //
 
         buffer_size = k_size+offset;
         mem_cpy(buffer+offset, temp_buffer+MAX_SMALLINT_SIZE-k_size, k_size);   // ** Adapted for util_sc ** //
