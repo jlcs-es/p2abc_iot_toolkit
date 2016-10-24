@@ -1,7 +1,7 @@
 #ifndef __SYSTEM_FUNCS_H
 #define __SYSTEM_FUNCS_H
 
-#include <defs_types.h>
+#include <smartcard_common/defs_types.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -14,7 +14,7 @@ extern "C" {
 
 
 /********************************************************************/
-/** This a a simple facade for some functions that can be HW        */
+/** This a a simple adapter for some functions that can be HW       */
 /* dependent and usually implemented in standard libraries.         */
 /********************************************************************/
 /** This version is implemented with std libraries, but with this   */

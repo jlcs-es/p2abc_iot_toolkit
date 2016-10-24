@@ -1,7 +1,7 @@
 #ifndef __CRYPTO_UTIL_H
 #define __CRYPTO_UTIL_H
 
-#include "defs_types.h"
+#include "smartcard_common/defs_types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -11,7 +11,9 @@ extern "C" {
 /************************** CRYPTO UTIL *****************************/
 /********************************************************************/
 
-
+// TODO : se supone que esto será un adaptador como arithmetic_util y system_funcs
+// así que debería definir una interfaz más estándar para el SHA256, AES128 y los que
+// vengan, y deje las implementaciones en /smartcard_adaptee junto a mini-gmp y demás
 /********************************************************************/
 /** */
 /* */

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include <m_adapted_API.h>
-#include <system_funcs.h>
+#include <p2abc_iot_toolkit_include/smartcard_common/m_adapted_API.h>
+#include <p2abc_iot_toolkit_include/smartcard_adaptor/system_funcs.h>
 
 
 TEST(RandomNumberGenerationTest, Gen8Bytesrnd) {

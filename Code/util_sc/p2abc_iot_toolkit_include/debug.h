@@ -5,7 +5,7 @@
 extern "C" {
 #endif
 
-#include "defs_types.h"
+#include "smartcard_common/defs_types.h"
 
 
 void imprimirHexadecimal(BYTE *buffer, int length);

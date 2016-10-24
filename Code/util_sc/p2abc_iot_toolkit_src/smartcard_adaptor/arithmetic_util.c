@@ -1,17 +1,17 @@
-#include <arithmetic_util.h>
+#include <smartcard_adaptor/arithmetic_util.h>
 
 /********************************************************************/
 /**********************Big Integer Arithmetic************************/
 /********************************************************************/
 
 
-#ifdef MINI_GMP
+#ifdef USE_MINI_GMP
 
 /********************************************************************/
-/*   Implementation of the facade that delegates in miniGMP         */
+/*   Implementation of the adapter which delegates in miniGMP       */
 /********************************************************************/
 
-#include <mini-gmp.h>
+#include <smartcard_adaptee/mini-gmp.h>
 
 WORD getResultSizeInBytes(mpz_t op){
     WORD bytes = mpz_sizeinbase(op, 2) / 8;

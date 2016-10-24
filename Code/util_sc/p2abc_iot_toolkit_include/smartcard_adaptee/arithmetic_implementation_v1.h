@@ -1,7 +1,7 @@
 #ifndef __ARITHMETIC_IMPLEMENTATION_V1_H
 #define __ARITHMETIC_IMPLEMENTATION_V1_H
 
-#include "defs_types.h"
+#include "smartcard_common/defs_types.h"
 
 #ifdef __cplusplus
 extern "C" {

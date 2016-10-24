@@ -1,10 +1,10 @@
 #ifndef __GLOBAL_VARS_H
 #define __GLOBAL_VARS_H
 
-#include <defs_types.h>
-#include <defs_consts.h>
-#include <APDU_types.h>
-#include <abc4T_types.h>
+#include <smartcard_common/defs_types.h>
+#include <smartcard_common/defs_consts.h>
+#include <smartcard_common/APDU_types.h>
+#include <smartcard_common/abc4T_types.h>
 
 #ifdef __cplusplus
 extern "C" {

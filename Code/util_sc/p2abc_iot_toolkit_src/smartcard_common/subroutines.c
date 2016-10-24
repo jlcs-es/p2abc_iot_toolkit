@@ -14,12 +14,12 @@
 
 
 
-#include <subroutines.h>
-#include <m_adapted_API.h>
-#include <system_funcs.h>
-#include <defs_consts.h>
-#include <defs_errs.h>
-#include <global_vars.h>
+#include <smartcard_common/subroutines.h>
+#include <smartcard_common/m_adapted_API.h>
+#include <smartcard_adaptor/system_funcs.h>
+#include <smartcard_common/defs_consts.h>
+#include <smartcard_common/defs_errs.h>
+#include <smartcard_common/global_vars.h>
 
 
 /************************************************************************************************************************************************

@@ -1,2 +1,3 @@
-# idemix_contiky
-Port of Idemix to Contiky
+# P2ABC IoT Toolkit
+
+Adaptation of P2ABC to IoT devices, delegating in a P2ABCEngine server but implementing a SW smart card.

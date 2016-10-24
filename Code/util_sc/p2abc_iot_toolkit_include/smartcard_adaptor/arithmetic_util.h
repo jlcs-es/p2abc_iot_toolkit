@@ -1,7 +1,7 @@
 #ifndef __ARITHMETIC_UTIL_H
 #define __ARITHMETIC_UTIL_H
 
-#include "defs_types.h"
+#include "smartcard_common/defs_types.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -13,7 +13,7 @@ extern "C" {
 
 
 /********************************************************************/
-/** This a a simple facade for the needed Big Integer Arithmetic in */
+/** This a a simple adapter for the needed Big Integer Arithmetic in*/
 /* the virtual smartcard. It can be implemented as desired, with    */
 /* optimized code code depending on the platform.                   */
 /********************************************************************/

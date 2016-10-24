@@ -1,4 +1,4 @@
-#include "system_funcs.h"
+#include "smartcard_adaptor/system_funcs.h"
 
 #include <stdlib.h>
 #include <string.h>

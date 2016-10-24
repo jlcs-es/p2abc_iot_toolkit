@@ -1,7 +1,7 @@
 #ifndef __SUBROUTINES_H
 #define __SUBROUTINES_H
 
-#import <defs_types.h>
+#import <smartcard_common/defs_types.h>
 
 #ifdef __cplusplus
 extern "C" {

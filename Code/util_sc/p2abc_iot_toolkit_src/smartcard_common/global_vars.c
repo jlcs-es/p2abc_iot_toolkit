@@ -1,4 +1,4 @@
-#include <global_vars.h>
+#include <smartcard_common/global_vars.h>
 
 
 /* Internal system variables. */

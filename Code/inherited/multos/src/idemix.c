@@ -29,7 +29,7 @@
 
 #include "defs_apdu.h"
 #include "defs_sizes.h"
-#include "defs_types.h"
+#include "p2abc_iot_toolkit_include/smartcard_common/defs_types.h"
 #include "funcs_debug.h"
 #include "funcs_helper.h"
 #include "funcs_pin.h"

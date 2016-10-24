@@ -1,7 +1,7 @@
-#include <system_funcs.h>
-#include <m_adapted_API.h>
-#include <crypto_util.h>
-#include <arithmetic_util.h>
+#include <smartcard_adaptor/system_funcs.h>
+#include <smartcard_common/m_adapted_API.h>
+#include <smartcard_adaptor/crypto_util.h>
+#include <smartcard_adaptor/arithmetic_util.h>
 
 // TODO: quitar:
 #include <stdio.h>

@@ -26,7 +26,7 @@
 #include <multoscomms.h>
 
 #include "defs_sizes.h"
-#include "defs_types.h"
+#include "p2abc_iot_toolkit_include/smartcard_common/defs_types.h"
 #include "crypto_helper.h"
 
 /********************************************************************/

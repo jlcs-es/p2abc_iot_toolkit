@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include <subroutines.h>
-#include <system_funcs.h>
-#include <global_vars.h>
+#include <p2abc_iot_toolkit_include/smartcard_common/subroutines.h>
+#include <p2abc_iot_toolkit_include/smartcard_adaptor/system_funcs.h>
+#include <p2abc_iot_toolkit_include/smartcard_common/global_vars.h>
 #include <iostream>
 
 TEST(RandomBytesTest, Gen85Bytesrnd) {

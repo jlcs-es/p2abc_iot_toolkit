@@ -1,9 +1,9 @@
 #include <iostream>
-#include <defs_types.h>
-#include <m_adapted_API.h>
+#include <p2abc_iot_toolkit_include/smartcard_common/defs_types.h>
+#include <p2abc_iot_toolkit_include/smartcard_common/m_adapted_API.h>
 #include <iomanip>
-#include <subroutines.h>
-#include <crypto_util.h>
+#include <p2abc_iot_toolkit_include/smartcard_common/subroutines.h>
+#include <p2abc_iot_toolkit_include/smartcard_adaptor/crypto_util.h>
 
 using namespace std;
 

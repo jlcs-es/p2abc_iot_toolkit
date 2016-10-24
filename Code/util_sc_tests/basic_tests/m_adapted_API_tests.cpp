@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
-#include <m_adapted_API.h>
-#include <crypto_util.h>
+#include <p2abc_iot_toolkit_include/smartcard_common/m_adapted_API.h>
+#include <p2abc_iot_toolkit_include/smartcard_adaptor/crypto_util.h>
 
 TEST(BlockCopyTest, CopyFixedLength8Bytes) {
     BYTE bufferDst[8];

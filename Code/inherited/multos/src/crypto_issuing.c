@@ -28,7 +28,7 @@
 #include "defs_apdu.h"
 #include "defs_externals.h"
 #include "defs_sizes.h"
-#include "defs_types.h"
+#include "p2abc_iot_toolkit_include/smartcard_common/defs_types.h"
 #include "funcs_debug.h"
 #include "crypto_helper.h"
 #include "crypto_multos.h"
