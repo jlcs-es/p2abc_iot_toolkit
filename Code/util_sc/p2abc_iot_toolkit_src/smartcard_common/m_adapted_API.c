@@ -1,5 +1,6 @@
-#include <smartcard_adaptor/system_funcs.h>
 #include <smartcard_common/m_adapted_API.h>
+#include <smartcard_common/defs_errs.h>
+#include <smartcard_adaptor/system_funcs.h>
 #include <smartcard_adaptor/crypto_util.h>
 #include <smartcard_adaptor/arithmetic_util.h>
 
@@ -73,12 +74,8 @@ void mExitSW(const WORD sw){
  */
 void mSecureHash(WORD msgLen, WORD hashLen, BYTE *hashOut, BYTE *msgIn) {
     if(hashLen != 32)
-        return;
-    SHA256_CTX ctx;
-    sha256_init(&ctx);
-    sha256_update(&ctx, msgIn, msgLen);
-    sha256_final(&ctx, hashOut);
-
+        return; // TODO: avisar de error de implementación
+    crypto_SHA256(hashOut, msgIn, hashLen);
 }
 
 
@@ -96,7 +93,7 @@ void mSecureHash(WORD msgLen, WORD hashLen, BYTE *hashOut, BYTE *msgIn) {
 void mModularExponentiation (WORD exponentLength, WORD modulusLength, BYTE *exponent, BYTE *modulus, BYTE *input, BYTE *output) {
 
     if (exponentLength > modulusLength)
-        mExitSW(0x9F30); // From crxModularExponentiation original implementation
+        mExitSW(ERR_EXPONENT_LARGER_THAN_MODULUS); // From crxModularExponentiation original implementation
 
     modularExponentiation(output, input, exponent, modulus, modulusLength, exponentLength);
 
@@ -143,38 +140,22 @@ void mBlockSubtract (const WORD blockLength, BYTE *block1, BYTE *block2, const B
 
 
 
-
+// BYTE *plaintext: address of 16 bytes of plaintext (input) -> tiny-AES128 hace los ECB en bloques de 16bytes  -> OK
 void mAESECBEncipher (BYTE *plainText, BYTE *cipherText, BYTE keyLength, BYTE *key){
-
+    if(keyLength != 16) // Only implemented AES128
+        return; // TODO: avisar de error de implementación
+    crypto_AES128_ECB_Encipher(cipherText, plainText, key);
 }
 
 
+void mAESECBDecipher (BYTE *cipherText, BYTE *plainText, BYTE keyLength, BYTE *key){
+    if(keyLength != 16) // Only implemented AES128
+        return; // TODO: avisar de error de implementación
+    crypto_AES128_ECB_Decipher(plainText, cipherText, key);
+}
 
 
-
-
-///////////////////////
-
-
-
-
-//      multosAESECBEncipher(temp_buffer+16, temp_buffer+32, 16, temp_buffer);
-
-//
-//    void multosAESECBEncipher (BYTE *plainText, BYTE *cipherText,
-//                               BYTE keyLength, BYTE *key)
-//    The parameters are:
-//     BYTE *plaintext: address of 16 bytes of plaintext (input)
-//     BYTE *cipherText: address of buffer to hold ciphertext (output)
-//     BYTE keyLength: length of key in bytes (input)
-//     BYTE *key: address of key to use (input)
-//    This is an interface to the primitive AES ECB Encipher.
-
-
-// Note : como usa un keylength de 16 es compatible con tiny-AES128-C de github
-
-
-
+// TODO : next : AES128 CBC
 
 /////////////////////
 
@@ -219,14 +200,6 @@ void mAESECBEncipher (BYTE *plainText, BYTE *cipherText, BYTE keyLength, BYTE *k
 //
 
 //
-//    AES ECB Decipher
-//            This primitive performs AES ECB Decipher on a sixteen byte block of memory in accordance with [FIPS197].
-//    PRIM 0xD6 NOTE : no es el mismo codigo
-//
-//    The 2 byte parameter KeyAddr is the starting address of the AES key to be used.
-//    The 1 byte parameter KeyLen is the length in bytes of the AES key at address KeyAddr.
-//    The 2 byte parameter OutputAddr is the starting address of the resultant 16-bytes of plaintext.
-//    The 2 byte parameter InputAddr is the starting address of the 16-bytes of ciphertext.
 
 //*****//
 

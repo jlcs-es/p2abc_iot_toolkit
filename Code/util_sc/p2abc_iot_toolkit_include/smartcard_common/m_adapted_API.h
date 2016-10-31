@@ -42,7 +42,8 @@ void mModularMultiplication (WORD modulusLength, BYTE *modulus, BYTE *block1, BY
 void mBlockMultiply (const WORD blockLength, BYTE *block1, BYTE *block2, BYTE *result);
 void mBlockAdd (const WORD blockLength, BYTE *block1, BYTE *block2, const BYTE *result);
 void mBlockSubtract (const WORD blockLength, BYTE *block1, BYTE *block2, const BYTE *result);
-
+void mAESECBEncipher (BYTE *plainText, BYTE *cipherText, BYTE keyLength, BYTE *key);
+void mAESECBDecipher (BYTE *cipherText, BYTE *plainText, BYTE keyLength, BYTE *key);
 
 
 #ifdef __cplusplus

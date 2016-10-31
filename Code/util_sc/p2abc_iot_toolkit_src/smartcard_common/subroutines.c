@@ -848,8 +848,7 @@ void encrypt(BYTE *password, BYTE label) {
 
     // encrypt with AES128
     // void multosAESECBEncipher (BYTE *plainText, BYTE *cipherText, BYTE keyLength, BYTE *key);
-
-    multosAESECBEncipher(temp_buffer+16, temp_buffer+32, 16, temp_buffer);
+    mAESECBEncipher(temp_buffer+16, temp_buffer+32, 16, temp_buffer);  // ** Adapted for util_sc ** //
 
     // temp_buffer contains K (16 bytes) || pad (16 bytes) || t (16 bytes)
 
@@ -922,7 +921,7 @@ void decrypt(BYTE *device_id_prim, BYTE *password, BYTE label) {
     // temp_buffer contains : K (16 bytes) || nothing (16 bytes) || t (16 bytes)
 
     // void multosAESECBDecipher (BYTE *cipherText, BYTE *plainText, BYTE keyLength, BYTE *key);
-    multosAESECBDecipher (temp_buffer+32, temp_buffer+16, 16, temp_buffer);
+    mAESECBDecipher (temp_buffer+32, temp_buffer+16, 16, temp_buffer);     // ** Adapted for util_sc ** //
 
     // temp_buffer should contain : K (16 bytes) || pad (16 bytes) || t (16 bytes)
     // where pad = 0x00 0x00 0x00 0x00 || L (2 bytes) || deviceId' (2 bytes) || z (8 bytes)

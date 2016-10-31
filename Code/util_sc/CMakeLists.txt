@@ -14,6 +14,7 @@ set(UTIL_SC_SRC_FILES
         p2abc_iot_toolkit_src/smartcard_adaptee/arithmetic_implementation_v1.c
         p2abc_iot_toolkit_src/smartcard_adaptee/mini-gmp.c
         p2abc_iot_toolkit_src/smartcard_adaptee/tiny-AES128.c
+        p2abc_iot_toolkit_src/smartcard_adaptee/tiny-SHA256.c
 
         p2abc_iot_toolkit_src/mota_smartcard.c
         p2abc_iot_toolkit_src/debug.cpp
@@ -37,6 +38,7 @@ set(UTIL_SC_INCLUDE_FILES
         p2abc_iot_toolkit_include/smartcard_adaptee/arithmetic_implementation_v1.h
         p2abc_iot_toolkit_include/smartcard_adaptee/mini-gmp.h
         p2abc_iot_toolkit_include/smartcard_adaptee/tiny-AES128.h
+        p2abc_iot_toolkit_include/smartcard_adaptee/tiny-SHA256.h
 
         p2abc_iot_toolkit_include/mota_smartcard.h
         p2abc_iot_toolkit_include/debug.h
