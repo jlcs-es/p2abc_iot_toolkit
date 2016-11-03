@@ -44,7 +44,8 @@ void mBlockAdd (const WORD blockLength, BYTE *block1, BYTE *block2, const BYTE *
 void mBlockSubtract (const WORD blockLength, BYTE *block1, BYTE *block2, const BYTE *result);
 void mAESECBEncipher (BYTE *plainText, BYTE *cipherText, BYTE keyLength, BYTE *key);
 void mAESECBDecipher (BYTE *cipherText, BYTE *plainText, BYTE keyLength, BYTE *key);
-
+void mBlockEncipherCBC (const BYTE algorithm, WORD inputLength, BYTE *plainText, BYTE *cipherText, BYTE initialValueLength, BYTE *initialValue, BYTE keyLength, BYTE *key);
+void mBlockDecipherCBC (const BYTE algorithm, WORD inputLength, BYTE *cipherText, BYTE *plainText, BYTE initialValueLength, BYTE *initialValue, BYTE keyLength, BYTE *key);
 
 #ifdef __cplusplus
 }

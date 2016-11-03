@@ -23,6 +23,17 @@ extern "C" {
 /********************************************************************/
 
 
+
+void crypto_InitSeed(unsigned);
+
+/**
+ * Returns a random 8bit BYTE
+ * @return
+ */
+BYTE crypto_RandomByte();
+
+
+
 /**
  * Calculate SHA256 digest of message
  * digest = 32 bytes/256 bits array of SHA256(length bytes long message)
@@ -52,7 +63,31 @@ void crypto_AES128_ECB_Encipher(BYTE *cipherText, BYTE *plainText, BYTE *key);
  */
 void crypto_AES128_ECB_Decipher(BYTE *plainText, BYTE *cipherText, BYTE *key);
 
-// TODO : AES128 CBC
+
+/**
+ * Encrypt \param plainText of \param inputLength bytes long with AES128 CBC mode, with
+ * IV \param initialValue of 16 bytes long and key \param key of 16 bytes long.
+ * @param cipherText
+ * @param plainText
+ * @param inputLength
+ * @param initialValue
+ * @param initialValueLength
+ * @param key
+ */
+void crypto_AES128_CBC_Encipher (BYTE *cipherText, BYTE *plainText, WORD inputLength, BYTE *initialValue, BYTE *key);
+
+
+/**
+ * Decrypt \param cipherText of \param inputLength bytes long with AES128 CBC mode, with
+ * IV \param initialValue of 16 bytes long and key \param key of 16 bytes long.
+ * @param plainText
+ * @param cipherText
+ * @param inputLength
+ * @param initialValue
+ * @param key
+ */
+void crypto_AES128_CBC_Decipher (BYTE *plainText, BYTE *cipherText, WORD inputLength, BYTE *initialValue, BYTE *key);
+
 
 
 #ifdef __cplusplus

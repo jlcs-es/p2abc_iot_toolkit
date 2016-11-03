@@ -25,16 +25,6 @@ extern "C" {
 
 
 
-void init_seed(unsigned);
-
-
-/**
- * Returns a random 8bit BYTE
- * @return
- */
-BYTE random_byte();
-
-
 
 /**
  * Copies the values of num bytes from the location pointed by source to the memory block pointed by destination.

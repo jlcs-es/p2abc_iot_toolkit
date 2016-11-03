@@ -19,7 +19,7 @@
 void mGetRandomNumber(BYTE result[8]){
     int i;
     for (i = 0; i < 8; i++) {
-        result[i] = random_byte() % 256;
+        result[i] = crypto_RandomByte() % 256;
     }
 }
 
@@ -155,7 +155,43 @@ void mAESECBDecipher (BYTE *cipherText, BYTE *plainText, BYTE keyLength, BYTE *k
 }
 
 
-// TODO : next : AES128 CBC
+void mBlockEncipherCBC (const BYTE algorithm, WORD inputLength,
+                             BYTE *plainText, BYTE *cipherText,
+                             BYTE initialValueLength, BYTE *initialValue,
+                             BYTE keyLength, BYTE *key){
+
+    //   AlgorithmID : 0x06  AES
+    if(algorithm != 0x06)
+        return;
+    //  Key Length : 16bytes=128bits AES128
+    if(keyLength != 16)
+        return;
+    //  Initial Value Length : 16 bytes AES
+    if(initialValueLength != 16)
+        return;
+
+    crypto_AES128_CBC_Encipher (cipherText, plainText, inputLength, initialValue, key);
+}
+
+
+void mBlockDecipherCBC (const BYTE algorithm, WORD inputLength,
+                             BYTE *cipherText, BYTE *plainText,
+                             BYTE initialValueLength, BYTE *initialValue,
+                             BYTE keyLength, BYTE *key){
+
+    //   AlgorithmID : 0x06  AES
+    if(algorithm != 0x06)
+        return;
+    //  Key Length : 16bytes=128bits AES128
+    if(keyLength != 16)
+        return;
+    //  Initial Value Length : 16 bytes AES
+    if(initialValueLength != 16)
+        return;
+
+    crypto_AES128_CBC_Decipher (plainText, cipherText, inputLength, initialValue, key);
+
+}
 
 /////////////////////
 
@@ -239,36 +275,6 @@ void mAESECBDecipher (BYTE *cipherText, BYTE *plainText, BYTE keyLength, BYTE *k
 
 // NOTE   AES- 128 algorithms require that the ciphertext is a multiple of 16 bytes. If the ciphertext length does not meet these restrictions then the primitive will abend. Padding is not removed during the block decipher operation.
 // NOTE   AES- 128 algorithms require that the plaintext is a multiple of 16 bytes. If the plaintext length does not meet these restrictions then the primitive will abend.
-
-
-//*******//
-
-//
-//    void multosBlockEncipherCBC (const BYTE algorithm, WORD inputLength,
-//                                 BYTE *plainText, BYTE *cipherText,
-//                                 BYTE initialValueLength, BYTE *initialValue, BYTE keyLength, BYTE *key);
-//    The parameters are:
-//     const BYTE algorithm: 0x03 = DES, 0x04 = 3DES, 0x05 = SEED, 0x06 = AES 128bit (input)
-//     WORD inputLength: Length of plainText (input)
-//     BYTE *plainText: pointer to plain text to encipher (input)
-//     BYTE *cipherText: pointer to memory in which to write the cipher text output. (output)
-//     BYTE initialValueLength: length of the Initial Chaining Vector pointed to by initialValue (input)
-//     BYTE *initialValue: Pointer to ICV value (input)
-//     BYTE keyLength: length of key, depends on algorithm being used (input)
-//     BYTE *key: pointer to the key to use (input)
-//    This function enciphers the cipher text using the cipher block chaining method and supports a number of algorithms.
-//    This is an interface to the primitive Block Encipher.
-
-
-//
-//
-
-
-
-// NOTE : Solución, es para los crx multosBlockEncipherCBC con claves de 16 bytes (AES128)
-// NOTE : Solución, para multosAESECBEncipher, el que es, con sólo la opción de AES128 implementada (tipo el sha256 de más arriba)
-// NOTE : Se usa en SmartCard AES  ECB y CBC, pero siempre de 128bits, por lo que el proyecto de github sirve perfectamente a este caso
-
 
 
 
