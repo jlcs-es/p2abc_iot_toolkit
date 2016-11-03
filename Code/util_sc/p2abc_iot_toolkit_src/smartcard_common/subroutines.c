@@ -10,6 +10,9 @@
 // "An integer is a machine word and, in the case of MULTOS, this is 2 bytes"
 //
 
+//crxAESEncryptCBC(ciphertext, iv, plaintext, plaintext_size, key)
+//mBlockEncipherCBC(0x06, plaintext_size, plaintext, ciphertext, 16, iv, 16, key);
+
 /////
 
 
@@ -869,7 +872,10 @@ void encrypt(BYTE *password, BYTE label) {
     // buffer = buffer1 || ... || buffer_d where size(buffer_i) = 16 bytes
 
     // crxAESEncryptCBC(BYTE *ciphertext, const BYTE *iv, const BYTE *plaintext, WORD plaintext_size, const BYTE *key)
-    crxAESEncryptCBC(temp_buffer+80, temp_buffer+64, buffer, buffer_size, temp_buffer+48);
+    //crxAESEncryptCBC(temp_buffer+80, temp_buffer+64, buffer, buffer_size, temp_buffer+48);
+    //crxAESEncryptCBC(ciphertext, iv, plaintext, plaintext_size, key)
+    mBlockEncipherCBC(0x06, buffer_size, buffer, temp_buffer+80, 16, temp_buffer+64, 16, temp_buffer+48);   // ** Adapted for util_sc ** //
+    //mBlockEncipherCBC(0x06, plaintext_size, plaintext, ciphertext, 16, iv, 16, key);
 
     // temp_buffer contains K (16 bytes) || pad (16 bytes) || t (16 bytes) || k (16 bytes) || c0 (16 bytes) || c_1 (16 bytes) || ... || c_d (16 bytes)
 
@@ -948,7 +954,10 @@ void decrypt(BYTE *device_id_prim, BYTE *password, BYTE label) {
     // temp_buffer contains : K (16 bytes) || pad (16 bytes) || t (16 bytes) || k (16 bytes) || c_0 (16 bytes) || c_1 (16 bytes) || ... || c_d (16 bytes)
 
     // crxAESDecryptCBC(BYTE *plaintext, const BYTE *iv, const BYTE *ciphertext, WORD ciphertext_size, const BYTE *key)
-    crxAESDecryptCBC(buffer, temp_buffer+64, temp_buffer+80, 16*d, temp_buffer+48);
+    //crxAESDecryptCBC(buffer, temp_buffer+64, temp_buffer+80, 16*d, temp_buffer+48);
+    //crxAESDecryptCBC(plaintext, iv, ciphertext, ciphertext_size, key)
+    mBlockDecipherCBC(0x06, 16*d, temp_buffer+80, buffer, 16, temp_buffer+64, 16, temp_buffer+48);  // ** Adapted for util_sc ** //
+    //mBlockDecipherCBC(0x06, ciphertext_size, ciphertext, plaintext, 16, iv, 16, key);
 
     // buffer contains : data_1 (16 bytes) || ... || data_d (16 bytes)
 
