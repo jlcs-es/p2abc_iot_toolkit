@@ -79,28 +79,22 @@ void mBlockSubtract (const WORD blockLength, BYTE *block1, BYTE *block2, const B
 }
 
 
-/**
- *
- * @param sw The parameter is a word value indicating the value of the status word.
- */
-void mExitSW(const WORD sw){
-    //#define exitSW(w12) \
-    //  do { SW12 = w12; __code(__SYSTEM, 4); } while (0)
-    //
-    //#ifdef __FUNCTION_PROTOTYPES
-    //    void multosExitSW (const WORD sw);
-    //#else
-    //#define multosExitSW(sw) \
-    //    __code (__SYSTEM, 5, sw)
-    //#endif
-    //
-    //This function exits smartcard application with status word of sw.
 
-    //FIXME: por ahora imprimimos en stderr, pero debe: terminar la comunicación actual de tarjeta-lector, pero no perder el estado de la tarjeta, como el número de intentos restantes de insertar el pin, etc.
-    //fprintf(stderr, "%u", sw);
-    // TODO: send SW as response to reader.
-    // TODO: los tests deberán tener en cuenta el fin de ejecución
-    // Note: muchas funciones necesitan que mExitSW termine la ejecución del programa, o al menos petición actual.
+void mExit (void){
+    //Default SW 0x9000
+    //TODO
+    // NOTE: en las variables globales están también SW, La, etc., y serán las que hay que asignar aquí y llamar a
+    // una función que genere los bytes de respuesta y llame a la función de IO que envíe la respuesta y de por
+    // terminado la ejecución de la tarjeta
+}
+void mExitLa (const BYTE la){
+    //TODO
+}
+void mExitSW(const WORD sw){
+    //TODO
+}
+void mExitSWLa (const WORD sw, const BYTE la){
+    //TODO
 }
 
 

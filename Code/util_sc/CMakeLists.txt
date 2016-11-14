@@ -6,6 +6,7 @@ set(UTIL_SC_SRC_FILES
         p2abc_iot_toolkit_src/smartcard_common/m_adapted_API.c
         p2abc_iot_toolkit_src/smartcard_common/global_vars.c
         p2abc_iot_toolkit_src/smartcard_common/subroutines.c
+        p2abc_iot_toolkit_src/smartcard_common/APDU_handler.c
 
         p2abc_iot_toolkit_src/smartcard_adaptor/system_funcs.c
         p2abc_iot_toolkit_src/smartcard_adaptor/crypto_util.c
@@ -30,6 +31,7 @@ set(UTIL_SC_INCLUDE_FILES
         p2abc_iot_toolkit_include/smartcard_common/m_adapted_API.h
         p2abc_iot_toolkit_include/smartcard_common/global_vars.h
         p2abc_iot_toolkit_include/smartcard_common/subroutines.h
+        p2abc_iot_toolkit_include/smartcard_common/APDU_handler.h
 
         p2abc_iot_toolkit_include/smartcard_adaptor/system_funcs.h
         p2abc_iot_toolkit_include/smartcard_adaptor/crypto_util.h

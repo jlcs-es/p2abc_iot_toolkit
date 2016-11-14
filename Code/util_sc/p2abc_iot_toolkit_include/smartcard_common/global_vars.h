@@ -10,6 +10,7 @@
 extern "C" {
 #endif
 
+extern static char version[64];
 
 /* Internal system variables. */
 extern BYTE ProtocolFlags;

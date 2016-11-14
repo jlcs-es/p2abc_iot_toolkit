@@ -25,8 +25,8 @@ extern "C" {
 
 /********************************************************************/
 /** This a Multos C API adaptation, restricted to the functions     */
-/* used in the P2ABC SW smartcards. The functions must be the same  */
-/* as in the CAPI documentation, changing 'multos' with 'm'         */
+/* used in the P2ABC SW smartcards. The functions are the same      */
+/* as in the CAPI documentation, changing 'multos' with 'm'.        */
 /********************************************************************/
 /** Provided implementation is written in pure C, only depending    */
 /* on other provided files, so it can be platform independent.      */
@@ -34,23 +34,22 @@ extern "C" {
 
 //
 
+/**
+ *  Documentation for this functions can be consulted in the Multos C API
+ */
+
 void mAESECBDecipher (BYTE *cipherText, BYTE *plainText, BYTE keyLength, BYTE *key);
 void mAESECBEncipher (BYTE *plainText, BYTE *cipherText, BYTE keyLength, BYTE *key);
 void mBlockAdd (const WORD blockLength, BYTE *block1, BYTE *block2, const BYTE *result);
-
-/**
- * Copy a block of bytes of a fixed length from one location to another.
- * Should work correctly even if the blocks overlap.
- * @param blockLength Number of bytes to copy.
- * @param blockSource Source of bytes to be copied.
- * @param blockDest Destination of copied bytes.
- */
 void mBlockCopyFixedLength(BYTE blockLength, BYTE *blockSource, BYTE *blockDest);
 void mBlockDecipherCBC (const BYTE algorithm, WORD inputLength, BYTE *cipherText, BYTE *plainText, BYTE initialValueLength, BYTE *initialValue, BYTE keyLength, BYTE *key);
 void mBlockEncipherCBC (const BYTE algorithm, WORD inputLength, BYTE *plainText, BYTE *cipherText, BYTE initialValueLength, BYTE *initialValue, BYTE keyLength, BYTE *key);
 void mBlockMultiply (const WORD blockLength, BYTE *block1, BYTE *block2, BYTE *result);
 void mBlockSubtract (const WORD blockLength, BYTE *block1, BYTE *block2, const BYTE *result);
+void mExit (void);
+void mExitLa (const BYTE la);
 void mExitSW(const WORD sw);
+void mExitSWLa (const WORD sw, const BYTE la);
 
 /**
  * Generate 8 random bytes stored in \param result

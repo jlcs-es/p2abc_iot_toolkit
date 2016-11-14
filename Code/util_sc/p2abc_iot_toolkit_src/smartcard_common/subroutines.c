@@ -978,7 +978,7 @@ void print(void *s, unsigned int size) {
 
     mem_cpy(apdu_data.dataout, (BYTE *)s, size);    // ** Adapted for util_sc ** //
 
-    exitLa(size);
+    mExitLa(size);   // ** Adapted for util_sc ** //
 
 }
 
@@ -996,7 +996,7 @@ void output_large_data(void) {
     WORD output_size = 0;
 
     if (remaining_size == 0) {
-        multosExit();
+        mExit();    // ** Adapted for util_sc ** //
     }
 
     output_size = MIN(remaining_size, MAX_APDU_OUTPUT_DATA_SIZE);
@@ -1007,13 +1007,13 @@ void output_large_data(void) {
     remaining_size -= output_size;
 
     if(remaining_size == 0){
-        exitLa(output_size);
+        mExitLa(output_size);   // ** Adapted for util_sc ** //
     }
     else if(remaining_size >= 0xff) {
-        exitSWLa(0x61ff, 0xFF);
+        mExitSWLa(0x61ff, 0xFF); // ** Adapted for util_sc ** //
     }
     else {
-        exitSWLa(0x6100+remaining_size, 0xFF);
+        mExitSWLa(0x6100+remaining_size, 0xFF);  // ** Adapted for util_sc ** //
     }
 
 }
