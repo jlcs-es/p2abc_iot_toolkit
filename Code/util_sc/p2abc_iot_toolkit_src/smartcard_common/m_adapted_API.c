@@ -81,7 +81,7 @@ void mBlockSubtract (const WORD blockLength, BYTE *block1, BYTE *block2, const B
 
 
 void mExit (void){
-    //Default SW 0x9000
+    //Default SW 0x9000  ERR_OK
     //TODO
     // NOTE: en las variables globales están también SW, La, etc., y serán las que hay que asignar aquí y llamar a
     // una función que genere los bytes de respuesta y llame a la función de IO que envíe la respuesta y de por

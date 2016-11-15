@@ -5,11 +5,283 @@
 #include <smartcard_adaptor/system_funcs.h>
 #include <smartcard_common/subroutines.h>
 #include <smartcard_common/defs_ins.h>
-// #include <smartcard_common/APDU_types.h>
 
-// TODO: no todas terminan con Exit, pero casi siempre llevan alguno. El que las llame debe tratar los que no hagan exit.
 
-// TODO: ver los 3 FIXME
+void handle_APDU() {
+
+    /* Check class in APDU. */
+    if (CLA != ABC_CLA && INS != INS_GET_RESPONSE)
+        mExitSW(ERR_BAD_CLA);
+
+    /* Decode instruction. */
+    switch (INS)
+    {
+        #ifdef TEST_PATRAS_MODE       //TODO: remove if not necessary
+        case INS_GET_KX_AND_DEVICE_KEY:
+            handle_INS_GET_KX_AND_DEVICE_KEY();
+            break;
+        case INS_TEST:
+            handle_INS_TEST();
+            break;
+        #endif
+        case INS_GET_MODE:
+            handle_INS_GET_MODE();
+            break;
+        case INS_SET_ROOT_MODE:
+            handle_INS_SET_ROOT_MODE();
+            break;
+        case INS_SET_WORKING_MODE:
+            handle_INS_SET_WORKING_MODE();
+            break;
+        case INS_SET_VIRGIN_MODE:
+            handle_INS_SET_VIRGIN_MODE();
+            break;
+        case INS_SET_FAST_VIRGIN_MODE:
+            handle_INS_SET_FAST_VIRGIN_MODE();
+            break;
+        case INS_PIN_TRIALS_LEFT:
+            handle_INS_PIN_TRIALS_LEFT();
+            break;
+        case INS_PUK_TRIALS_LEFT:
+            handle_INS_PUK_TRIALS_LEFT();
+            break;
+        case INS_CHANGE_PIN:
+            handle_INS_CHANGE_PIN();
+            break;
+        case INS_RESET_PIN:
+            handle_INS_RESET_PIN();
+            break;
+        case INS_INITIALIZE_DEVICE:
+            handle_INS_INITIALIZE_DEVICE();
+            break;
+        case INS_GET_DEVICE_ID:
+            handle_INS_GET_DEVICE_ID();
+            break;
+        case INS_GET_VERSION:
+            handle_INS_GET_VERSION();
+            break;
+        case INS_PUT_DATA:
+            handle_INS_PUT_DATA();
+            break;
+        case INS_GET_CHALLENGE:
+            handle_INS_GET_CHALLENGE();
+            break;
+        case INS_AUTHENTICATE_DATA:
+            handle_INS_AUTHENTICATE_DATA();
+            break;
+        case INS_SET_AUTHENTICATION_KEY:
+            handle_INS_SET_AUTHENTICATION_KEY();
+            break;
+        case INS_LIST_AUTHENTICATION_KEYS:
+            handle_INS_LIST_AUTHENTICATION_KEYS();
+            break;
+        case INS_READ_AUTHENTICATION_KEY:
+            handle_INS_READ_AUTHENTICATION_KEY();
+            break;
+        case INS_REMOVE_AUTHENTICATION_KEY:
+            handle_INS_REMOVE_AUTHENTICATION_KEY();
+            break;
+        case INS_SET_GROUP_COMPONENT:
+            handle_INS_SET_GROUP_COMPONENT();
+            break;
+        case INS_SET_GENERATOR:
+            handle_INS_SET_GENERATOR();
+            break;
+        case INS_LIST_GROUPS:
+            handle_INS_LIST_GROUPS();
+            break;
+        case INS_READ_GROUP:
+            handle_INS_READ_GROUP();
+            break;
+        case INS_READ_GROUP_COMPONENT:
+            handle_INS_READ_GROUP_COMPONENT();
+            break;
+        case INS_READ_GENERATOR:
+            handle_INS_READ_GENERATOR();
+            break;
+        case INS_REMOVE_GROUP:
+            handle_INS_REMOVE_GROUP();
+            break;
+        case INS_SET_COUNTER:
+            handle_INS_SET_COUNTER();
+            break;
+        case INS_INCREMENT_COUNTER:
+            handle_INS_INCREMENT_COUNTER();
+            break;
+        case INS_LIST_COUNTERS:
+            handle_INS_LIST_COUNTERS();
+            break;
+        case INS_READ_COUNTER:
+            handle_INS_READ_COUNTER();
+            break;
+        case INS_REMOVE_COUNTER:
+            handle_INS_REMOVE_COUNTER();
+            break;
+        case INS_SET_ISSUER:
+            handle_INS_SET_ISSUER();
+            break;
+        case INS_LIST_ISSUERS:
+            handle_INS_LIST_ISSUERS();
+            break;
+        case INS_READ_ISSUER:
+            handle_INS_READ_ISSUER();
+            break;
+        case INS_REMOVE_ISSUER:
+            handle_INS_REMOVE_ISSUER();
+            break;
+        case INS_SET_PROVER:
+            handle_INS_SET_PROVER();
+            break;
+        case INS_READ_PROVER:
+            handle_INS_READ_PROVER();
+            break;
+        case INS_REMOVE_PROVER:
+            handle_INS_REMOVE_PROVER();
+            break;
+        case INS_START_COMMITMENTS:
+            handle_INS_START_COMMITMENTS();
+            break;
+        case INS_START_RESPONSES:
+            handle_INS_START_RESPONSES();
+            break;
+        case INS_SET_CREDENTIAL:
+            handle_INS_SET_CREDENTIAL();
+            break;
+        case INS_LIST_CREDENTIALS:
+            handle_INS_LIST_CREDENTIALS();
+            break;
+        case INS_READ_CREDENTIAL:
+            handle_INS_READ_CREDENTIAL();
+            break;
+        case INS_REMOVE_CREDENTIAL:
+            handle_INS_REMOVE_CREDENTIAL();
+            break;
+        case INS_GET_CREDENTIAL_PUBLIC_KEY:
+            handle_INS_GET_CREDENTIAL_PUBLIC_KEY();
+            break;
+        case INS_GET_ISSUANCE_COMMITMENT:
+            handle_INS_GET_ISSUANCE_COMMITMENT();
+            break;
+        case INS_GET_ISSUANCE_RESPONSE:
+            handle_INS_GET_ISSUANCE_RESPONSE();
+            break;
+        case INS_GET_PRESENTATION_COMMITMENT:
+            handle_INS_GET_PRESENTATION_COMMITMENT();
+            break;
+        case INS_GET_PRESENTATION_RESPONSE:
+            handle_INS_GET_PRESENTATION_RESPONSE();
+            break;
+        case INS_GET_DEVICE_PUBLIC_KEY:
+            handle_INS_GET_DEVICE_PUBLIC_KEY();
+            break;
+        case INS_GET_DEVICE_COMMITMENT:
+            handle_INS_GET_DEVICE_COMMITMENT();
+            break;
+        case INS_GET_DEVICE_RESPONSE:
+            handle_INS_GET_DEVICE_RESPONSE();
+            break;
+        case INS_GET_SCOPE_EXCLUSIVE_PSEUDONYM:
+            handle_INS_GET_SCOPE_EXCLUSIVE_PSEUDONYM();
+            break;
+        case INS_GET_SCOPE_EXCLUSIVE_COMMITMENT:
+            handle_INS_GET_SCOPE_EXCLUSIVE_COMMITMENT();
+            break;
+        case INS_GET_SCOPE_EXCLUSIVE_RESPONSE:
+            handle_INS_GET_SCOPE_EXCLUSIVE_RESPONSE();
+            break;
+        case INS_STORE_BLOB:
+            handle_INS_STORE_BLOB();
+            break;
+        case INS_LIST_BLOBS:
+            handle_INS_LIST_BLOBS();
+            break;
+        case INS_READ_BLOB:
+            handle_INS_READ_BLOB();
+            break;
+        case INS_REMOVE_BLOB:
+            handle_INS_REMOVE_BLOB();
+            break;
+        case INS_BACKUP_DEVICE:
+            handle_INS_BACKUP_DEVICE();
+            break;
+        case INS_RESTORE_DEVICE:
+            handle_INS_RESTORE_DEVICE();
+            break;
+        case INS_BACKUP_COUNTERS:
+            handle_INS_BACKUP_COUNTERS();
+            break;
+        case INS_RESTORE_COUNTERS:
+            handle_INS_RESTORE_COUNTERS();
+            break;
+        #ifdef SODER //TODO: remove if not necessary
+        case INS_BACKUP_CREDENTIAL:
+            handle_INS_BACKUP_CREDENTIAL();
+            break;
+        case INS_RESTORE_CREDENTIAL:
+            handle_INS_RESTORE_CREDENTIAL();
+            break;
+        #endif
+        case INS_GET_INFO:
+            handle_INS_GET_INFO();
+            break;
+        case INS_NOTHING:
+            handle_INS_NOTHING();
+            break;
+        case INS_GET_RESPONSE:
+            handle_INS_GET_RESPONSE();
+            break;
+
+        default:
+            mExitSW(ERR_BAD_INS);
+    }
+    mExit();
+}
+
+
+BOOL CheckCase(BYTE c) {
+    //FIXME qué se supone que debe hacer esto?
+    return 1;
+}
+
+#ifdef TEST_PATRAS_MODE
+
+void handle_INS_GET_KX_AND_DEVICE_KEY(void){
+    if (!CheckCase(2))
+        mExitSW(ERR_BAD_ISO);
+
+    if (current_prover_id < 1 || current_prover_id > NUM_PROVERS)
+        mExitSW(ERR_PROVERID_OUTSIDE_OF_RANGE);
+
+    temp_size = 0;
+
+    mem_cpy(temp_buffer+temp_size, &(provers[current_prover_id-1].ksize), 2);
+    temp_size += 2;
+
+    mem_cpy(temp_buffer+temp_size, provers[current_prover_id-1].kx + MAX_SMALLINT_SIZE - provers[current_prover_id-1].ksize, provers[current_prover_id-1].ksize);
+    temp_size += provers[current_prover_id-1].ksize;
+
+    mem_cpy(temp_buffer+temp_size, &x_size, 2);
+    temp_size += 2;
+
+    mem_cpy(temp_buffer+temp_size, device_key+MAX_SMALLINT_SIZE-x_size, x_size);
+    temp_size += x_size;
+
+    if (temp_size <= MAX_APDU_OUTPUT_DATA_SIZE) {
+        mem_cpy(apdu_data.dataout, temp_buffer, temp_size);
+        mExitLa(temp_size);
+    } else {
+        remaining_position = temp_buffer;
+        remaining_size = temp_size;
+        output_large_data();
+    }
+
+}
+
+void handle_INS_TEST(void){
+      // do whatever you like here...
+}
+
+#endif
 
 void handle_INS_GET_MODE(){
 
@@ -451,10 +723,8 @@ void handle_INS_REMOVE_AUTHENTICATION_KEY(){
 
 
 void handle_INS_SET_GROUP_COMPONENT(){
-
-    case INS_SET_GROUP_COMPONENT:
-        if (!CheckCase(3))
-            mExitSW(ERR_BAD_ISO);
+    if (!CheckCase(3))
+        mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
         mExitSW(ERR_BAD_MODE ^ mode);
@@ -715,11 +985,9 @@ void handle_INS_REMOVE_GROUP(){
 
 void handle_INS_SET_COUNTER(){
 #if NUM_COUNTERS > 0
-    //TODO: comprobar para qué son los counters
-    case INS_SET_COUNTER:
 
-        if (!CheckCase(3))
-            mExitSW(ERR_BAD_ISO);
+    if (!CheckCase(3))
+        mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
         mExitSW(ERR_BAD_MODE ^ mode);
@@ -727,7 +995,7 @@ void handle_INS_SET_COUNTER(){
     if (Lc != 4 + CURSOR_SIZE)
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (4 + CURSOR_SIZE));
 
-    if (apdu_data.set_counter.counter_id < 1 || apdu_data.set_counter.counter_id > NUM_COUNTERS)
+    if ( (apdu_data.set_counter.counter_id < 1) || (apdu_data.set_counter.counter_id > NUM_COUNTERS) )
         mExitSW(ERR_COUNTER_ID_OUTSIDE_OF_RANGE);
 
     if (apdu_data.set_counter.key_id > NUM_ISSUERS)
@@ -741,17 +1009,15 @@ void handle_INS_SET_COUNTER(){
     mem_cpy(&(counters[temp_counter_id-1]), &(apdu_data.set_counter.counter_id), 4 + CURSOR_SIZE); // this sets counter_id, key_id, index, threshold,cursor, all at once
     counters[temp_counter_id-1].exists = 1;
 
-    break;
 #endif
 }
 
 
 void handle_INS_INCREMENT_COUNTER(){
 #if NUM_COUNTERS > 0
-    case INS_INCREMENT_COUNTER:
 
-        if (!CheckCase(3))
-            mExitSW(ERR_BAD_ISO);
+    if (!CheckCase(3))
+        mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_WORKING)
         mExitSW(ERR_BAD_MODE ^ mode);
@@ -790,17 +1056,15 @@ void handle_INS_INCREMENT_COUNTER(){
 
     mem_set(&temp_key, 0, MAX_BIGINT_SIZE);
 
-    break;
 #endif
 }
 
 
 void handle_INS_LIST_COUNTERS(){
 #if NUM_COUNTERS > 0
-    case INS_LIST_COUNTERS:
 
-        if (!CheckCase(4))
-            mExitSW(ERR_BAD_ISO);
+    if (!CheckCase(4))
+        mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
         mExitSW(ERR_BAD_MODE ^ mode);
@@ -828,17 +1092,15 @@ void handle_INS_LIST_COUNTERS(){
         output_large_data();
     }
 
-    break;
 #endif
 }
 
 
 void handle_INS_READ_COUNTER(){
 #if NUM_COUNTERS > 0
-    case INS_READ_COUNTER:
 
-        if (!CheckCase(4))
-            mExitSW(ERR_BAD_ISO);
+    if (!CheckCase(4))
+        mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
         mExitSW(ERR_BAD_MODE ^ mode);
@@ -860,16 +1122,14 @@ void handle_INS_READ_COUNTER(){
 
     mExitLa(3 + CURSOR_SIZE);
 
-    break;
 #endif
 }
 
 
 void handle_INS_REMOVE_COUNTER(){
 #if NUM_COUNTERS > 0
-    case INS_REMOVE_COUNTER:
-        if (!CheckCase(3))
-            mExitSW(ERR_BAD_ISO);
+    if (!CheckCase(3))
+        mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
         mExitSW(ERR_BAD_MODE ^ mode);
@@ -890,7 +1150,6 @@ void handle_INS_REMOVE_COUNTER(){
 
     mem_set(&(counters[temp_counter_id-1].counter_id), 0, 5+CURSOR_SIZE); // also set 'exists' to 0
 
-    break;
 #endif
 }
 
@@ -1116,7 +1375,7 @@ void handle_INS_START_COMMITMENTS(){
 
 #ifdef SODER
     if (!CheckCase(4))
-	mExitSW(ERR_BAD_ISO);
+	    mExitSW(ERR_BAD_ISO);
 #else
     if (!CheckCase(3))
         mExitSW(ERR_BAD_ISO);
@@ -1142,7 +1401,7 @@ void handle_INS_START_COMMITMENTS(){
 
 #ifdef TEST_MODE
     mem_set(provers[temp_prover_id-1].kx + MAX_SMALLINT_SIZE - provers[temp_prover_id-1].ksize, 0xaa, provers[temp_prover_id-1].ksize);
-      mem_set(provers[temp_prover_id-1].proofsession, 0xaa, PROOFSESSION_SIZE);
+    mem_set(provers[temp_prover_id-1].proofsession, 0xaa, PROOFSESSION_SIZE);
 #else
     getRandomBytes(provers[temp_prover_id-1].kx + MAX_SMALLINT_SIZE - provers[temp_prover_id-1].ksize, provers[temp_prover_id-1].ksize);
     getRandomBytes(provers[temp_prover_id-1].proofsession, PROOFSESSION_SIZE);
@@ -1155,7 +1414,7 @@ void handle_INS_START_COMMITMENTS(){
 
 #ifdef SODER
     mem_cpy(apdu_data.proofsession, provers[temp_prover_id-1].proofsession, PROOFSESSION_SIZE);
-      mExitLa(PROOFSESSION_SIZE);
+    mExitLa(PROOFSESSION_SIZE);
 #endif
 
 }
@@ -1165,54 +1424,52 @@ void handle_INS_START_RESPONSES(){
 
 #ifdef SODER
 
-    case INS_START_RESPONSES:
-      if (!CheckCase(3))
+    if (!CheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
-      if (mode != MODE_WORKING)
+    if (mode != MODE_WORKING)
         mExitSW(ERR_BAD_MODE ^ mode);
 
-      if (Lc < 6)
+    if (Lc < 6)
         mExitSW(ERR_INCORRECT_MIN_SIZE_OF_INCOMMING_DATA  ^ 6);
 
-      checkPin(apdu_data.start_responses_in.pin);
+    checkPin(apdu_data.start_responses_in.pin);
 
-      temp_prover_id = apdu_data.start_responses_in.prover_id;
+    temp_prover_id = apdu_data.start_responses_in.prover_id;
 
-      if (temp_prover_id < 1 || temp_prover_id > NUM_PROVERS)
+    if (temp_prover_id < 1 || temp_prover_id > NUM_PROVERS)
         mExitSW(ERR_PROVERID_OUTSIDE_OF_RANGE);
 
-      if (!provers[temp_prover_id-1].exists)
+    if (!provers[temp_prover_id-1].exists)
         mExitSW(ERR_PROVER_DOES_NOT_EXIST);
 
-      if (current_prover_id != temp_prover_id)
+    if (current_prover_id != temp_prover_id)
         mExitSW(ERR_PROOF_SESSION_CANNOT_START);
 
-      if (provers[temp_prover_id-1].proofstatus != 1)
+    if (provers[temp_prover_id-1].proofstatus != 1)
         mExitSW(ERR_PROOF_SESSION_CANNOT_START);
 
-      d = apdu_data.start_responses_in.input[0];
+    d = apdu_data.start_responses_in.input[0];
 
-      if(Lc-6 < (d * 16))
+    if(Lc-6 < (d * 16))
         mExitSW(ERR_MALICIOUS_INPUT_RESPONSE_STAGE);
 
-      exit = 1;
-      for (i=0; i<d; i++) {
+    BOOL exit = 1;
+    for (i=0; i<d; i++) {
         if (mem_cmp(provers[temp_prover_id-1].proofsession, &(apdu_data.start_responses_in.input[1]) + (16*i), PROOFSESSION_SIZE) == 0) {
-          exit = 0;
-          break;
+            exit = 0;
+            break;
         }
-      }
-      if (exit)
+    }
+    if (exit)
         mExitSW(ERR_MALICIOUS_INPUT_RESPONSE_STAGE);
 
-      if (P1 == 0x00) {
+    if (P1 == 0x00) {
 
         // for idemix
+        mSecureHash(Lc-PIN_SIZE-1, 32, temp_buffer, apdu_data.start_responses_in.input);
 
-        SHA256(temp_buffer, Lc-PIN_SIZE-1, apdu_data.start_responses_in.input);
-
-      } else {
+    } else {
 
         // for uprove
 
@@ -1227,21 +1484,18 @@ void handle_INS_START_RESPONSES(){
         mem_cpy(temp_buffer+6+1+16*d, &temp_size, 2);                                          // tem_buffer = 0x00 || 0x00 || 1+16d over 2 bytes || d || ps_1 || ... || ps_d || 0x00 || 0x00 || size(h) over 2 bytes
         mem_cpy(temp_buffer+8+1+16*d, apdu_data.start_responses_in.input+(1+16*d), temp_size); // tem_buffer = 0x00 || 0x00 || 1+16d over 2 bytes || d || ps_1 || ... || ps_d || 0x00 || 0x00 || size(h) over 2 bytes || h
 
-        SHA256(temp_buffer, 8+1+16*d+temp_size, temp_buffer);
+        mSecureHash(8+1+16*d+temp_size, 32, temp_buffer, temp_buffer);
 
-      }
-      mem_set(provers[temp_prover_id-1].c, 0, HASH_SIZE);
-      mem_cpy(provers[temp_prover_id-1].c+HASH_SIZE-provers[temp_prover_id-1].csize, temp_buffer, provers[temp_prover_id-1].csize);
+    }
+    mem_set(provers[temp_prover_id-1].c, 0, HASH_SIZE);
+    mem_cpy(provers[temp_prover_id-1].c+HASH_SIZE-provers[temp_prover_id-1].csize, temp_buffer, provers[temp_prover_id-1].csize);
 
-      provers[temp_prover_id-1].proofstatus = 2;
-
-      break;
+    provers[temp_prover_id-1].proofstatus = 2;
 
 #else
 
-    case INS_START_RESPONSES:
-        if (!CheckCase(3))
-            mExitSW(ERR_BAD_ISO);
+    if (!CheckCase(3))
+        mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_WORKING)
         mExitSW(ERR_BAD_MODE ^ mode);
@@ -1274,8 +1528,6 @@ void handle_INS_START_RESPONSES(){
     mem_cpy(provers[temp_prover_id-1].c+HASH_SIZE-provers[temp_prover_id-1].csize, temp_buffer, provers[temp_prover_id-1].csize);
 
     provers[temp_prover_id-1].proofstatus = 2;
-
-    break;
 
 #endif
 
@@ -1624,13 +1876,12 @@ void handle_INS_GET_DEVICE_PUBLIC_KEY(){
 
     // We have that temp_gen_1_size <= modulus_size
     // void crxModularExponentiation (WORD exponentLength, WORD modulusLength, BYTE *exponent, BYTE *modulus, BYTE *input, BYTE *output);
-    //FIXME
-    crxModularExponentiation (x_size,
-                              groups[0].modulus_size,
-                              device_key+MAX_SMALLINT_SIZE-x_size,
-                              groups[0].modulus+MAX_BIGINT_SIZE-groups[0].modulus_size,
-                              buffer+MAX_BIGINT_SIZE-groups[0].modulus_size, // ON POURRAIT METTRE buffer+MAX_BIGINT_SIZE-temp_gen_1_size ????? Bog, la fonction considere que tout est de taille du modulus
-                              temp_buffer);
+    mModularExponentiation (x_size,
+                            groups[0].modulus_size,
+                            device_key+MAX_SMALLINT_SIZE-x_size,
+                            groups[0].modulus+MAX_BIGINT_SIZE-groups[0].modulus_size,
+                            buffer+MAX_BIGINT_SIZE-groups[0].modulus_size, // ON POURRAIT METTRE buffer+MAX_BIGINT_SIZE-temp_gen_1_size ????? Bog, la fonction considere que tout est de taille du modulus
+                            temp_buffer);
     temp_buffer_size = groups[0].modulus_size;
 
     if (temp_buffer_size <= MAX_APDU_OUTPUT_DATA_SIZE) {
@@ -1678,8 +1929,7 @@ void handle_INS_GET_DEVICE_COMMITMENT(){
     }
 
     // void crxModularExponentiation (WORD exponentLength, WORD modulusLength, BYTE *exponent, BYTE *modulus, BYTE *input, BYTE *output);
-    //FIXME
-    crxModularExponentiation (provers[current_prover_id-1].ksize,
+    mModularExponentiation (provers[current_prover_id-1].ksize,
                               groups[0].modulus_size,
                               provers[current_prover_id-1].kx+MAX_SMALLINT_SIZE-provers[current_prover_id-1].ksize,
                               groups[0].modulus+MAX_BIGINT_SIZE-groups[0].modulus_size,
@@ -1766,8 +2016,7 @@ void handle_INS_GET_SCOPE_EXCLUSIVE_PSEUDONYM(){
     }
 
     // void crxModularExponentiation (WORD exponentLength, WORD modulusLength, BYTE *exponent, BYTE *modulus, BYTE *input, BYTE *output);
-    //FIXME
-    crxModularExponentiation(x_size, groups[0].modulus_size, device_key+MAX_SMALLINT_SIZE-x_size, groups[0].modulus+MAX_BIGINT_SIZE-groups[0].modulus_size, buffer+MAX_BIGINT_SIZE-groups[0].modulus_size, temp_buffer);
+    mModularExponentiation(x_size, groups[0].modulus_size, device_key+MAX_SMALLINT_SIZE-x_size, groups[0].modulus+MAX_BIGINT_SIZE-groups[0].modulus_size, buffer+MAX_BIGINT_SIZE-groups[0].modulus_size, temp_buffer);
     temp_buffer_size = groups[0].modulus_size;
 
     if (temp_buffer_size <= MAX_APDU_OUTPUT_DATA_SIZE) {
@@ -1815,8 +2064,7 @@ void handle_INS_GET_SCOPE_EXCLUSIVE_COMMITMENT(){
     }
 
     // void crxModularExponentiation (WORD exponentLength, WORD modulusLength, BYTE *exponent, BYTE *modulus, BYTE *input, BYTE *output);
-    //FIXME
-    crxModularExponentiation (provers[current_prover_id-1].ksize,
+    mModularExponentiation (provers[current_prover_id-1].ksize,
                               groups[0].modulus_size,
                               provers[current_prover_id-1].kx+MAX_SMALLINT_SIZE-provers[current_prover_id-1].ksize,
                               groups[0].modulus+MAX_BIGINT_SIZE-groups[0].modulus_size,
@@ -2034,7 +2282,7 @@ void handle_INS_BACKUP_DEVICE(){
     buffer_size += PUK_SIZE;
 #ifdef SODER
     mem_cpy(buffer+buffer_size, device_key+MAX_SMALLINT_SIZE-x_size, x_size);
-      buffer_size += x_size;
+    buffer_size += x_size;
 #endif
 
     encrypt(apdu_data.backup_in.password, 0x01);
@@ -2073,8 +2321,8 @@ void handle_INS_RESTORE_DEVICE(){
 
 #ifdef SODER
     x_size = buffer_size - PIN_SIZE - PUK_SIZE;
-      mem_set(device_key, 0, MAX_SMALLINT_SIZE);
-      mem_cpy(device_key+MAX_SMALLINT_SIZE-x_size, buffer+PIN_SIZE+PUK_SIZE, x_size);
+    mem_set(device_key, 0, MAX_SMALLINT_SIZE);
+    mem_cpy(device_key+MAX_SMALLINT_SIZE-x_size, buffer+PIN_SIZE+PUK_SIZE, x_size);
 #endif
 
 }
@@ -2083,9 +2331,8 @@ void handle_INS_RESTORE_DEVICE(){
 void handle_INS_BACKUP_COUNTERS(){
 
 #if NUM_COUNTERS > 0
-    case INS_BACKUP_COUNTERS:
-        if (!CheckCase(4))
-            mExitSW(ERR_BAD_ISO);
+    if (!CheckCase(4))
+        mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
         mExitSW(ERR_BAD_MODE ^ mode);
@@ -2125,7 +2372,6 @@ void handle_INS_BACKUP_COUNTERS(){
         output_large_data();
     }
 
-    break;
 #endif
 
 }
@@ -2134,9 +2380,8 @@ void handle_INS_BACKUP_COUNTERS(){
 void handle_INS_RESTORE_COUNTERS(){
 
 #if NUM_COUNTERS > 0
-    case INS_RESTORE_COUNTERS:
-        if (!CheckCase(3))
-            mExitSW(ERR_BAD_ISO);
+    if (!CheckCase(3))
+        mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
         mExitSW(ERR_BAD_MODE ^ mode);
@@ -2163,7 +2408,6 @@ void handle_INS_RESTORE_COUNTERS(){
         mem_cpy(counters[temp_counter_id-1].cursor, mem_session.small_buffer+2, CURSOR_SIZE);
     }
 
-    break;
 #endif
 
 }
@@ -2172,90 +2416,90 @@ void handle_INS_RESTORE_COUNTERS(){
 
 #ifdef SODER    //TODO: remove if not necessary
 void handle_INS_BACKUP_CREDENTIAL(void){
-  if (!CheckCase(4))
+    if (!CheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
-      if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING)
         mExitSW(ERR_BAD_MODE ^ mode);
 
-      if (Lc != PIN_SIZE + PASSWORD_SIZE + 1)
+    if (Lc != PIN_SIZE + PASSWORD_SIZE + 1)
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (PIN_SIZE + PASSWORD_SIZE + 1));
 
-      checkPin(apdu_data.backup_credential_in.pin);
+    checkPin(apdu_data.backup_credential_in.pin);
 
-      temp_credential_id = apdu_data.backup_credential_in.credential_id;
+    temp_credential_id = apdu_data.backup_credential_in.credential_id;
 
-      if (temp_credential_id < 1 || temp_credential_id > NUM_CREDS)
+    if (temp_credential_id < 1 || temp_credential_id > NUM_CREDS)
         mExitSW(ERR_CREDENTIALID_OUTSIDE_OF_RANGE);
 
-      if (!credentials[temp_credential_id - 1].exists)
+    if (!credentials[temp_credential_id - 1].exists)
         mExitSW(ERR_CREDENTIAL_DOES_NOT_EXIST);
 
-      // fetch credentials[temp_credential_id - 1].issuer_id, credentials[temp_credential_id - 1].status, credentials[temp_credential_id - 1].prescount, credentials[temp_credential_id - 1].v
+    // fetch credentials[temp_credential_id - 1].issuer_id, credentials[temp_credential_id - 1].status, credentials[temp_credential_id - 1].prescount, credentials[temp_credential_id - 1].v
 
-      if (credentials[temp_credential_id - 1].status != 2)
+    if (credentials[temp_credential_id - 1].status != 2)
         mExitSW(ERR_NO_CONTENT_TO_BACKUP);
 
-      buffer_size = 0;
-      mem_cpy(buffer+buffer_size, &(credentials[temp_credential_id - 1].credential_id), 1);
-      buffer_size += 1;
-      mem_cpy(buffer+buffer_size, &(credentials[temp_credential_id - 1].issuer_id), 1);
-      buffer_size += 1;
-      mem_cpy(buffer+buffer_size, &(credentials[temp_credential_id - 1].status), 1);
-      buffer_size += 1;
-      mem_cpy(buffer+buffer_size, &(credentials[temp_credential_id - 1].prescount), 1);
-      buffer_size += 1;
-      mem_cpy(buffer+buffer_size, credentials[temp_credential_id - 1].v, credentials[temp_credential_id - 1].v_size);
-      buffer_size += credentials[temp_credential_id - 1].v_size;
+    buffer_size = 0;
+    mem_cpy(buffer+buffer_size, &(credentials[temp_credential_id - 1].credential_id), 1);
+    buffer_size += 1;
+    mem_cpy(buffer+buffer_size, &(credentials[temp_credential_id - 1].issuer_id), 1);
+    buffer_size += 1;
+    mem_cpy(buffer+buffer_size, &(credentials[temp_credential_id - 1].status), 1);
+    buffer_size += 1;
+    mem_cpy(buffer+buffer_size, &(credentials[temp_credential_id - 1].prescount), 1);
+    buffer_size += 1;
+    mem_cpy(buffer+buffer_size, credentials[temp_credential_id - 1].v, credentials[temp_credential_id - 1].v_size);
+    buffer_size += credentials[temp_credential_id - 1].v_size;
 
-      encrypt(apdu_data.backup_credential_in.password, 0x03);
+    encrypt(apdu_data.backup_credential_in.password, 0x03);
 
-      mem_cpy(temp_buffer, buffer, buffer_size);
-      temp_buffer_size = buffer_size;
+    mem_cpy(temp_buffer, buffer, buffer_size);
+    temp_buffer_size = buffer_size;
 
-      if (temp_buffer_size <= MAX_APDU_OUTPUT_DATA_SIZE) {
+    if (temp_buffer_size <= MAX_APDU_OUTPUT_DATA_SIZE) {
         mem_cpy(apdu_data.dataout, temp_buffer, temp_buffer_size);
         mExitLa(temp_buffer_size);
-      } else {
+    } else {
         remaining_position = temp_buffer;
         remaining_size = temp_buffer_size;
         output_large_data();
-      }
+    }
 
 }
 
 void handle_INS_RESTORE_CREDENTIAL(void){
-  if (!CheckCase(3))
+    if (!CheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
-      if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING)
         mExitSW(ERR_BAD_MODE ^ mode);
 
-      if (Lc != PIN_SIZE + PASSWORD_SIZE)
+    if (Lc != PIN_SIZE + PASSWORD_SIZE)
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (PIN_SIZE + PASSWORD_SIZE));
 
-      checkPin(apdu_data.backup_in.pin);
+    checkPin(apdu_data.backup_in.pin);
 
-      decrypt(device_id_prim, apdu_data.backup_in.password, 0x03);
+    decrypt(device_id_prim, apdu_data.backup_in.password, 0x03);
 
-      // buffer should contain credential_id || issuer_id || status || prescount || v
+    // buffer should contain credential_id || issuer_id || status || prescount || v
 
-      if (buffer[2] != 2)
+    if (buffer[2] != 2)
         mExitSW(ERR_INVALID_BACKUP_ARCHIVE);
 
-      temp_credential_id = buffer[0];
+    temp_credential_id = buffer[0];
 
-      mem_cpy(&(credentials[temp_credential_id - 1].credential_id), buffer, 2); /* This sets credential_id AND issuer_id */
-      /*       credentials[temp_credential_id - 1].credential_id = temp_credential_id; */
-      /*       credentials[temp_credential_id - 1].issuer_id = buffer[1]; */
-      mem_cpy(&(credentials[temp_credential_id - 1].status), buffer+2, 2); /* This sets status AND prescount */
-      /*       credentials[temp_credential_id - 1].status    = buffer[2]; */
-      /*       credentials[temp_credential_id - 1].prescount = buffer[3]; */
-      mem_cpy(credentials[temp_credential_id - 1].v, buffer+4, buffer_size-4);
-      credentials[temp_credential_id - 1].v_size = buffer_size-4;
-      mem_set(credentials[temp_credential_id - 1].kv, 0, MAX_SMALLINT_SIZE);
-      credentials[temp_credential_id - 1].kv_size = 0;
-      credentials[temp_credential_id - 1].exists = 1;
+    mem_cpy(&(credentials[temp_credential_id - 1].credential_id), buffer, 2); /* This sets credential_id AND issuer_id */
+    /*       credentials[temp_credential_id - 1].credential_id = temp_credential_id; */
+    /*       credentials[temp_credential_id - 1].issuer_id = buffer[1]; */
+    mem_cpy(&(credentials[temp_credential_id - 1].status), buffer+2, 2); /* This sets status AND prescount */
+    /*       credentials[temp_credential_id - 1].status    = buffer[2]; */
+    /*       credentials[temp_credential_id - 1].prescount = buffer[3]; */
+    mem_cpy(credentials[temp_credential_id - 1].v, buffer+4, buffer_size-4);
+    credentials[temp_credential_id - 1].v_size = buffer_size-4;
+    mem_set(credentials[temp_credential_id - 1].kv, 0, MAX_SMALLINT_SIZE);
+    credentials[temp_credential_id - 1].kv_size = 0;
+    credentials[temp_credential_id - 1].exists = 1;
 
 }
 #endif
@@ -2321,8 +2565,3 @@ void handle_INS_GET_RESPONSE(void){
     output_large_data();
 
 }
-
-
-// TODO : el default para el código que le toque llamar a estar funciones:
-//default:
-// mExitSW(ERR_BAD_INS);

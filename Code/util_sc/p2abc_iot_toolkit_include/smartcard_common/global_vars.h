@@ -66,8 +66,8 @@ extern BYTE d;
 //extern BYTE mExit;
 // NOTE: redifined from "exit"
 // TODO: RENOMBRAR exit EN EL CÓDIGO IMPORTADO
-// NOTE: en main.c solo lo usa en #ifdef SODER y comentado indicando que ya no se usa.
-// NOTE: en su lugar usa ExitSW
+// NOTE: lo usa como variable local una función solo, para usarlo como booleano y salir con un código u otro.
+// Revisar si otras variables se usan así y no deberían ser globales.
 extern unsigned int temp_blob_index;
 extern unsigned int temp_blobcount;
 extern unsigned int temp_uri_index;

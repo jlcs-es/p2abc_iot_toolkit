@@ -6,6 +6,12 @@ extern "C" {
 #endif
 
 
+void handle_APDU();
+
+#ifdef TEST_PATRAS_MODE       //TODO: remove if not necessary
+void handle_INS_GET_KX_AND_DEVICE_KEY(void);
+void handle_INS_TEST(void);
+#endif
 void handle_INS_GET_MODE(void);
 void handle_INS_SET_ROOT_MODE(void);
 void handle_INS_SET_WORKING_MODE(void);
