@@ -78,7 +78,36 @@ void mBlockSubtract (const WORD blockLength, BYTE *block1, BYTE *block2, const B
     //    in the block indicated in result.
 }
 
+BOOL mCheckCase (BYTE isoCase){
+    //TODO : se hará junto a los Exit, cuando tengamos la interfaz que define cómo recibimos
+    // los APDUs y por tanto podremos saber cómo analizarlos.
+    /**
+     * Remarks
+ISO/IEC 7816 – 4 describes the four possible command cases. In brief, they are:
+Case    Command Data Sent   Response Data Expected
+1       No                  No
+2       No                  Yes
+3       Yes                 No
+4       Yes                 Yes
+Once an incoming command has been identified by the application as being one that it can process,
+     Check Case should be called using the expected ISO command case as the stack based parameter.
+     If the data in public is consistent with the expected command case, the CCR Z flag will be set
+     and cleared otherwise. If the ISOCase parameter is not a valid command case indicator the primitive
+     will consider this to be an inconsistency and clear the CCR Z flag.
+The operating system’s handling of a Case 1 command is such that only a status word is returned.
+     There are, however, some interface devices that expect an acknowledgement byte to be transmitted
+     prior to the status word. In order to cater for these devices both MULTOS 4 and MULTOS 4.2 support
+     an ISOCase parameter value of 5. The handling of this case value is exactly the same as that
+     for Case 1 with the exception that an acknowledgement byte is transmitted.
+The amount of APDU command checking that can be performed by the primitive is based on the transport
+     protocol in use. In most cases an application does not need to be aware of the low level transport
+     handling that occurs as MULTOS ensures that it is takes place. In those cases where more information
+     is required, please see [MDG].
+     */
 
+
+    return 1;
+}
 
 void mExit (void){
     //Default SW 0x9000  ERR_OK

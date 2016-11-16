@@ -46,28 +46,12 @@ void mBlockDecipherCBC (const BYTE algorithm, WORD inputLength, BYTE *cipherText
 void mBlockEncipherCBC (const BYTE algorithm, WORD inputLength, BYTE *plainText, BYTE *cipherText, BYTE initialValueLength, BYTE *initialValue, BYTE keyLength, BYTE *key);
 void mBlockMultiply (const WORD blockLength, BYTE *block1, BYTE *block2, BYTE *result);
 void mBlockSubtract (const WORD blockLength, BYTE *block1, BYTE *block2, const BYTE *result);
+BOOL mCheckCase (BYTE isoCase);
 void mExit (void);
 void mExitLa (const BYTE la);
 void mExitSW(const WORD sw);
 void mExitSWLa (const WORD sw, const BYTE la);
-
-/**
- * Generate 8 random bytes stored in \param result
- * @param result Buffer to store the random bytes
- */
 void mGetRandomNumber(BYTE result[8]);
-
-
-/**
- * This function performs a modular exponentiation.
- * Note that the values held at modulus, input and output are all considered to be of size modulusLength.
- * @param exponentLength: the length of the exponent used
- * @param modulusLength: the length of the modulus
- * @param exponent: address of the exponent
- * @param modulus: address of the modulus
- * @param input: address of the input value
- * @param output: address of where to write the result of the operation
- */
 void mModularExponentiation (WORD exponentLength, WORD modulusLength, BYTE *exponent, BYTE *modulus, BYTE *input, BYTE *output);
 void mModularMultiplication (WORD modulusLength, BYTE *modulus, BYTE *block1, BYTE *block2);
 void mModularReduction (WORD operandLength, WORD modulusLength, BYTE *operand, BYTE *modulus);

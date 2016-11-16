@@ -238,15 +238,10 @@ void handle_APDU() {
 }
 
 
-BOOL CheckCase(BYTE c) {
-    //FIXME qué se supone que debe hacer esto?
-    return 1;
-}
-
 #ifdef TEST_PATRAS_MODE
 
 void handle_INS_GET_KX_AND_DEVICE_KEY(void){
-    if (!CheckCase(2))
+    if (!mCheckCase(2))
         mExitSW(ERR_BAD_ISO);
 
     if (current_prover_id < 1 || current_prover_id > NUM_PROVERS)
@@ -285,7 +280,7 @@ void handle_INS_TEST(void){
 
 void handle_INS_GET_MODE(){
 
-    if (!CheckCase(2))
+    if (!mCheckCase(2))
         mExitSW(ERR_BAD_ISO);
 
     apdu_data.mode = mode;
@@ -295,7 +290,7 @@ void handle_INS_GET_MODE(){
 
 
 void handle_INS_SET_ROOT_MODE(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_VIRGIN)
@@ -314,7 +309,7 @@ void handle_INS_SET_ROOT_MODE(){
 
 void handle_INS_SET_WORKING_MODE(){
 
-    if (!CheckCase(1))
+    if (!mCheckCase(1))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT)
@@ -327,7 +322,7 @@ void handle_INS_SET_WORKING_MODE(){
 
 void handle_INS_SET_VIRGIN_MODE(){
 
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (Lc != MAC_SIZE)
@@ -383,7 +378,7 @@ void handle_INS_SET_FAST_VIRGIN_MODE(){
 
 
 void handle_INS_PIN_TRIALS_LEFT(){
-    if (!CheckCase(2))
+    if (!mCheckCase(2))
         mExitSW(ERR_BAD_ISO);
 
     if (mode == MODE_VIRGIN)
@@ -395,7 +390,7 @@ void handle_INS_PIN_TRIALS_LEFT(){
 
 
 void handle_INS_PUK_TRIALS_LEFT(){
-    if (!CheckCase(2))
+    if (!mCheckCase(2))
         mExitSW(ERR_BAD_ISO);
 
     if (mode == MODE_VIRGIN)
@@ -408,7 +403,7 @@ void handle_INS_PUK_TRIALS_LEFT(){
 
 
 void handle_INS_CHANGE_PIN(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -426,7 +421,7 @@ void handle_INS_CHANGE_PIN(){
 
 
 void handle_INS_RESET_PIN(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING && mode != MODE_LOCKED)
@@ -446,7 +441,7 @@ void handle_INS_RESET_PIN(){
 
 
 void handle_INS_INITIALIZE_DEVICE(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT)
@@ -505,7 +500,7 @@ void handle_INS_INITIALIZE_DEVICE(){
 
 
 void handle_INS_GET_DEVICE_ID(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -523,7 +518,7 @@ void handle_INS_GET_DEVICE_ID(){
 
 
 void handle_INS_GET_VERSION(){
-    if (!CheckCase(2))
+    if (!mCheckCase(2))
         mExitSW(ERR_BAD_ISO);
 
     mem_cpy(apdu_data.version, version, 64);
@@ -534,7 +529,7 @@ void handle_INS_GET_VERSION(){
 
 
 void handle_INS_PUT_DATA(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -554,7 +549,7 @@ void handle_INS_PUT_DATA(){
 
 
 void handle_INS_GET_CHALLENGE(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (Lc != 1)
@@ -584,7 +579,7 @@ void handle_INS_GET_CHALLENGE(){
 
 
 void handle_INS_AUTHENTICATE_DATA(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -609,7 +604,7 @@ void handle_INS_AUTHENTICATE_DATA(){
 
 
 void handle_INS_SET_AUTHENTICATION_KEY(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -639,7 +634,7 @@ void handle_INS_SET_AUTHENTICATION_KEY(){
 
 
 void handle_INS_LIST_AUTHENTICATION_KEYS(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -672,7 +667,7 @@ void handle_INS_LIST_AUTHENTICATION_KEYS(){
 
 
 void handle_INS_READ_AUTHENTICATION_KEY(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -698,7 +693,7 @@ void handle_INS_READ_AUTHENTICATION_KEY(){
 
 
 void handle_INS_REMOVE_AUTHENTICATION_KEY(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -723,7 +718,7 @@ void handle_INS_REMOVE_AUTHENTICATION_KEY(){
 
 
 void handle_INS_SET_GROUP_COMPONENT(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -768,7 +763,7 @@ void handle_INS_SET_GROUP_COMPONENT(){
 
 
 void handle_INS_SET_GENERATOR(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -802,7 +797,7 @@ void handle_INS_SET_GENERATOR(){
 
 
 void handle_INS_LIST_GROUPS(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -833,7 +828,7 @@ void handle_INS_LIST_GROUPS(){
 
 
 void handle_INS_READ_GROUP(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -884,7 +879,7 @@ void handle_INS_READ_GROUP(){
 
 void handle_INS_READ_GROUP_COMPONENT(){
 
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -921,7 +916,7 @@ void handle_INS_READ_GROUP_COMPONENT(){
 
 void handle_INS_READ_GENERATOR(){
 
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -955,7 +950,7 @@ void handle_INS_READ_GENERATOR(){
 
 void handle_INS_REMOVE_GROUP(){
 
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -986,7 +981,7 @@ void handle_INS_REMOVE_GROUP(){
 void handle_INS_SET_COUNTER(){
 #if NUM_COUNTERS > 0
 
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -1016,7 +1011,7 @@ void handle_INS_SET_COUNTER(){
 void handle_INS_INCREMENT_COUNTER(){
 #if NUM_COUNTERS > 0
 
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_WORKING)
@@ -1063,7 +1058,7 @@ void handle_INS_INCREMENT_COUNTER(){
 void handle_INS_LIST_COUNTERS(){
 #if NUM_COUNTERS > 0
 
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -1099,7 +1094,7 @@ void handle_INS_LIST_COUNTERS(){
 void handle_INS_READ_COUNTER(){
 #if NUM_COUNTERS > 0
 
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -1128,7 +1123,7 @@ void handle_INS_READ_COUNTER(){
 
 void handle_INS_REMOVE_COUNTER(){
 #if NUM_COUNTERS > 0
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -1155,7 +1150,7 @@ void handle_INS_REMOVE_COUNTER(){
 
 
 void handle_INS_SET_ISSUER(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -1188,7 +1183,7 @@ void handle_INS_SET_ISSUER(){
 
 
 void handle_INS_LIST_ISSUERS(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -1221,7 +1216,7 @@ void handle_INS_LIST_ISSUERS(){
 
 
 void handle_INS_READ_ISSUER(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -1248,7 +1243,7 @@ void handle_INS_READ_ISSUER(){
 
 
 void handle_INS_REMOVE_ISSUER(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -1274,7 +1269,7 @@ void handle_INS_REMOVE_ISSUER(){
 
 
 void handle_INS_SET_PROVER(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -1308,7 +1303,7 @@ void handle_INS_SET_PROVER(){
 
 
 void handle_INS_READ_PROVER(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -1346,7 +1341,7 @@ void handle_INS_READ_PROVER(){
 
 
 void handle_INS_REMOVE_PROVER(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -1374,10 +1369,10 @@ void handle_INS_REMOVE_PROVER(){
 void handle_INS_START_COMMITMENTS(){
 
 #ifdef SODER
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
 	    mExitSW(ERR_BAD_ISO);
 #else
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 #endif
 
@@ -1424,7 +1419,7 @@ void handle_INS_START_RESPONSES(){
 
 #ifdef SODER
 
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_WORKING)
@@ -1494,7 +1489,7 @@ void handle_INS_START_RESPONSES(){
 
 #else
 
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_WORKING)
@@ -1535,7 +1530,7 @@ void handle_INS_START_RESPONSES(){
 
 
 void handle_INS_SET_CREDENTIAL(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_WORKING)
@@ -1579,7 +1574,7 @@ void handle_INS_SET_CREDENTIAL(){
 
 
 void handle_INS_LIST_CREDENTIALS(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_WORKING)
@@ -1611,7 +1606,7 @@ void handle_INS_LIST_CREDENTIALS(){
 
 
 void handle_INS_READ_CREDENTIAL(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
@@ -1627,7 +1622,7 @@ void handle_INS_READ_CREDENTIAL(){
 
 
 void handle_INS_REMOVE_CREDENTIAL(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
@@ -1638,7 +1633,7 @@ void handle_INS_REMOVE_CREDENTIAL(){
 
 
 void handle_INS_GET_CREDENTIAL_PUBLIC_KEY(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
@@ -1660,7 +1655,7 @@ void handle_INS_GET_CREDENTIAL_PUBLIC_KEY(){
 
 
 void handle_INS_GET_ISSUANCE_COMMITMENT(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
@@ -1706,7 +1701,7 @@ void handle_INS_GET_ISSUANCE_COMMITMENT(){
 
 
 void handle_INS_GET_ISSUANCE_RESPONSE(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
@@ -1744,7 +1739,7 @@ void handle_INS_GET_ISSUANCE_RESPONSE(){
 
 
 void handle_INS_GET_PRESENTATION_COMMITMENT(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
@@ -1810,7 +1805,7 @@ void handle_INS_GET_PRESENTATION_COMMITMENT(){
 
 
 void handle_INS_GET_PRESENTATION_RESPONSE(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
@@ -1853,7 +1848,7 @@ void handle_INS_GET_PRESENTATION_RESPONSE(){
 
 
 void handle_INS_GET_DEVICE_PUBLIC_KEY(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_WORKING)
@@ -1897,7 +1892,7 @@ void handle_INS_GET_DEVICE_PUBLIC_KEY(){
 
 
 void handle_INS_GET_DEVICE_COMMITMENT(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_WORKING)
@@ -1950,7 +1945,7 @@ void handle_INS_GET_DEVICE_COMMITMENT(){
 
 
 void handle_INS_GET_DEVICE_RESPONSE(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_WORKING)
@@ -1991,7 +1986,7 @@ void handle_INS_GET_DEVICE_RESPONSE(){
 
 
 void handle_INS_GET_SCOPE_EXCLUSIVE_PSEUDONYM(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_WORKING)
@@ -2032,7 +2027,7 @@ void handle_INS_GET_SCOPE_EXCLUSIVE_PSEUDONYM(){
 
 
 void handle_INS_GET_SCOPE_EXCLUSIVE_COMMITMENT(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_WORKING)
@@ -2085,7 +2080,7 @@ void handle_INS_GET_SCOPE_EXCLUSIVE_COMMITMENT(){
 
 
 void handle_INS_GET_SCOPE_EXCLUSIVE_RESPONSE(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_WORKING)
@@ -2126,7 +2121,7 @@ void handle_INS_GET_SCOPE_EXCLUSIVE_RESPONSE(){
 
 
 void handle_INS_STORE_BLOB(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     uri = accessURI(apdu_data.blob_in.datain, Lc);
@@ -2154,7 +2149,7 @@ void handle_INS_STORE_BLOB(){
 
 
 void handle_INS_LIST_BLOBS(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -2219,7 +2214,7 @@ void handle_INS_LIST_BLOBS(){
 
 
 void handle_INS_READ_BLOB(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     uri = accessURI(apdu_data.blob_in.datain, Lc);
@@ -2245,7 +2240,7 @@ void handle_INS_READ_BLOB(){
 
 
 void handle_INS_REMOVE_BLOB(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     uri = accessURI(apdu_data.blob_in.datain, Lc);
@@ -2264,7 +2259,7 @@ void handle_INS_REMOVE_BLOB(){
 
 
 void handle_INS_BACKUP_DEVICE(){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -2303,7 +2298,7 @@ void handle_INS_BACKUP_DEVICE(){
 
 
 void handle_INS_RESTORE_DEVICE(){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -2331,7 +2326,7 @@ void handle_INS_RESTORE_DEVICE(){
 void handle_INS_BACKUP_COUNTERS(){
 
 #if NUM_COUNTERS > 0
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -2380,7 +2375,7 @@ void handle_INS_BACKUP_COUNTERS(){
 void handle_INS_RESTORE_COUNTERS(){
 
 #if NUM_COUNTERS > 0
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -2416,7 +2411,7 @@ void handle_INS_RESTORE_COUNTERS(){
 
 #ifdef SODER    //TODO: remove if not necessary
 void handle_INS_BACKUP_CREDENTIAL(void){
-    if (!CheckCase(4))
+    if (!mCheckCase(4))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -2469,7 +2464,7 @@ void handle_INS_BACKUP_CREDENTIAL(void){
 }
 
 void handle_INS_RESTORE_CREDENTIAL(void){
-    if (!CheckCase(3))
+    if (!mCheckCase(3))
         mExitSW(ERR_BAD_ISO);
 
     if (mode != MODE_ROOT && mode != MODE_WORKING)
@@ -2506,7 +2501,7 @@ void handle_INS_RESTORE_CREDENTIAL(void){
 
 
 void handle_INS_GET_INFO(void){
-    if (!CheckCase(2))
+    if (!mCheckCase(2))
         mExitSW(ERR_BAD_ISO);
 
     temp_buffer_size = 0;
@@ -2559,7 +2554,7 @@ void handle_INS_NOTHING(void){
 
 
 void handle_INS_GET_RESPONSE(void){
-    if (!CheckCase(2))
+    if (!mCheckCase(2))
         mExitSW(ERR_BAD_ISO);
 
     output_large_data();
