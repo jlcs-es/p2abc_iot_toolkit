@@ -1,8 +1,8 @@
 #include <smartcard_common/m_adapted_API.h>
 #include <smartcard_common/defs_errs.h>
-#include <smartcard_adaptor/system_funcs.h>
-#include <smartcard_adaptor/crypto_util.h>
-#include <smartcard_adaptor/arithmetic_util.h>
+#include <smartcard_utils_interface/system_funcs.h>
+#include <smartcard_utils_interface/crypto_util.h>
+#include <smartcard_utils_interface/arithmetic_util.h>
 
 
 

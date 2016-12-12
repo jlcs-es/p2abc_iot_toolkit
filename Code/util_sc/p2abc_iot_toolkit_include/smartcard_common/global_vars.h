@@ -12,7 +12,7 @@ extern "C" {
 
 extern static char version[64];
 
-/* Internal system variables. */
+/* Internal APDU variables. */
 extern BYTE ProtocolFlags;
 extern BYTE ProtocolType;
 extern BYTE GetResponseCLA;
@@ -42,11 +42,11 @@ extern WORD SW12;               /* SW1 in MSB, SW2 in LSB. */
  * with the stack, limited to 960 bytes on ML2 cards)
  ************************************************************************/
 
-extern unsigned int temp_size; // not used in subroutines
+extern WORD temp_size; // not used in subroutines
 
-extern unsigned int challenge_size;
+extern WORD challenge_size;
 
-extern unsigned int pad_size;
+extern WORD pad_size;
 extern BYTE authKeyId;
 extern BYTE temp_group_id;
 extern BYTE temp_gen_id;
@@ -57,32 +57,32 @@ extern BYTE temp_prover_id;
 extern BYTE temp_credential_id;
 extern BYTE temp_gen_id_1;
 extern BYTE temp_gen_id_2;
-extern unsigned int temp_gen_1_size;
-extern unsigned int temp_gen_2_size;
+extern WORD temp_gen_1_size;
+extern WORD temp_gen_2_size;
 extern BYTE temp_status;
 extern BYTE *temp_modulus;
-extern unsigned int temp_modulus_size;
+extern WORD temp_modulus_size;
 extern BYTE d;
 //extern BYTE mExit;
 // NOTE: redifined from "exit"
 // TODO: RENOMBRAR exit EN EL CÓDIGO IMPORTADO
 // NOTE: lo usa como variable local una función solo, para usarlo como booleano y salir con un código u otro.
 // Revisar si otras variables se usan así y no deberían ser globales.
-extern unsigned int temp_blob_index;
-extern unsigned int temp_blobcount;
-extern unsigned int temp_uri_index;
+extern WORD temp_blob_index;
+extern WORD temp_blobcount;
+extern WORD temp_uri_index;
 extern BYTE temp_nread;
 extern BYTE prev_nread;
 
-extern unsigned int temp_buffer_size;
+extern WORD temp_buffer_size;
 extern WORD temp_rand_size;
 
 extern BYTE *uri;
 
-extern unsigned int i, j;
+extern WORD i, j;
 
 extern BYTE device_id_prim[ID_SIZE];
-extern unsigned int temp_key_size;
+extern WORD temp_key_size;
 
 // the following variables are used in GET RESPONSE and allow to output more than 255 bytes
 extern WORD remaining_size;
@@ -186,15 +186,15 @@ extern BYTE resurrection_key[RESURRECTION_KEY_SIZE];
 extern BYTE pin_trials;
 extern BYTE puk_trials;
 extern BYTE device_id[ID_SIZE];
-extern unsigned int x_size;
+extern WORD x_size;
 extern BYTE device_key[MAX_SMALLINT_SIZE];
 extern BYTE puk[PUK_SIZE];
 extern BYTE pin[PIN_SIZE];
 extern BYTE mode;
 extern BYTE auth_keys[NUM_AUTH_KEYS][MAX_BIGINT_SIZE];
-extern unsigned int auth_keys_sizes[NUM_AUTH_KEYS]; // auth_keys_exist[key_id] > 0 iff the key exists, 0 otherwise
+extern WORD auth_keys_sizes[NUM_AUTH_KEYS]; // auth_keys_exist[key_id] > 0 iff the key exists, 0 otherwise
 extern BYTE buffer[BUFFER_MAX_SIZE];
-extern unsigned int buffer_size;
+extern WORD buffer_size;
 extern BYTE authData;
 extern GROUP groups[NUM_GROUPS];
 #if NUM_COUNTERS > 0

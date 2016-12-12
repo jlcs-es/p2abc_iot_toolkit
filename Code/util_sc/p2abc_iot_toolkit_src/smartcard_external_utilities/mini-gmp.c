@@ -48,7 +48,7 @@ see https://www.gnu.org/licenses/.  */
 #include <stdlib.h>
 #include <string.h>
 
-#include "smartcard_adaptee/mini-gmp.h"
+#include "smartcard_external_utilities/mini-gmp.h"
 
 
 /* Macros */

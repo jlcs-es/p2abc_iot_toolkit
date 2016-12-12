@@ -90,8 +90,8 @@ typedef struct
 typedef struct
 {
   BYTE prover_id;
-  unsigned int ksize;
-  unsigned int csize;
+  WORD ksize;
+  WORD csize;
   BYTE cred_ids[NUM_CREDS];
 } APDU_SET_PROVER_IN;
 

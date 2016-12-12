@@ -17,13 +17,13 @@ typedef struct
 {
   BYTE group_id;
   BYTE modulus[MAX_BIGINT_SIZE];
-  unsigned int modulus_size;
+  WORD modulus_size;
   BYTE q[MAX_SMALLINT_SIZE];          // group order, do not change the size for something larger than MAX_SMALLINT_SIZE
-  unsigned int q_size;
+  WORD q_size;
   BYTE f[MAX_BIGINT_SIZE];          // cofactor
-  unsigned int f_size;
+  WORD f_size;
   BYTE g[NUM_GEN][MAX_BIGINT_SIZE]; // generators
-  unsigned int g_size[NUM_GEN];
+  WORD g_size[NUM_GEN];
   BYTE num_generators;           // number of generators
 } GROUP;
 
@@ -51,8 +51,8 @@ typedef struct
 typedef struct
 {
   BYTE prover_id;
-  unsigned int ksize;
-  unsigned int csize;
+  WORD ksize;
+  WORD csize;
   BYTE kx[MAX_SMALLINT_SIZE];
   BYTE c[HASH_SIZE];
   BYTE proofsession[PROOFSESSION_SIZE];
@@ -70,8 +70,8 @@ typedef struct
   BYTE kv[MAX_SMALLINT_SIZE];
   BYTE status;
   BYTE prescount;
-  unsigned int v_size;
-  unsigned int kv_size;
+  WORD v_size;
+  WORD kv_size;
   BYTE exists;
 } CREDENTIAL; /* do NOT change the order of the structure elements */
 

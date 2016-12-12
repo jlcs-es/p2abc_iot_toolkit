@@ -24,7 +24,7 @@ extern "C" {
 
 
 
-void crypto_InitSeed(unsigned);
+void crypto_InitSeed(DWORD);
 
 /**
  * Returns a random 8bit BYTE

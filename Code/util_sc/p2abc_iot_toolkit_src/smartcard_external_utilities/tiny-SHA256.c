@@ -1,5 +1,5 @@
 /*************************** HEADER FILES ***************************/
-#include <smartcard_adaptee/tiny-SHA256.h>
+#include <smartcard_external_utilities/tiny-SHA256.h>
 #include <string.h>
 
 

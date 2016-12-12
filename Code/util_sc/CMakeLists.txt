@@ -8,14 +8,14 @@ set(UTIL_SC_SRC_FILES
         p2abc_iot_toolkit_src/smartcard_common/subroutines.c
         p2abc_iot_toolkit_src/smartcard_common/APDU_handler.c
 
-        p2abc_iot_toolkit_src/smartcard_adaptor/system_funcs.c
-        p2abc_iot_toolkit_src/smartcard_adaptor/crypto_util.c
-        p2abc_iot_toolkit_src/smartcard_adaptor/arithmetic_util.c
+        p2abc_iot_toolkit_src/smartcard_utils_interface/system_funcs.c
+        p2abc_iot_toolkit_src/smartcard_utils_interface/crypto_util.c
+        p2abc_iot_toolkit_src/smartcard_utils_interface/arithmetic_util.c
 
-        p2abc_iot_toolkit_src/smartcard_adaptee/arithmetic_implementation_v1.c
-        p2abc_iot_toolkit_src/smartcard_adaptee/mini-gmp.c
-        p2abc_iot_toolkit_src/smartcard_adaptee/tiny-AES128.c
-        p2abc_iot_toolkit_src/smartcard_adaptee/tiny-SHA256.c
+        p2abc_iot_toolkit_src/smartcard_external_utilities/arithmetic_implementation_v1.c
+        p2abc_iot_toolkit_src/smartcard_external_utilities/mini-gmp.c
+        p2abc_iot_toolkit_src/smartcard_external_utilities/tiny-AES128.c
+        p2abc_iot_toolkit_src/smartcard_external_utilities/tiny-SHA256.c
 
         p2abc_iot_toolkit_src/mota_smartcard.c
         p2abc_iot_toolkit_src/debug.cpp
@@ -33,14 +33,14 @@ set(UTIL_SC_INCLUDE_FILES
         p2abc_iot_toolkit_include/smartcard_common/subroutines.h
         p2abc_iot_toolkit_include/smartcard_common/APDU_handler.h
 
-        p2abc_iot_toolkit_include/smartcard_adaptor/system_funcs.h
-        p2abc_iot_toolkit_include/smartcard_adaptor/crypto_util.h
-        p2abc_iot_toolkit_include/smartcard_adaptor/arithmetic_util.h
+        p2abc_iot_toolkit_include/smartcard_utils_interface/system_funcs.h
+        p2abc_iot_toolkit_include/smartcard_utils_interface/crypto_util.h
+        p2abc_iot_toolkit_include/smartcard_utils_interface/arithmetic_util.h
 
-        p2abc_iot_toolkit_include/smartcard_adaptee/arithmetic_implementation_v1.h
-        p2abc_iot_toolkit_include/smartcard_adaptee/mini-gmp.h
-        p2abc_iot_toolkit_include/smartcard_adaptee/tiny-AES128.h
-        p2abc_iot_toolkit_include/smartcard_adaptee/tiny-SHA256.h
+        p2abc_iot_toolkit_include/smartcard_external_utilities/arithmetic_implementation_v1.h
+        p2abc_iot_toolkit_include/smartcard_external_utilities/mini-gmp.h
+        p2abc_iot_toolkit_include/smartcard_external_utilities/tiny-AES128.h
+        p2abc_iot_toolkit_include/smartcard_external_utilities/tiny-SHA256.h
 
         p2abc_iot_toolkit_include/mota_smartcard.h
         p2abc_iot_toolkit_include/debug.h

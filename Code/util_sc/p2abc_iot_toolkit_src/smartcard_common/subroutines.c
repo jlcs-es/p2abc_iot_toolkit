@@ -5,7 +5,7 @@
 /******************************************************************************/
 
 // TODO : la documentación ¿pasarla al .h?
-// FIXME : el uso de unsigned int en vez de WORD / DWORD y la posibilidad que no quepa en los WORD del size usual de multosFuncion()
+// FIXME : el uso de WORD en vez de WORD / DWORD y la posibilidad que no quepa en los WORD del size usual de multosFuncion()
 // según referencias de multos: "an integer is a machine word, which is 2 byte"
 // "An integer is a machine word and, in the case of MULTOS, this is 2 bytes"
 //
@@ -19,22 +19,22 @@
 
 #include <smartcard_common/subroutines.h>
 #include <smartcard_common/m_adapted_API.h>
-#include <smartcard_adaptor/system_funcs.h>
+#include <smartcard_utils_interface/system_funcs.h>
 #include <smartcard_common/defs_consts.h>
 #include <smartcard_common/defs_errs.h>
 #include <smartcard_common/global_vars.h>
 
 
 /************************************************************************************************************************************************
- * void getRandomBytes(BYTE* buffer, unsigned int size)
+ * void getRandomBytes(BYTE* buffer, WORD size)
  *
  * Generate 's = 8*ceil(size/8)' random bytes and put them in
  * buffer[0],...,buffer[s-1].
  ************************************************************************************************************************************************/
 
-void getRandomBytes(BYTE* buffer, unsigned int size) {
+void getRandomBytes(BYTE* buffer, WORD size) {
 
-    unsigned int i;
+    WORD i;
     BYTE temp_buffer[8];
 
     for (i=8; i<=size; i += 8) {
@@ -116,25 +116,25 @@ void checkPuk(BYTE* tested_puk) {
 
 
 /************************************************************************************************************************************************
- * unsigned int sizeDecode(BYTE *s)
+ * WORD sizeDecode(BYTE *s)
  *
  * Take a n-byte table of BYTEs and returns
  * 2^8 * s[0] + s[1]. This assumes that SIZE_SIZE == 2.
  ************************************************************************************************************************************************/
 
-unsigned int sizeDecode(BYTE *s) {
+WORD sizeDecode(BYTE *s) {
 
-    return (unsigned int)( (((WORD)(s[0]))<<8) + s[1]);
+    return (WORD)( (((WORD)(s[0]))<<8) + s[1]);
 
 }
 
 /************************************************************************************************************************************************
- * void sizeEncode(BYTE *s, unsigned int size) {
+ * void sizeEncode(BYTE *s, WORD size) {
  *
  * This is the inverse of sizeDecode
  ************************************************************************************************************************************************/
 
-void sizeEncode(BYTE *s, unsigned int size) {
+void sizeEncode(BYTE *s, WORD size) {
 
     s[1] = size & 0xFF;
     s[0] = (size >> 8) & 0xFF;
@@ -146,7 +146,7 @@ void sizeEncode(BYTE *s, unsigned int size) {
  *
  ************************************************************************************************************************************************/
 
-void getKey(BYTE *key, unsigned int *key_size, const BYTE key_id) {
+void getKey(BYTE *key, WORD *key_size, const BYTE key_id) {
 
     if (key_id > NUM_ISSUERS)
         mExitSW(ERR_KEY_ID_OUTSIDE_RANGE); // ** Adapted for util_sc ** //
@@ -160,12 +160,12 @@ void getKey(BYTE *key, unsigned int *key_size, const BYTE key_id) {
 }
 
 /************************************************************************************************************************************************
- * void publicKeyEncrypt(BYTE* key, unsigned int key_size)
+ * void publicKeyEncrypt(BYTE* key, WORD key_size)
  *
  * Overwrites : temp_buffer, temp_buffer_size ???
  ************************************************************************************************************************************************/
 
-void publicKeyEncrypt(BYTE* key, unsigned int key_size) {
+void publicKeyEncrypt(BYTE* key, WORD key_size) {
 
     if (temp_buffer_size > key_size - 43)
         mExitSW(ERR_AUTHENTICATION_KEY_TOO_SHORT); // ** Adapted for util_sc ** //
@@ -175,11 +175,11 @@ void publicKeyEncrypt(BYTE* key, unsigned int key_size) {
 }
 
 /************************************************************************************************************************************************
- * void encryption(BYTE* dst, unsigned int* dst_size, const BYTE *src, unsigned int src_size, BYTE *key, unsigned int key_size)
+ * void encryption(BYTE* dst, WORD* dst_size, const BYTE *src, WORD src_size, BYTE *key, WORD key_size)
  *
  * Overwrites : pad, temp_rand_size,
  ************************************************************************************************************************************************/
-void encryption(BYTE* dst, unsigned int* dst_size, const BYTE *src, const unsigned int src_size, const BYTE *key, const unsigned int key_size) {
+void encryption(BYTE* dst, WORD* dst_size, const BYTE *src, const WORD src_size, const BYTE *key, const WORD key_size) {
 
     BYTE exponent[1] = {3};
 
@@ -208,10 +208,10 @@ void encryption(BYTE* dst, unsigned int* dst_size, const BYTE *src, const unsign
 }
 
 /************************************************************************************************************************************************
- * void extract(const BYTE *key, const unsigned int key_size)
+ * void extract(const BYTE *key, const WORD key_size)
  ************************************************************************************************************************************************/
 
-void extract(const BYTE *key, const unsigned int key_size) {
+void extract(const BYTE *key, const WORD key_size) {
 
     extraction(key, key_size, buffer, &buffer_size, mem_session.challenge, challenge_size);
 
@@ -223,21 +223,21 @@ void extract(const BYTE *key, const unsigned int key_size) {
 }
 
 /************************************************************************************************************************************************
- * void extraction(const BYTE *n, const unsigned int n_size, BYTE *sig, unsigned int sig_size, const BYTE *challenge)
+ * void extraction(const BYTE *n, const WORD n_size, BYTE *sig, WORD sig_size, const BYTE *challenge)
  *
  * In case of success, the extraction is put back into sig.
  ************************************************************************************************************************************************/
 
-unsigned int extraction(const BYTE *n, const unsigned int n_size, BYTE *sig, unsigned int *sig_size, const BYTE *challenge, const unsigned int challenge_size) {
+WORD extraction(const BYTE *n, const WORD n_size, BYTE *sig, WORD *sig_size, const BYTE *challenge, const WORD challenge_size) {
 
     BYTE exponent[1] = {3};
     BYTE hash_[HASH_SIZE]; // only used in the 'else' below
     BYTE hash_prime[HASH_SIZE];
-    unsigned int pad_size;
+    WORD pad_size;
     BYTE b;
-    unsigned int L;
+    WORD L;
     BYTE *blob, *pad, *challenge_and_pad, *sigma, *m1, *m2, *hash;
-    unsigned int m1_size, m2_size;
+    WORD m1_size, m2_size;
 
     if (challenge_size < 16 || *sig_size < n_size)
         mExitSW(ERR_DATA_AUTHENTICATION_FAILURE);  // ** Adapted for util_sc ** //
@@ -314,12 +314,12 @@ unsigned int extraction(const BYTE *n, const unsigned int n_size, BYTE *sig, uns
 }
 
 /************************************************************************************************************************************************
- * void checkBufferPrefix(BYTE ins, BYTE *datain, unsigned int datain_size)
+ * void checkBufferPrefix(BYTE ins, BYTE *datain, WORD datain_size)
  ************************************************************************************************************************************************/
 
-void checkBufferPrefix(BYTE ins, BYTE *datain, unsigned int datain_size) { // prefix = ins || datain
+void checkBufferPrefix(BYTE ins, BYTE *datain, WORD datain_size) { // prefix = ins || datain
 
-    unsigned int i, prefix_size;
+    WORD i, prefix_size;
 
     prefix_size = datain_size + 1;
 
@@ -347,10 +347,10 @@ void checkBufferPrefix(BYTE ins, BYTE *datain, unsigned int datain_size) { // pr
 }
 
 /************************************************************************************************************************************************
- * void checkBufferEqual(BYTE ins, BYTE *datain, unsigned int datain_size) // content = ins || datain
+ * void checkBufferEqual(BYTE ins, BYTE *datain, WORD datain_size) // content = ins || datain
  ************************************************************************************************************************************************/
 
-void checkBufferEqual(BYTE ins, BYTE *datain, unsigned int datain_size) {
+void checkBufferEqual(BYTE ins, BYTE *datain, WORD datain_size) {
 
     checkBufferPrefix(ins, datain, datain_size);
     if (buffer_size != 0)
@@ -451,7 +451,7 @@ BYTE accessCredential(BYTE *pin, BYTE credential_id) {
 }
 
 /************************************************************************************************************************************************
- * void singleOrDoubleExpo(BYTE issuer_id, BYTE *e1, unsigned int e1_size, BYTE *e2, unsigned int e2_size)
+ * void singleOrDoubleExpo(BYTE issuer_id, BYTE *e1, WORD e1_size, BYTE *e2, WORD e2_size)
  *
  * We assume that both e1 and e2 are buffer of size MAX_SMALLINT_SIZE and
  * that the significant bytes are right-shifted. The number of
@@ -463,7 +463,7 @@ BYTE accessCredential(BYTE *pin, BYTE credential_id) {
  * is stored in buffer_size.
  ************************************************************************************************************************************************/
 
-void singleOrDoubleExpo(BYTE issuer_id, BYTE *e1, unsigned int e1_size, BYTE *e2, unsigned int e2_size) {
+void singleOrDoubleExpo(BYTE issuer_id, BYTE *e1, WORD e1_size, BYTE *e2, WORD e2_size) {
 
     if (issuer_id < 1 || issuer_id > NUM_ISSUERS)
         mExitSW(ERR_ISSUERID_OUTSIDE_OF_RANGE); // ** Adapted for util_sc ** //
@@ -556,12 +556,12 @@ void accessSession(BYTE credential_id) {
 }
 
 /************************************************************************************************************************************************
- * void singleOrDoubleResponse(BYTE issuer_id, BYTE *c, unsigned int c_size, BYTE *x, unsigned int x_size, BYTE *kx, unsigned int kx_size, BYTE *v, unsigned int v_size, BYTE *kv, unsigned int kv_size)
+ * void singleOrDoubleResponse(BYTE issuer_id, BYTE *c, WORD c_size, BYTE *x, WORD x_size, BYTE *kx, WORD kx_size, BYTE *v, WORD v_size, BYTE *kv, WORD kv_size)
  *
  * The result is stored in the left-most bytes of buffer, the size of the result is stored in buffer_size.
  ************************************************************************************************************************************************/
 
-void singleOrDoubleResponse(BYTE issuer_id, BYTE *c, unsigned int c_size, BYTE *x, unsigned int x_size, BYTE *kx, unsigned int kx_size, BYTE *v, unsigned int v_size, BYTE *kv, unsigned int kv_size) {
+void singleOrDoubleResponse(BYTE issuer_id, BYTE *c, WORD c_size, BYTE *x, WORD x_size, BYTE *kx, WORD kx_size, BYTE *v, WORD v_size, BYTE *kv, WORD kv_size) {
 
     if (issuer_id < 1 || issuer_id > NUM_ISSUERS)
         mExitSW(ERR_ISSUERID_OUTSIDE_OF_RANGE); // ** Adapted for util_sc ** //
@@ -591,9 +591,9 @@ void singleOrDoubleResponse(BYTE issuer_id, BYTE *c, unsigned int c_size, BYTE *
 }
 
 /************************************************************************************************************************************************
- * void singleResponse(BYTE *k, unsigned int k_size, BYTE *c,
- *                     unsigned int c_size, BYTE *u, unsigned int u_size,
- *                     BYTE *q, unsigned int q_size)
+ * void singleResponse(BYTE *k, WORD k_size, BYTE *c,
+ *                     WORD c_size, BYTE *u, WORD u_size,
+ *                     BYTE *q, WORD q_size)
  *
  * We assume that all the tables are of size MAX_SMALLINT_SIZE, except for
  * c which we assume to be made of HASH_SIZE bytes. The sizes given as
@@ -604,7 +604,7 @@ void singleOrDoubleResponse(BYTE issuer_id, BYTE *c, unsigned int c_size, BYTE *
  * significant bytes and offset bytes is stored in buffer_size.
  ************************************************************************************************************************************************/
 
-void singleResponse(BYTE *k, unsigned int k_size, BYTE *c, unsigned int c_size, BYTE *u, unsigned int u_size, BYTE *q, unsigned int q_size, BYTE offset) {
+void singleResponse(BYTE *k, WORD k_size, BYTE *c, WORD c_size, BYTE *u, WORD u_size, BYTE *q, WORD q_size, BYTE offset) {
 
     BYTE blockLength;
 
@@ -713,7 +713,7 @@ void singleResponse(BYTE *k, unsigned int k_size, BYTE *c, unsigned int c_size, 
  * The significant length of the result is stored in buffer_size.
  ************************************************************************************************************************************************/
 
-void scopeExclusiveGenerator(BYTE *scope, unsigned int scope_size, BYTE *m, unsigned int m_size, BYTE *f, unsigned int f_size) {
+void scopeExclusiveGenerator(BYTE *scope, WORD scope_size, BYTE *m, WORD m_size, BYTE *f, WORD f_size) {
 
     mem_set(buffer, 0, MAX_BIGINT_SIZE); // alloc for buffer: MAX_APDU_INPUT_DATA_SIZE bytes    // ** Adapted for util_sc ** //
     // ** Adapted for util_sc ** // SHA256(buffer+MAX_BIGINT_SIZE-HASH_SIZE, scope_size, scope);
@@ -738,10 +738,10 @@ void scopeExclusiveGenerator(BYTE *scope, unsigned int scope_size, BYTE *m, unsi
 
 
 /************************************************************************************************************************************************
- * BYTE* accessURI(BYTE *datain, unsigned int Lc)
+ * BYTE* accessURI(BYTE *datain, WORD Lc)
  ************************************************************************************************************************************************/
 
-BYTE* accessURI(BYTE *datain, unsigned int Lc) {
+BYTE* accessURI(BYTE *datain, WORD Lc) {
 
     BYTE *uri;
     BYTE uri_size;
@@ -765,7 +765,7 @@ BYTE* accessURI(BYTE *datain, unsigned int Lc) {
 }
 
 /************************************************************************************************************************************************
- * void getBlobstoreInformations(unsigned int* first_available_index, unsigned int *blobcount, unsigned int *uri_index, unsigned char *uri, BYTE uri_size)
+ * void getBlobstoreInformations(WORD* first_available_index, WORD *blobcount, WORD *uri_index, BYTE *uri, BYTE uri_size)
  *
  * first_available_index will point to the first free blob
  * location. If there is no more space available, then
@@ -776,9 +776,9 @@ BYTE* accessURI(BYTE *datain, unsigned int Lc) {
  * uri. If no such uri exists, then uri_index = MAX_NUMBER_OF_BLOBS.
  ************************************************************************************************************************************************/
 
-void getBlobstoreInformations(unsigned int* first_available_index, unsigned int *blobcount, unsigned int *uri_index, unsigned char *uri, BYTE uri_size) {
+void getBlobstoreInformations(WORD* first_available_index, WORD *blobcount, WORD *uri_index, BYTE *uri, BYTE uri_size) {
 
-    unsigned int i;
+    WORD i;
 
     *first_available_index = MAX_NUMBER_OF_BLOBS;
     *blobcount = 0;
@@ -899,7 +899,7 @@ void encrypt(BYTE *password, BYTE label) {
 
 void decrypt(BYTE *device_id_prim, BYTE *password, BYTE label) {
 
-    unsigned int L;
+    WORD L;
 
     temp_buffer_size = 0;
     mem_cpy(temp_buffer+temp_buffer_size, master_backup_key, MASTER_BACKUP_KEY_SIZE);   // ** Adapted for util_sc ** //
@@ -970,11 +970,11 @@ void decrypt(BYTE *device_id_prim, BYTE *password, BYTE label) {
 }
 
 /************************************************************************************************************************************************
- * void print(BYTE *s, unsigned int size)
+ * void print(BYTE *s, WORD size)
  *
  ************************************************************************************************************************************************/
 
-void print(void *s, unsigned int size) {
+void print(void *s, WORD size) {
 
     mem_cpy(apdu_data.dataout, (BYTE *)s, size);    // ** Adapted for util_sc ** //
 

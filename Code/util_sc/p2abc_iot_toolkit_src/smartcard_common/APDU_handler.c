@@ -2,7 +2,7 @@
 #include <smartcard_common/defs_errs.h>
 #include <smartcard_common/global_vars.h>
 #include <smartcard_common/m_adapted_API.h>
-#include <smartcard_adaptor/system_funcs.h>
+#include <smartcard_utils_interface/system_funcs.h>
 #include <smartcard_common/subroutines.h>
 #include <smartcard_common/defs_ins.h>
 
@@ -555,7 +555,7 @@ void handle_INS_GET_CHALLENGE(){
     if (Lc != 1)
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ 1);
 
-    challenge_size = (unsigned int)apdu_data.challenge_size;
+    challenge_size = (WORD)apdu_data.challenge_size;
 
     if (!challenge_size)
         challenge_size = CHALLENGE_MAX_SIZE;

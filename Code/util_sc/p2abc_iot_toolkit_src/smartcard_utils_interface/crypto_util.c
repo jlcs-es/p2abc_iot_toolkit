@@ -1,13 +1,13 @@
-#include <smartcard_adaptor/crypto_util.h>
+#include <smartcard_utils_interface/crypto_util.h>
 
 
 /* In this implementation we delegate on the adaptees tiny-AES128 and tiny-SHA256 */
 
 #include <stdlib.h>
-#include <smartcard_adaptee/tiny-AES128.h>
-#include <smartcard_adaptee/tiny-SHA256.h>
+#include <smartcard_external_utilities/tiny-AES128.h>
+#include <smartcard_external_utilities/tiny-SHA256.h>
 
-void crypto_InitSeed(unsigned seed){
+void crypto_InitSeed(DWORD seed){
     srand(seed);
 }
 
