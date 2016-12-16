@@ -26,9 +26,9 @@ extern "C" {
 
 /**
  * Initializes the APDU global variables to the values
- * of the received APDU.
+ * of the received APDU command.
  */
-void initialize_apdu();
+void init_apdu_command();
 
 
 
@@ -36,7 +36,7 @@ void initialize_apdu();
  * Takes the values in the APDU variables and public data
  * and outputs it as APDU response.
  */
-void output_apdu();
+void output_apdu_response();
 
 
 

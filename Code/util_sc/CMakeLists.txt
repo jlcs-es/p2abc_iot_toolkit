@@ -17,7 +17,7 @@ set(UTIL_SC_SRC_FILES
         p2abc_iot_toolkit_src/smartcard_external_utilities/tiny-AES128.c
         p2abc_iot_toolkit_src/smartcard_external_utilities/tiny-SHA256.c
 
-        p2abc_iot_toolkit_src/mota_smartcard.c
+        p2abc_iot_toolkit_src/BIOSC.c
         p2abc_iot_toolkit_src/debug.cpp
         )
 
@@ -32,17 +32,20 @@ set(UTIL_SC_INCLUDE_FILES
         p2abc_iot_toolkit_include/smartcard_common/global_vars.h
         p2abc_iot_toolkit_include/smartcard_common/subroutines.h
         p2abc_iot_toolkit_include/smartcard_common/APDU_handler.h
+        p2abc_iot_toolkit_include/smartcard_common/IO_APDU_variables.h
+        p2abc_iot_toolkit_include/smartcard_common/serialize_static_data.h
 
         p2abc_iot_toolkit_include/smartcard_utils_interface/system_funcs.h
         p2abc_iot_toolkit_include/smartcard_utils_interface/crypto_util.h
         p2abc_iot_toolkit_include/smartcard_utils_interface/arithmetic_util.h
+        p2abc_iot_toolkit_include/smartcard_utils_interface/serialize_util.h
+        p2abc_iot_toolkit_include/smartcard_utils_interface/init_smartcard_util.h
 
         p2abc_iot_toolkit_include/smartcard_external_utilities/arithmetic_implementation_v1.h
         p2abc_iot_toolkit_include/smartcard_external_utilities/mini-gmp.h
         p2abc_iot_toolkit_include/smartcard_external_utilities/tiny-AES128.h
         p2abc_iot_toolkit_include/smartcard_external_utilities/tiny-SHA256.h
 
-        p2abc_iot_toolkit_include/mota_smartcard.h
         p2abc_iot_toolkit_include/debug.h
         ) #CLion/IDEs add header files to project only if explecitly referenced and used
 
