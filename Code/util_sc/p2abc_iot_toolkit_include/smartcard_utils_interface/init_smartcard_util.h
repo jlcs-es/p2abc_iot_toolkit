@@ -13,8 +13,8 @@ extern "C" {
 /********************************************************************/
 /** Initializes the static data and I/O of the smartcard.           */
 /********************************************************************/
-/** ONLY INTERFACE THAT MUST BE CHANGED FOR TARGET PLATFORM         */
-/** ONLY INTERFACE THAT IS CALLED FROM OUTSIDE THE SMARTCARD CORE   */
+/** THIS INTERFACE MAY BE CHANGED FOR TARGET PLATFORM               */
+/** ONLY INTERFACE TO BE CALLED FROM OUTSIDE THE SMARTCARD CORE     */
 /** MODIFY AS YOU NEED, THE CORE WILL NOT USE IT.                   */
 /********************************************************************/
 

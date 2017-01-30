@@ -13,17 +13,20 @@ extern "C" {
 /********************************************************************/
 /** Interface for array of bytes serialization storage.             */
 /********************************************************************/
-/** A function receives an array of BYTES to store as a variable    */
-/* serialization. Another function is called when all variables to  */
-/* store have been passed.                                          */
-/** This lets for storing as the first function is called, or use   */
-/* a buffer with special separation between variables, that is      */
-/* stored when the second function is called.                       */
-/** For reading stored variables, a function is called retrieving   */
-/* one serialized array at a time, and a NULL when no more are      */
-/* available.                                                       */
+/** THIS INTERFACE MAY BE CHANGED FOR TARGET PLATFORM               */
+/** ONLY INTERFACE THAT KNOWS THE INTERNAL STRUCTURE OF THE CORE    */
+/** MODIFY AS YOU NEED, DEPENDING ON THE STATIC DATA ON THE CORE    */
+/** CODE AND THE SERIALIZATION METHOD.                              */
 /********************************************************************/
 
+
+char* serialize_smartcard_status(int * buf_len);
+
+void deserialize_smartcard_status(const char * ascii, int length);
+
+char* serialize_APDU_response(int * buf_len);
+
+void deserialize_APDU_command(const char * ascii, int length);
 
 
 

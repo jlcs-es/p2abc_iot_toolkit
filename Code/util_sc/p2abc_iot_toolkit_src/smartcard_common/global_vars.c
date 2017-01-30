@@ -124,7 +124,3 @@ CREDENTIAL credentials[NUM_CREDS];
 
 BYTE temp_key[MAX_BIGINT_SIZE];
 
-
-
-// TODO: por la linea 800 de main.c SET VIRGIN MODE inicializa la gran parte de las variables.
-
