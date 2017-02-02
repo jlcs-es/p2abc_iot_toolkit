@@ -88,7 +88,7 @@ APDU_DATA apdu_data;
  * Static data for the application
  ************************************************************************/
 
-BLOB_STORE_ITEM   blob_store[MAX_NUMBER_OF_BLOBS]; // do not declare anything above 'blob_store': anything declared above blobs could be located in higher (not directly accessible) part of the e2 memory.
+BLOB_STORE_ITEM   blob_store[MAX_NUMBER_OF_BLOBS];
 BLOB_CATALOG_ITEM blob_catalog[MAX_NUMBER_OF_BLOBS];
 
 
