@@ -1043,13 +1043,14 @@ void segmentToStaticHigh(void *high_addr, const void *low_addr, DWORD size)    /
 
     // compute high_addr_32bits
     mem_cpy(high_addr_32bits+2, &high_addr, 2); // ** Adapted for util_sc ** //
-
+    // TODO
+/*
     // call MEMORY COPY ADDITION STATIC (non atomic)
     __push ((__typechk(WORD, size))); // size of the data to copy
     __push (__BLOCKCAST(4)(__typechk(BYTE *, high_addr_32bits))); // push the static offset
     __push ((__typechk(WORD, (WORD)(low_addr)))); // address of the data in the low memory
     __code (__PRIM, 0xDD, 0x80);
-
+*/
 }
 
 /******************************************************************************
@@ -1068,11 +1069,12 @@ void staticHighToSegment(void *low_addr, const void *high_addr, DWORD size)    /
 
     // compute high_addr_32bits
     mem_cpy(high_addr_32bits+2, &high_addr, 2); // ** Adapted for util_sc ** //
-
+    // TODO
+/*
     // call MEMORY COPY ADDITION STATIC (non atomic)
     __push ((__typechk(WORD, size))); // size of the data to copy
     __push ((__typechk(WORD, (WORD)(low_addr)))); // address of the data in the low memory
     __push (__BLOCKCAST(4)(__typechk(BYTE *, high_addr_32bits))); // push the static offset
     __code (__PRIM, 0xDD, 0x81);
-
+*/
 }

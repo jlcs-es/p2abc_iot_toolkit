@@ -7,7 +7,8 @@
 
 #include <smartcard_external_utilities/base64.h>
 #include <smartcard_external_utilities/cJSON.h>
-#include <smartcard_common/abc4T_types.h>
+
+#include <string.h>
 
 
 char* serialize_smartcard_status(int * buf_len){
@@ -210,17 +211,29 @@ char* serialize_smartcard_status(int * buf_len){
     // ISSUER issuers[NUM_ISSUERS]
     cJSON* issuers_json_array = cJSON_CreateArray();
     for(i=0; i < NUM_ISSUERS; ++i){
-        // TODO
         cJSON * issuers_item_json = cJSON_CreateObject();
         // BYTE issuer_id
         sprintf(temp_hex_string, "%02X", issuers[i].issuer_id);
         cJSON_AddStringToObject(issuers_item_json, "issuer_id", temp_hex_string);
         // BYTE group_id
+        sprintf(temp_hex_string, "%02X", issuers[i].group_id);
+        cJSON_AddStringToObject(issuers_item_json, "group_id", temp_hex_string);
         // BYTE gen_id_1
+        sprintf(temp_hex_string, "%02X", issuers[i].gen_id_1);
+        cJSON_AddStringToObject(issuers_item_json, "gen_id_1", temp_hex_string);
         // BYTE gen_id_2
+        sprintf(temp_hex_string, "%02X", issuers[i].gen_id_2);
+        cJSON_AddStringToObject(issuers_item_json, "gen_id_2", temp_hex_string);
         // BYTE numpres
+        sprintf(temp_hex_string, "%02X", issuers[i].numpres);
+        cJSON_AddStringToObject(issuers_item_json, "numpres", temp_hex_string);
         // BYTE counter_id
+        sprintf(temp_hex_string, "%02X", issuers[i].counter_id);
+        cJSON_AddStringToObject(issuers_item_json, "counter_id", temp_hex_string);
         // BYTE exists
+        sprintf(temp_hex_string, "%02X", issuers[i].exists);
+        cJSON_AddStringToObject(issuers_item_json, "exists", temp_hex_string);
+
         cJSON_AddItemToArray(issuers_json_array, issuers_item_json);
     }
     cJSON_AddItemToObject(root, "issuers", issuers_json_array);
@@ -229,18 +242,41 @@ char* serialize_smartcard_status(int * buf_len){
     // PROVER provers[NUM_PROVERS]
     cJSON* provers_json_array = cJSON_CreateArray();
     for(i=0; i < NUM_PROVERS; ++i){
-        // TODO
         cJSON * provers_item_json = cJSON_CreateObject();
         // BYTE prover_id
+        sprintf(temp_hex_string, "%02X", provers[i].prover_id);
+        cJSON_AddStringToObject(provers_item_json, "prover_id", temp_hex_string);
         // WORD ksize
+        sprintf(temp_hex_string, "%02X", provers[i].ksize);
+        cJSON_AddStringToObject(provers_item_json, "ksize", temp_hex_string);
         // WORD csize
+        sprintf(temp_hex_string, "%02X", provers[i].csize);
+        cJSON_AddStringToObject(provers_item_json, "csize", temp_hex_string);
         // BYTE kx[MAX_SMALLINT_SIZE]
+        temp_base64 = base64(provers[i].kx, MAX_SMALLINT_SIZE, &temp_base64_len);
+        cJSON_AddStringToObject(provers_item_json, "kx", temp_base64);
+        free(temp_base64);
         // BYTE c[HASH_SIZE]
+        temp_base64 = base64(provers[i].c, HASH_SIZE, &temp_base64_len);
+        cJSON_AddStringToObject(provers_item_json, "c", temp_base64);
+        free(temp_base64);
         // BYTE proofsession[PROOFSESSION_SIZE]
+        temp_base64 = base64(provers[i].proofsession, PROOFSESSION_SIZE, &temp_base64_len);
+        cJSON_AddStringToObject(provers_item_json, "proofsession", temp_base64);
+        free(temp_base64);
         // BYTE proofstatus
+        sprintf(temp_hex_string, "%02X", provers[i].proofstatus);
+        cJSON_AddStringToObject(provers_item_json, "proofstatus", temp_hex_string);
         // BYTE cred_ids[NUM_CREDS]
+        temp_base64 = base64(provers[i].cred_ids, NUM_CREDS, &temp_base64_len);
+        cJSON_AddStringToObject(provers_item_json, "cred_ids", temp_base64);
+        free(temp_base64);
         // BYTE cred_ids_size
+        sprintf(temp_hex_string, "%02X", provers[i].cred_ids_size);
+        cJSON_AddStringToObject(provers_item_json, "cred_ids_size", temp_hex_string);
         // BYTE exists
+        sprintf(temp_hex_string, "%02X", provers[i].exists);
+        cJSON_AddStringToObject(provers_item_json, "exists", temp_hex_string);
 
         cJSON_AddItemToArray(provers_json_array, provers_item_json);
     }
@@ -254,17 +290,36 @@ char* serialize_smartcard_status(int * buf_len){
     // CREDENTIAL credentials[NUM_CREDS]
     cJSON* credentials_json_array = cJSON_CreateArray();
     for(i=0; i < NUM_CREDS; ++i){
-        // TODO
         cJSON * credentials_item_json = cJSON_CreateObject();
         // BYTE credential_id
+        sprintf(temp_hex_string, "%02X", credentials[i].credential_id);
+        cJSON_AddStringToObject(credentials_item_json, "credential_id", temp_hex_string);
         // BYTE issuer_id
+        sprintf(temp_hex_string, "%02X", credentials[i].issuer_id);
+        cJSON_AddStringToObject(credentials_item_json, "issuer_id", temp_hex_string);
         // BYTE v[MAX_SMALLINT_SIZE]
+        temp_base64 = base64(credentials[i].v, MAX_SMALLINT_SIZE, &temp_base64_len);
+        cJSON_AddStringToObject(credentials_item_json, "v", temp_base64);
+        free(temp_base64);
         // BYTE kv[MAX_SMALLINT_SIZE]
+        temp_base64 = base64(credentials[i].kv, MAX_SMALLINT_SIZE, &temp_base64_len);
+        cJSON_AddStringToObject(credentials_item_json, "kv", temp_base64);
+        free(temp_base64);
         // BYTE status
+        sprintf(temp_hex_string, "%02X", credentials[i].status);
+        cJSON_AddStringToObject(credentials_item_json, "status", temp_hex_string);
         // BYTE prescount
+        sprintf(temp_hex_string, "%02X", credentials[i].prescount);
+        cJSON_AddStringToObject(credentials_item_json, "prescount", temp_hex_string);
         // WORD v_size
+        sprintf(temp_hex_string, "%02X", credentials[i].v_size);
+        cJSON_AddStringToObject(credentials_item_json, "v_size", temp_hex_string);
         // WORD kv_size
+        sprintf(temp_hex_string, "%02X", credentials[i].kv_size);
+        cJSON_AddStringToObject(credentials_item_json, "kv_size", temp_hex_string);
         // BYTE exists
+        sprintf(temp_hex_string, "%02X", credentials[i].exists);
+        cJSON_AddStringToObject(credentials_item_json, "exists", temp_hex_string);
 
         cJSON_AddItemToArray(credentials_json_array, credentials_item_json);
     }
@@ -274,6 +329,17 @@ char* serialize_smartcard_status(int * buf_len){
     temp_base64 = base64(temp_key, MAX_BIGINT_SIZE, &temp_base64_len);
     cJSON_AddStringToObject(root, "temp_key", temp_base64);
     free(temp_base64);
+
+
+    //// ALL STATIC DATA ADDED
+
+    char * res = cJSON_Print(root);
+
+    *buf_len = strlen(res);
+
+    cJSON_Delete(root);
+
+    return res;
 
 }
 

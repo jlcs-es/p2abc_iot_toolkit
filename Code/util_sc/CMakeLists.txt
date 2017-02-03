@@ -20,7 +20,7 @@ set(UTIL_SC_SRC_FILES
         p2abc_iot_toolkit_src/smartcard_external_utilities/tiny-SHA256.c
         p2abc_iot_toolkit_src/smartcard_external_utilities/cJSON.c
 
-        p2abc_iot_toolkit_src/BIOSC.c
+        #p2abc_iot_toolkit_src/BIOSC.c
         p2abc_iot_toolkit_src/debug.cpp
         )
 

@@ -10,7 +10,7 @@
 extern "C" {
 #endif
 
-extern static char version[64];
+static char version[64]= "ABC4Trust Card Lite - Jose Luis Canovas 2016 - IoT Toolkit v1  "; // 64 bytes
 
 /* Internal APDU variables. */
 extern BYTE ProtocolFlags;
