@@ -1449,14 +1449,14 @@ void handle_INS_START_RESPONSES(){
     if(Lc-6 < (d * 16))
         mExitSW(ERR_MALICIOUS_INPUT_RESPONSE_STAGE);
 
-    BOOL exit = 1;
+    BOOL b_exit = 1;
     for (i=0; i<d; i++) {
         if (mem_cmp(provers[temp_prover_id-1].proofsession, &(apdu_data.start_responses_in.input[1]) + (16*i), PROOFSESSION_SIZE) == 0) {
-            exit = 0;
+            b_exit = 0;
             break;
         }
     }
-    if (exit)
+    if (b_exit)
         mExitSW(ERR_MALICIOUS_INPUT_RESPONSE_STAGE);
 
     if (P1 == 0x00) {

@@ -9,6 +9,7 @@ extern "C" {
 
 
 void imprimirHexadecimal(BYTE *buffer, int length);
+void imprimirMensaje(char * msg);
 
 #ifdef __cplusplus
 }

@@ -42,6 +42,7 @@ set(UTIL_SC_INCLUDE_FILES
         p2abc_iot_toolkit_include/smartcard_utils_interface/arithmetic_util.h
         p2abc_iot_toolkit_include/smartcard_utils_interface/serialize_util.h
         p2abc_iot_toolkit_include/smartcard_utils_interface/init_smartcard_util.h
+        p2abc_iot_toolkit_include/smartcard_utils_interface/error_codes.h
 
         p2abc_iot_toolkit_include/smartcard_external_utilities/arithmetic_implementation_v1.h
         p2abc_iot_toolkit_include/smartcard_external_utilities/mini-gmp.h

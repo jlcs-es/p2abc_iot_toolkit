@@ -171,6 +171,65 @@ typedef struct
 } APDU_BACKUP_CREDENTIAL_IN;
 #endif
 
+
+typedef union
+{
+    // structures and variables used for output
+    BYTE mode;
+    BYTE pin_trials;
+    BYTE puk_trials;
+    BYTE challenge[CHALLENGE_MAX_SIZE];
+    BYTE device_id[ID_SIZE];
+    BYTE version[64];
+    BYTE memspace[2];
+    BYTE dataout[MAX_APDU_OUTPUT_DATA_SIZE];
+    BYTE access_code[ACCESS_CODE_SIZE];
+    BYTE mac[MAC_SIZE];
+    APDU_READ_AUTHENTICATION_KEY read_authentication_key;
+    APDU_SET_GROUP_COMPONENT set_group_component;
+    APDU_SET_GENERATOR set_generator;
+    BYTE proofsession[PROOFSESSION_SIZE];
+    // structures and variables used for input
+    BYTE challenge_size;
+    BYTE old_pin_and_new_pin[PIN_SIZE << 1];
+    BYTE puk_and_pin[PUK_SIZE + PIN_SIZE];
+    BYTE id_and_size[ID_SIZE + SIZE_SIZE];
+    BYTE small_buffer[SMALL_BUFFER_MAX_SIZE];
+    BYTE pin[PIN_SIZE];
+    BYTE buffer[BUFFER_MAX_SIZE];
+    BYTE keyId;
+    BYTE auth_key[MAX_BIGINT_SIZE];
+    APDU_READ_GROUP_IN read_group_in;
+    APDU_READ_GROUP_COMPONENT_IN read_group_component_in;
+    APDU_READ_GENERATOR_IN read_generator_in;
+    BYTE group_id;
+    APDU_SET_COUNTER set_counter;
+    APDU_INCREMENT_COUNTER increment_counter;
+    APDU_READ_COUNTER_IN read_counter_in;
+    BYTE counter_id;
+    APDU_SET_ISSUER_IN set_issuer_in;
+    APDU_READ_ISSUER_IN read_issuer_in;
+    BYTE issuer_id;
+    APDU_SET_PROVER_IN set_prover_in;
+    APDU_READ_PROVER_IN read_prover_in;
+    BYTE prover_id;
+    APDU_START_COMMITMENTS_IN start_commitments_in;
+    APDU_START_RESPONSES_IN start_responses_in;
+    APDU_SET_CREDENTIAL_IN set_credential_in;
+    APDU_PIN_AND_CREDENTIAL_ID pin_and_credential_id;
+    APDU_GET_SCOPE_EXCLUSIVE_PSEUDONYM_IN get_scope_exclusive_pseudonym_in;
+    APDU_GET_SCOPE_EXCLUSIVE_COMMITMENT_IN get_scope_exclusive_commitment_in;
+    APDU_GET_SCOPE_EXCLUSIVE_RESPONSE_IN get_scope_exclusive_response_in;
+    APDU_BLOB_IN blob_in;
+    APDU_LIST_BLOBS_IN list_blobs_in;
+    APDU_BACKUP_IN backup_in;
+#ifdef SODER
+    APDU_BACKUP_CREDENTIAL_IN backup_credential_in;
+#endif
+} APDU_DATA;
+
+
+
 #ifdef __cplusplus
 }
 #endif

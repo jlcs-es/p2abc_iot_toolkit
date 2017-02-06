@@ -1,0 +1,19 @@
+#ifndef __ERROR_CODES_H
+#define __ERROR_CODES_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define ERROR_CANT_MALLOC                       101
+#define ERROR_CANT_OPEN_FILE                    401
+#define ERROR_CANT_READ_FILE                    402
+#define ERROR_BAD_JSON_VALUE_LENGTH             501
+#define ERROR_BAD_JSON_ARRAY_LENGTH             502
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif // __ERROR_CODES_H
