@@ -10,14 +10,14 @@
 ** FILE NAME:       multos.h
 **
 ** DESCRIPTION:     Standard MULTOS API for SmartDeck.
-** VERSION:         1.3
+** VERSION:         1.4
 **
 ** DISCLAIMER: This header file is provided "as is" and comes with no warranty
 ** or guarantee of correct operation. Anyone using functions from this file
 ** MUST independently ensure correct operation of applications containing calls
 ** to these functions.
 **
-** CHANGES in 1.3: 
+** CHANGES in 1.3:
 ** Added multosSetSelectCLSW, multosBlockLookupWord, multosGetProcessEvent, multosRejectProcessEvent
 ** multosRsaVerify, multosSetATSHistoricalCharacters, multosSetFCIFileRecord, multosInitialisePIN
 ** multosReadPIN, multosVerifyPIN, multosSetPINTryCounter, multosSetPINTryLimit, multosGetPINTryCount
@@ -26,6 +26,10 @@
 ** Corrected parameter order (in macro) for multosBlockEncipherECB (ciphertext and plaintext params were inverted)
 **
 ** Added #defines for Process Events
+**
+** CHANGES in 1.4:
+** Added multosBlockShiftLeftVar, multosBlockShiftRightVar, multosBlockRotateLeft, multosBlockRotateRight,
+** multosUpdateStaticSize
 **-----------------------------------------------------------------------------
 */
 
@@ -66,7 +70,7 @@ typedef void (*FN_PTR) (void);
 #define ALGORITHM_COMP128   (8)
 
 /*
-** Possible application execution events 
+** Possible application execution events
 */
 #define EVENT_APP_APDU                       0x00
 #define EVENT_SELECT_APDU                    0x01
@@ -223,6 +227,7 @@ extern WORD SW12;               /* SW1 in MSB, SW2 in LSB. */
 
 /* The values of each set one MULTOS primitive. */
 #define __PRIM_QUERY                                0x00   /* Range 0x00-0x03 */
+#define __PRIM_UPDATE_STATIC_SIZE					0x04
 #define __PRIM_DIVIDEN                              0x08
 #define __PRIM_GET_DIR_FILE_RECORD                  0x09
 #define __PRIM_GET_FILE_CONTROL_INFORMATION         0x0A
@@ -265,6 +270,7 @@ extern WORD SW12;               /* SW1 in MSB, SW2 in LSB. */
 #define __PRIM_SET_SELECT_SW                        0x04
 #define __PRIM_CARD_BLOCK                           0x05
 #define __PRIM_SET_SELECT_CL_SW                     0x06
+#define __PRIM_SHIFT_ROTATE                         0x07
 #define __PRIM_RETURN_FROM_CODELET                  0x80
 #define __PRIM_BLOCK_DECIPHER_ECB                   0xDA
 #define __PRIM_BLOCK_ENCIPHER_ECB                   0xDB
@@ -339,7 +345,7 @@ do \
 **-----------------------------------------------------------------------------
 */
 #ifdef __FUNCTION_PROTOTYPES
-void multosAESECBDecipher (BYTE *cipherText, BYTE *plainText, BYTE keyLength, 
+void multosAESECBDecipher (BYTE *cipherText, BYTE *plainText, BYTE keyLength,
                            BYTE *key);
 #else
 #define multosAESECBDecipher(cipherText, plainText, keyLength, key) \
@@ -362,7 +368,7 @@ do \
 **-----------------------------------------------------------------------------
 */
 #ifdef __FUNCTION_PROTOTYPES
-void multosAESECBEncipher (BYTE *plainText, BYTE *cipherText, BYTE keyLength, 
+void multosAESECBEncipher (BYTE *plainText, BYTE *cipherText, BYTE keyLength,
                            BYTE *key);
 #else
 #define multosAESECBEncipher(plainText, cipherText, keyLength, key) \
@@ -568,7 +574,7 @@ do  \
 */
 #ifdef __FUNCTION_PROTOTYPES
 void multosBlockDecipherCBC (const BYTE algorithm, WORD inputLength,
-                             BYTE *cipherText, BYTE *plainText, 
+                             BYTE *cipherText, BYTE *plainText,
                              BYTE initialValueLength, BYTE *initialValue,
                              BYTE keyLength, BYTE *key);
 #else
@@ -664,7 +670,7 @@ do  \
 */
 #ifdef __FUNCTION_PROTOTYPES
 void multosBlockEncipherCBC (const BYTE algorithm, WORD inputLength,
-                             BYTE *plainText, BYTE *cipherText, 
+                             BYTE *plainText, BYTE *cipherText,
                              BYTE initialValueLength, BYTE *initialValue,
                              BYTE keyLength, BYTE *key);
 #else
@@ -2049,7 +2055,7 @@ do \
 **                                BYTE* KeyEncAddr,
 **                                BYTE channel,
 **                                BYTE* dataAddr,
-**                                BOOL optional, 
+**                                BOOL optional,
 **                                BOOL *success)
 ** optional: false = Mandatory, true = Optional
 **-----------------------------------------------------------------------------
@@ -2080,7 +2086,7 @@ do \
 ** void multosAcceleratedReadBACLite ( BYTE* KeyEncAddr,
 **                                BYTE channel,
 **                                BYTE* dataAddr,
-**                                BOOL optional, 
+**                                BOOL optional,
 **                                BOOL *success)
 ** optional: false = Mandatory, true = Optional
 **-----------------------------------------------------------------------------
@@ -2452,7 +2458,7 @@ void multosSetSelectCLSW (const BYTE sw1,const BYTE sw2);
 #else
 #define multosSetSelectCLSW(sw1, sw2)                                         \
     __code (__PRIM, __PRIM_SET_SELECT_CL_SW, sw1, sw2)
-#endif	
+#endif
 
 /*
 *------------------------------------------------------------------------------
@@ -2732,6 +2738,83 @@ do \
 	__code (__PRIM, __PRIM_LOAD_CCR); \
 	__code (__PRIM, __PRIM_BIT_MANIPULATE_BYTE, 0x83, 0x01); \
 	__code (__STORE, __typechk(BOOL *, LaFlag), 1); \
+} while (0)
+#endif
+
+/*--------------------- MULTOS 4.5.1 additions -----------------------*/
+
+/*
+**-----------------------------------------------------------------------------
+** void multosBlockShiftLeftVar (WORD num_bits, WORD data_len, BYTE *data_addr)
+** void multosBlockShiftRightVar               "
+** void multosBlockRotateLeft                  "
+** void multosBlockRotateRight                 "
+**-----------------------------------------------------------------------------
+*/
+#ifdef __FUNCTION_PROTOTYPES
+void multosBlockShiftLeftVar (WORD num_bits, WORD data_len, BYTE *data_addr);
+#else
+#define multosBlockShiftLeftVar(numBits,dataLen,dataAddr) \
+do \
+{ \
+	__push (__typechk(WORD, numBits)); \
+	__push (__typechk(WORD, dataLen)); \
+	__push (__typechk(BYTE*, dataAddr)); \
+	__code (__PRIM, __PRIM_SHIFT_ROTATE, 1, 1); \
+} while (0)
+#endif
+#ifdef __FUNCTION_PROTOTYPES
+void multosBlockShiftRightVar (WORD num_bits, WORD data_len, BYTE *data_addr);
+#else
+#define multosBlockShiftRightVar(numBits,dataLen,dataAddr) \
+do \
+{ \
+	__push (__typechk(WORD, numBits)); \
+	__push (__typechk(WORD, dataLen)); \
+	__push (__typechk(BYTE*, dataAddr)); \
+	__code (__PRIM, __PRIM_SHIFT_ROTATE, 1, 2); \
+} while (0)
+#endif
+#ifdef __FUNCTION_PROTOTYPES
+void multosBlockRotateLeft (WORD num_bits, WORD data_len, BYTE *data_addr);
+#else
+#define multosBlockRotateLeft(numBits,dataLen,dataAddr) \
+do \
+{ \
+	__push (__typechk(WORD, numBits)); \
+	__push (__typechk(WORD, dataLen)); \
+	__push (__typechk(BYTE*, dataAddr)); \
+	__code (__PRIM, __PRIM_SHIFT_ROTATE, 2, 1); \
+} while (0)
+#endif
+#ifdef __FUNCTION_PROTOTYPES
+void multosBlockRotateRight (WORD num_bits, WORD data_len, BYTE *data_addr);
+#else
+#define multosBlockRotateRight(numBits,dataLen,dataAddr) \
+do \
+{ \
+	__push (__typechk(WORD, numBits)); \
+	__push (__typechk(WORD, dataLen)); \
+	__push (__typechk(BYTE*, dataAddr)); \
+	__code (__PRIM, __PRIM_SHIFT_ROTATE, 2, 2); \
+} while (0)
+#endif
+
+/*
+**-----------------------------------------------------------------------------
+** void multosUpdateStaticSize (DWORD length,
+**                              BYTE *result)
+**-----------------------------------------------------------------------------
+*/
+#ifdef __FUNCTION_PROTOTYPES
+void multosUpdateStaticSize (DWORD length, BYTE * result);
+#else
+#define multosUpdateStaticSize(length, result) \
+do \
+{ \
+    __push (__typechk(DWORD, length)); \
+    __code (__PRIM, __PRIM_UPDATE_STATIC_SIZE, 0); \
+    __code (__STORE, __typechk(BYTE *, result), 1); \
 } while (0)
 #endif
 

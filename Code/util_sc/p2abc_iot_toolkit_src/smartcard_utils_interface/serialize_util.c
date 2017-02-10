@@ -522,7 +522,70 @@ void deserialize_smartcard_status(const char * ascii) {
     cJSON_Delete(root);
 }
 
-char* serialize_APDU_response(int * buf_len);
+char* serialize_APDU_response(int * buf_len){
 
-void deserialize_APDU_command(const char * ascii, int length);
-// TODO: Check https://github.com/OpenSC/OpenSC/blob/master/src/libopensc/apdu.c#L638
+}
+
+void deserialize_APDU_command(const BYTE * apdu_bytes, int length) {
+
+    if(length<4){
+        exit(ERROR_APDU_TOO_SHORT);
+    }
+
+    BYTE * ab = apdu_bytes;
+    CLA = *ab++;
+    INS = *ab++;
+    P1 = *ab++;
+    P2 = *ab++;
+    P1P2 = (P1<<8) & P2;        // TODO
+    length -= 4;
+
+    if(!length){
+        // Case 1
+        APDU_Case = 1;
+        return;
+    }
+
+    if(length == 1){
+        // Case 2
+        APDU_Case = 2;
+        P3 = Le = *ab++;
+        /*
+         * if (apdu->le == 0)
+					apdu->le = 0xff+1;
+         TODO ?? de apdu.c en github de OpenSC
+         */
+        length--;
+    } else {
+        P3 = Lc = *ab++;
+        length--;
+        if(length < Lc) {
+            exit(ERROR_APDU_TOO_SHORT);
+        }
+        // Copy Lc bytes of data
+        // TODO:
+        // Creo que es un bug en el main original donde temp_buffer pertenece a Session data
+        // y solamente apdu_data pertenece a Public Data, que corresponde con donde se guardan
+        // los datos de las apdu command y response.
+        mem_cpy(temp_buffer, ab, Lc);
+
+        length -= Lc;
+        ab += Lc;
+
+        if(!length){
+            // Case 3
+            APDU_Case = 3;
+        } else {
+            Le = *ab++;
+            length--;
+            APDU_Case = 4;
+        }
+
+    }
+
+    if(length) {
+        exit(ERROR_APDU_TOO_LONG);
+    }
+
+
+}

@@ -30,10 +30,7 @@ extern BYTE SW1;
 extern BYTE SW2;
 extern WORD SW12;               /* SW1 in MSB, SW2 in LSB. */
 
-
-
-
-
+extern BYTE APDU_Case;
 
 
 

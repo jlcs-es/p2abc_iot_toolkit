@@ -10,7 +10,8 @@ extern "C" {
 #define ERROR_CANT_READ_FILE                    402
 #define ERROR_BAD_JSON_VALUE_LENGTH             501
 #define ERROR_BAD_JSON_ARRAY_LENGTH             502
-
+#define ERROR_APDU_TOO_SHORT                    601
+#define ERROR_APDU_TOO_LONG                     602
 
 #ifdef __cplusplus
 }

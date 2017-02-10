@@ -19,6 +19,7 @@ BYTE SW1;
 BYTE SW2;
 WORD SW12;               /* SW1 in MSB, SW2 in LSB. */
 
+BYTE APDU_Case;
 
 /************************************************************************
  * Session data for the application (in RAM, but not public. Together
@@ -26,9 +27,7 @@ WORD SW12;               /* SW1 in MSB, SW2 in LSB. */
  ************************************************************************/
 
 WORD temp_size; // not used in subroutines
-
 WORD challenge_size = 0;
-
 WORD pad_size;
 BYTE authKeyId;
 BYTE temp_group_id;
@@ -46,20 +45,15 @@ BYTE temp_status;
 BYTE *temp_modulus;
 WORD temp_modulus_size;
 BYTE d;
-//BYTE mExit; //NOTE: redifined from "exit" for type errors
 WORD temp_blob_index;
 WORD temp_blobcount;
 WORD temp_uri_index;
 BYTE temp_nread;
 BYTE prev_nread;
-
 WORD temp_buffer_size;
 WORD temp_rand_size;
-
 BYTE *uri;
-
 WORD i, j;
-
 BYTE device_id_prim[ID_SIZE];
 WORD temp_key_size;
 
@@ -71,6 +65,8 @@ BYTE *buffer_ptr;
 
 MEM_SESSION mem_session;
 
+
+
 /************************************************************************
  * Public data for the application (first data is placed at PB[0])
  ************************************************************************/
@@ -80,6 +76,9 @@ BYTE temp_buffer[2*MAX_BIGINT_SIZE]; // size max can be reached in the singleRes
 
 APDU_DATA apdu_data;
 
+//TODO : temp_buffer puede que necesite ser static data, o reconsiderar la ejecucion global del binario
+// porque el GET_RESPONSE parece ser que considera qu la tarjeta no se quita de la alimentación
+// y Multos mantiene la memoria de Public data, por ello temp_buffer se mantiene en public data.
 
 
 /************************************************************************
@@ -88,16 +87,9 @@ APDU_DATA apdu_data;
 
 BLOB_STORE_ITEM   blob_store[MAX_NUMBER_OF_BLOBS];
 BLOB_CATALOG_ITEM blob_catalog[MAX_NUMBER_OF_BLOBS];
-
-
 BYTE master_backup_key[MASTER_BACKUP_KEY_SIZE] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-
-
 BYTE root_code[ACCESS_CODE_SIZE] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-
-
 BYTE resurrection_key[RESURRECTION_KEY_SIZE] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-
 BYTE pin_trials = MAX_PIN_TRIALS;
 BYTE puk_trials = MAX_PUK_TRIALS;
 BYTE device_id[ID_SIZE];
@@ -119,6 +111,5 @@ ISSUER issuers[NUM_ISSUERS];
 PROVER provers[NUM_PROVERS];
 BYTE current_prover_id;
 CREDENTIAL credentials[NUM_CREDS];
-
 BYTE temp_key[MAX_BIGINT_SIZE];
 
