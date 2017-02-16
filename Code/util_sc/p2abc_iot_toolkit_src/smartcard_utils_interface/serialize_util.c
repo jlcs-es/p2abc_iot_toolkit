@@ -9,6 +9,7 @@
 #include <smartcard_utils_interface/system_funcs.h>
 #include <smartcard_utils_interface/error_codes.h>
 #include <string.h>
+#include <smartcard_common/APDU_types.h>
 
 void serialize_BYTE(cJSON * object, char * name, BYTE value){
     char temp_hex_string[3];
@@ -522,7 +523,34 @@ void deserialize_smartcard_status(const char * ascii) {
     cJSON_Delete(root);
 }
 
-char* serialize_APDU_response(int * buf_len){
+unsigned char* serialize_APDU_response(int * buf_len){
+
+    WORD ar_len = 2; // APDU Response Length
+//    if(La > MAX_APDU_OUTPUT_DATA_SIZE) {
+//        SW1 = 0x6F;
+//        SW2 = 0x00;
+//    }
+//    if(Le == 0 || Le < La){
+//        SW1 = 0x61;
+//        SW2 = La;
+//    }
+
+    if(APDU_Case == 2 || APDU_Case == 4)
+        ar_len += La;
+
+    // TODO : ver figura 36 La Handling de MDG, y se puede mejorar mucho el análisis de casos.
+
+    unsigned char * ar = malloc(ar_len);
+    if(ar == NULL)
+        exit(ERROR_CANT_MALLOC);
+
+    unsigned char * p = ar;
+    if(Le >= La){
+        mem_cpy(ar, apdu_data.dataout, La);
+        p += La;
+    }
+    *p++ = SW1;
+    *p = SW2;
 
 }
 
@@ -532,12 +560,14 @@ void deserialize_APDU_command(const BYTE * apdu_bytes, int length) {
         exit(ERROR_APDU_TOO_SHORT);
     }
 
+    Le = 0; La = 0; Lc = 0;
+    SW1 = 0x90; SW2 = 0x00;
+
     BYTE * ab = apdu_bytes;
     CLA = *ab++;
     INS = *ab++;
     P1 = *ab++;
     P2 = *ab++;
-    P1P2 = (P1<<8) & P2;        // TODO
     length -= 4;
 
     if(!length){
@@ -549,25 +579,16 @@ void deserialize_APDU_command(const BYTE * apdu_bytes, int length) {
     if(length == 1){
         // Case 2
         APDU_Case = 2;
-        P3 = Le = *ab++;
-        /*
-         * if (apdu->le == 0)
-					apdu->le = 0xff+1;
-         TODO ?? de apdu.c en github de OpenSC
-         */
+        Le = *ab++;
         length--;
     } else {
-        P3 = Lc = *ab++;
+        Lc = *ab++;
         length--;
         if(length < Lc) {
             exit(ERROR_APDU_TOO_SHORT);
         }
         // Copy Lc bytes of data
-        // TODO:
-        // Creo que es un bug en el main original donde temp_buffer pertenece a Session data
-        // y solamente apdu_data pertenece a Public Data, que corresponde con donde se guardan
-        // los datos de las apdu command y response.
-        mem_cpy(temp_buffer, ab, Lc);
+        mem_cpy(apdu_data.buffer, ab, Lc);
 
         length -= Lc;
         ab += Lc;

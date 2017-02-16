@@ -10,14 +10,14 @@ BYTE CLA;
 BYTE INS;
 BYTE P1;
 BYTE P2;
-BYTE P3;
-WORD P1P2;               /* P1 in MSB, P2 in LSB. */
+//BYTE P3;
+//WORD P1P2;               /* P1 in MSB, P2 in LSB. */
 WORD Lc;
 WORD Le;
 WORD La;
 BYTE SW1;
 BYTE SW2;
-WORD SW12;               /* SW1 in MSB, SW2 in LSB. */
+// WORD SW12;               /* SW1 in MSB, SW2 in LSB. */
 
 BYTE APDU_Case;
 

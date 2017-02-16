@@ -21,14 +21,14 @@ extern BYTE CLA;
 extern BYTE INS;
 extern BYTE P1;
 extern BYTE P2;
-extern BYTE P3;
-extern WORD P1P2;               /* P1 in MSB, P2 in LSB. */
+//extern BYTE P3;
+//extern WORD P1P2;               /* P1 in MSB, P2 in LSB. */
 extern WORD Lc;
 extern WORD Le;
 extern WORD La;
 extern BYTE SW1;
 extern BYTE SW2;
-extern WORD SW12;               /* SW1 in MSB, SW2 in LSB. */
+// extern WORD SW12;               /* SW1 in MSB, SW2 in LSB. */
 
 extern BYTE APDU_Case;
 

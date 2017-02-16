@@ -35,7 +35,7 @@ char* serialize_smartcard_status();
  */
 void deserialize_smartcard_status(const char * ascii);
 
-char* serialize_APDU_response(int * buf_len);
+unsigned char* serialize_APDU_response(int * buf_len);
 
 void deserialize_APDU_command(const char * ascii, int length);
 
