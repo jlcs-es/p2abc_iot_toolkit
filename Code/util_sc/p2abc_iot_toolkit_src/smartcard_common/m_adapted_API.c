@@ -4,6 +4,7 @@
 #include <smartcard_utils_interface/crypto_util.h>
 #include <smartcard_utils_interface/arithmetic_util.h>
 #include <smartcard_common/global_vars.h>
+#include <smartcard_utils_interface/output_APDU_response.h>
 
 
 void mAESECBDecipher (BYTE *cipherText, BYTE *plainText, BYTE keyLength, BYTE *key){
@@ -83,20 +84,27 @@ BOOL mCheckCase (BYTE isoCase){
 }
 
 void mExit (void){
-    //Default SW 0x9000  ERR_OK
+    output_apdu_response();
     //TODO
-    // NOTE: en las variables globales están también SW, La, etc., y serán las que hay que asignar aquí y llamar a
-    // una función que genere los bytes de respuesta y llame a la función de IO que envíe la respuesta y de por
-    // terminado la ejecución de la tarjeta
+    // llamar a save sc status ANTES de apdu response (consistencia por si se va la energía)
+    // en handle apdu todos deben llamar a mExit y hacer return, por el bucle de leer APDUs.
 }
+
+
 void mExitLa (const BYTE la){
-    //TODO
+    La = la;
+    mExit();
 }
 void mExitSW(const WORD sw){
-    //TODO
+    SW1 = (BYTE) ( ( sw >> 8) & 0xff ) ;
+    SW2 = (BYTE) ( sw & 0xff );
+    mExit();
 }
 void mExitSWLa (const WORD sw, const BYTE la){
-    //TODO
+    SW1 = (BYTE) ( ( sw >> 8) & 0xff ) ;
+    SW2 = (BYTE) ( sw & 0xff );
+    La = la;
+    mExit();
 }
 
 

@@ -12,7 +12,7 @@ extern "C" {
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
 void getRandomBytes(BYTE* buffer, WORD size);
-void checkPin(BYTE* tested_pin);
+BOOL checkPin(BYTE* tested_pin);
 void checkPuk(BYTE* tested_puk);
 WORD sizeDecode(BYTE *s);
 void sizeEncode(BYTE *s, WORD size);

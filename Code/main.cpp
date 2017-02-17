@@ -87,7 +87,7 @@ void test_JSON2(){
     fseek(f, 0, SEEK_END);
     long fsize = ftell(f);
     fseek(f, 0, SEEK_SET);  //same as rewind(f);
-    char * string = (char*)malloc(fsize + 1);
+    unsigned char * string = (unsigned char*)malloc(fsize + 1);
     if(string==NULL) exit -2;
     if(fread(string, 1, fsize, f) < fsize) exit -3;
     string[fsize] = 0;

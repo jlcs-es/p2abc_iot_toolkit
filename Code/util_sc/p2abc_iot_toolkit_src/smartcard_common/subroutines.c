@@ -60,11 +60,11 @@ void getRandomBytes(BYTE* buffer, WORD size) {
  * check whether pin_trials > 0.
  ************************************************************************************************************************************************/
 
-void checkPin(BYTE* tested_pin) {
+BOOL checkPin(BYTE* tested_pin) {
 
     if (mem_cmp(tested_pin, pin, PIN_SIZE) == 0) {  // ** Adapted for util_sc ** //
         pin_trials = MAX_PIN_TRIALS;
-        return;
+        return TRUE;
     }
 
     // if this point is reached, the pin is incorrect. We eventually
@@ -75,11 +75,11 @@ void checkPin(BYTE* tested_pin) {
     if (pin_trials == 0) {
         mode = MODE_LOCKED;
         mExitSW(ERR_INCORRECT_PIN_AND_CARD_LOCKED); // ** Adapted for util_sc ** //
-        return;
+        return FALSE;
     }
 
     mExitSW(ERR_INCORRECT_PIN); // ** Adapted for util_sc ** //
-
+    return FALSE;
 }
 
 /************************************************************************************************************************************************
@@ -997,6 +997,7 @@ void output_large_data(void) {
 
     if (remaining_size == 0) {
         mExit();    // ** Adapted for util_sc ** //
+        return;
     }
 
     output_size = MIN(remaining_size, MAX_APDU_OUTPUT_DATA_SIZE);
@@ -1008,12 +1009,15 @@ void output_large_data(void) {
 
     if(remaining_size == 0){
         mExitLa(output_size);   // ** Adapted for util_sc ** //
+        return;
     }
     else if(remaining_size >= 0xff) {
         mExitSWLa(0x61ff, 0xFF); // ** Adapted for util_sc ** //
+        return;
     }
     else {
         mExitSWLa(0x6100+remaining_size, 0xFF);  // ** Adapted for util_sc ** //
+        return;
     }
 
 }

@@ -10,8 +10,10 @@
 void handle_APDU() {
 
     /* Check class in APDU. */
-    if (CLA != ABC_CLA && INS != INS_GET_RESPONSE)
+    if (CLA != ABC_CLA && INS != INS_GET_RESPONSE){
         mExitSW(ERR_BAD_CLA);
+        return;
+    }
 
     /* Decode instruction. */
     switch (INS)
@@ -234,18 +236,21 @@ void handle_APDU() {
         default:
             mExitSW(ERR_BAD_INS);
     }
-    mExit();
 }
 
 
 #ifdef TEST_PATRAS_MODE
 
 void handle_INS_GET_KX_AND_DEVICE_KEY(void){
-    if (!mCheckCase(2))
+    if (!mCheckCase(2)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (current_prover_id < 1 || current_prover_id > NUM_PROVERS)
+    if (current_prover_id < 1 || current_prover_id > NUM_PROVERS){
         mExitSW(ERR_PROVERID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
     temp_size = 0;
 
@@ -274,14 +279,17 @@ void handle_INS_GET_KX_AND_DEVICE_KEY(void){
 
 void handle_INS_TEST(void){
       // do whatever you like here...
+      mExit();
 }
 
 #endif
 
 void handle_INS_GET_MODE(){
 
-    if (!mCheckCase(2))
+    if (!mCheckCase(2)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
     apdu_data.mode = mode;
     mExitLa(1);
@@ -290,46 +298,66 @@ void handle_INS_GET_MODE(){
 
 
 void handle_INS_SET_ROOT_MODE(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_VIRGIN)
+    if (mode != MODE_VIRGIN){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != ACCESS_CODE_SIZE)
+    if (Lc != ACCESS_CODE_SIZE){
         mExitSW((ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ ACCESS_CODE_SIZE));
+        return;
+    }
 
-    if (mem_cmp(apdu_data.access_code, root_code, ACCESS_CODE_SIZE) != 0)
+    if (mem_cmp(apdu_data.access_code, root_code, ACCESS_CODE_SIZE) != 0){
         mExitSW(ERR_FAILED_ACCESS_PRIVILEGED_MODE);
+        return;
+    }
 
     mode = MODE_ROOT;
 
+    mExit();
 }
 
 
 void handle_INS_SET_WORKING_MODE(){
 
-    if (!mCheckCase(1))
+    if (!mCheckCase(1)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT)
+    if (mode != MODE_ROOT){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
     mode = MODE_WORKING;
 
+    mExit();
 }
 
 
 void handle_INS_SET_VIRGIN_MODE(){
 
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (Lc != MAC_SIZE)
+    if (Lc != MAC_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ MAC_SIZE);
+        return;
+    }
 
-    if (challenge_size < 16)
+    if (challenge_size < 16){
         mExitSW(ERR_INCORRECT_MIN_SIZE_OF_RAND ^ 16);
+        return;
+    }
 
     mem_cpy(temp_buffer, resurrection_key, RESURRECTION_KEY_SIZE);
     mem_cpy(temp_buffer+RESURRECTION_KEY_SIZE, mem_session.challenge, challenge_size);
@@ -339,8 +367,10 @@ void handle_INS_SET_VIRGIN_MODE(){
     mem_set(mem_session.challenge, 0, CHALLENGE_MAX_SIZE);
     challenge_size = 0;
 
-    if (mem_cmp(apdu_data.mac, buffer_ptr, MAC_SIZE) != 0)
+    if (mem_cmp(apdu_data.mac, buffer_ptr, MAC_SIZE) != 0){
         mExitSW(ERR_FAILED_ACCESS_PRIVILEGED_MODE);
+        return;
+    }
 
     // Erase the entire contents of the static memory and reset some of the variables to their original value
 
@@ -369,6 +399,8 @@ void handle_INS_SET_VIRGIN_MODE(){
     mem_set(temp_key, 0, MAX_BIGINT_SIZE);
 
     mode = MODE_VIRGIN;
+
+    mExit();
 }
 
 
@@ -378,11 +410,15 @@ void handle_INS_SET_FAST_VIRGIN_MODE(){
 
 
 void handle_INS_PIN_TRIALS_LEFT(){
-    if (!mCheckCase(2))
+    if (!mCheckCase(2)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode == MODE_VIRGIN)
+    if (mode == MODE_VIRGIN){
         mExitSW(ERR_BAD_MODE);
+        return;
+    }
 
     apdu_data.pin_trials = pin_trials;
     mExitLa(1);
@@ -390,11 +426,15 @@ void handle_INS_PIN_TRIALS_LEFT(){
 
 
 void handle_INS_PUK_TRIALS_LEFT(){
-    if (!mCheckCase(2))
+    if (!mCheckCase(2)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode == MODE_VIRGIN)
+    if (mode == MODE_VIRGIN){
         mExitSW(ERR_BAD_MODE);
+        return;
+    }
 
     apdu_data.puk_trials = puk_trials;
     mExitLa(1);
@@ -403,32 +443,46 @@ void handle_INS_PUK_TRIALS_LEFT(){
 
 
 void handle_INS_CHANGE_PIN(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != (PIN_SIZE<<1))
+    if (Lc != (PIN_SIZE<<1)){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (PIN_SIZE<<1));
+        return;
+    }
 
-    checkPin(apdu_data.old_pin_and_new_pin);
+    if( !if( !checkPin(apdu_data.old_pin_and_new_pin) ) return ) return;
 
     mem_cpy(pin, apdu_data.old_pin_and_new_pin + PIN_SIZE, PIN_SIZE);
 
     pin_trials = MAX_PIN_TRIALS;
+
+    mExit();
 }
 
 
 void handle_INS_RESET_PIN(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING && mode != MODE_LOCKED)
+    if (mode != MODE_ROOT && mode != MODE_WORKING && mode != MODE_LOCKED){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE + PUK_SIZE)
+    if (Lc != PIN_SIZE + PUK_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (PIN_SIZE + PUK_SIZE));
+        return;
+    }
 
     checkPuk(apdu_data.puk_and_pin);
 
@@ -437,28 +491,40 @@ void handle_INS_RESET_PIN(){
     pin_trials = MAX_PIN_TRIALS;
 
     mode = MODE_WORKING;
+
+    mExit();
 }
 
 
 void handle_INS_INITIALIZE_DEVICE(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT)
+    if (mode != MODE_ROOT){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != ID_SIZE + SIZE_SIZE)
+    if (Lc != ID_SIZE + SIZE_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (ID_SIZE + SIZE_SIZE));
+        return;
+    }
 
     mem_cpy(device_id, apdu_data.id_and_size, ID_SIZE);
 
     temp_size = sizeDecode(apdu_data.id_and_size + ID_SIZE);
 
-    if (temp_size < MIN_X_SIZE)
+    if (temp_size < MIN_X_SIZE){
         mExitSW(ERR_DEVICE_KEY_SHORTER_THAN_MIN_X_SIZE);
+        return;
+    }
 
-    if (temp_size > MAX_SMALLINT_SIZE)
+    if (temp_size > MAX_SMALLINT_SIZE){
         mExitSW(ERR_INTEGER_EXCEEDS_MAXINTSIZE);
+        return;
+    }
 
     x_size = temp_size;
 
@@ -500,16 +566,22 @@ void handle_INS_INITIALIZE_DEVICE(){
 
 
 void handle_INS_GET_DEVICE_ID(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE)
+    if (Lc != PIN_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA  ^ PIN_SIZE);
+        return;
+    }
 
-    checkPin(apdu_data.pin);
+    if( !checkPin(apdu_data.pin) ) return;
 
     mem_cpy(apdu_data.device_id, device_id, ID_SIZE);
 
@@ -518,8 +590,10 @@ void handle_INS_GET_DEVICE_ID(){
 
 
 void handle_INS_GET_VERSION(){
-    if (!mCheckCase(2))
+    if (!mCheckCase(2)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
     mem_cpy(apdu_data.version, version, 64);
 
@@ -529,14 +603,20 @@ void handle_INS_GET_VERSION(){
 
 
 void handle_INS_PUT_DATA(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc == 0)
+    if (Lc == 0){
         mExitSW(ERR_INCORRECT_MIN_SIZE_OF_INCOMMING_DATA ^ 0x01);
+        return;
+    }
 
     if (Lc > BUFFER_MAX_SIZE)
         buffer_size = BUFFER_MAX_SIZE;
@@ -545,15 +625,20 @@ void handle_INS_PUT_DATA(){
 
     mem_cpy(buffer, apdu_data.buffer, buffer_size);
 
+    mExit();
 }
 
 
 void handle_INS_GET_CHALLENGE(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (Lc != 1)
+    if (Lc != 1){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ 1);
+        return;
+    }
 
     challenge_size = (WORD)apdu_data.challenge_size;
 
@@ -579,14 +664,20 @@ void handle_INS_GET_CHALLENGE(){
 
 
 void handle_INS_AUTHENTICATE_DATA(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != 1)
+    if (Lc != 1){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ 1);
+        return;
+    }
 
     getKey(temp_key, &temp_key_size, apdu_data.keyId);
 
@@ -600,50 +691,72 @@ void handle_INS_AUTHENTICATE_DATA(){
 
     mem_set(&temp_key, 0, MAX_BIGINT_SIZE);
 
+    mExit();
 }
 
 
 void handle_INS_SET_AUTHENTICATION_KEY(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != 1)
+    if (Lc != 1){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ 1);
+        return;
+    }
 
-    if (apdu_data.keyId >= NUM_AUTH_KEYS)
+    if (apdu_data.keyId >= NUM_AUTH_KEYS){
         mExitSW(ERR_KEY_ID_OUTSIDE_RANGE);
+        return;
+    }
 
-    if (mode == MODE_WORKING)
+    if (mode == MODE_WORKING){
         checkBufferPrefix(INS_SET_AUTHENTICATION_KEY, &apdu_data.keyId, 1);
+        return;
+    }
 
-    if (buffer_size < 55)
+    if (buffer_size < 55){
         mExitSW(ERR_AUTHENTICATION_KEY_TOO_SHORT);
+        return;
+    }
 
-    if (buffer_size > MAX_BIGINT_SIZE)
+    if (buffer_size > MAX_BIGINT_SIZE){
         mExitSW(ERR_INTEGER_EXCEEDS_MAXINTSIZE);
+        return;
+    }
 
     mem_cpy(auth_keys[apdu_data.keyId], buffer, buffer_size);
     auth_keys_sizes[apdu_data.keyId] = buffer_size;
 
     buffer_size = 0;
 
+    mExit();
 }
 
 
 void handle_INS_LIST_AUTHENTICATION_KEYS(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE)
+    if (Lc != PIN_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ PIN_SIZE);
+        return;
+    }
 
-    checkPin(apdu_data.pin);
+    if( !checkPin(apdu_data.pin) ) return;
 
     temp_size = 0; // size of temp_buffer
     for (authKeyId=0; authKeyId < NUM_ISSUERS; authKeyId++) {
@@ -667,16 +780,22 @@ void handle_INS_LIST_AUTHENTICATION_KEYS(){
 
 
 void handle_INS_READ_AUTHENTICATION_KEY(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE + KEY_ID_SIZE)
+    if (Lc != PIN_SIZE + KEY_ID_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (PIN_SIZE + KEY_ID_SIZE));
+        return;
+    }
 
-    checkPin(apdu_data.read_authentication_key.pin);
+    if( !checkPin(apdu_data.read_authentication_key.pin) ) return;
 
     getKey(temp_buffer, &temp_size, apdu_data.read_authentication_key.keyId);
 
@@ -693,20 +812,30 @@ void handle_INS_READ_AUTHENTICATION_KEY(){
 
 
 void handle_INS_REMOVE_AUTHENTICATION_KEY(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != KEY_ID_SIZE)
+    if (Lc != KEY_ID_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ KEY_ID_SIZE);
+        return;
+    }
 
-    if (apdu_data.keyId >= NUM_AUTH_KEYS)
+    if (apdu_data.keyId >= NUM_AUTH_KEYS){
         mExitSW(ERR_KEY_ID_OUTSIDE_RANGE);
+        return;
+    }
 
-    if (!auth_keys_sizes[apdu_data.keyId])
+    if (!auth_keys_sizes[apdu_data.keyId]){
         mExitSW(ERR_AUTHENTICATION_KEY_DOES_NOT_EXIST);
+        return;
+    }
 
     if (mode == MODE_WORKING)
         checkBufferEqual(INS_REMOVE_AUTHENTICATION_KEY, &(apdu_data.keyId), KEY_ID_SIZE);
@@ -714,30 +843,44 @@ void handle_INS_REMOVE_AUTHENTICATION_KEY(){
     mem_set(auth_keys[apdu_data.keyId], 0x00, auth_keys_sizes[apdu_data.keyId]);
     auth_keys_sizes[apdu_data.keyId] = 0;
 
+
+    mExit();
 }
 
 
 void handle_INS_SET_GROUP_COMPONENT(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != GROUP_ID_SIZE + COMPTYPE_SIZE)
+    if (Lc != GROUP_ID_SIZE + COMPTYPE_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (GROUP_ID_SIZE + COMPTYPE_SIZE));
+        return;
+    }
 
-    if (apdu_data.set_group_component.group_id >= NUM_GROUPS)
+    if (apdu_data.set_group_component.group_id >= NUM_GROUPS){
         mExitSW(ERR_GROUPID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (apdu_data.set_group_component.comptype > 2)
+    if (apdu_data.set_group_component.comptype > 2){
         mExitSW(ERR_COMPONENT_TYPE_OUTSIDE_OF_RANGE);
+        return;
+    }
 
     if (mode == MODE_WORKING)
         checkBufferPrefix(INS_SET_GROUP_COMPONENT, &apdu_data.set_group_component.group_id, 2); // trick to get group_id || comptype
 
-    if (buffer_size > MAX_BIGINT_SIZE)
+    if (buffer_size > MAX_BIGINT_SIZE){
         mExitSW(ERR_INTEGER_EXCEEDS_MAXINTSIZE);
+        return;
+    }
 
     switch(apdu_data.set_group_component.comptype) {
         case 0:
@@ -746,8 +889,10 @@ void handle_INS_SET_GROUP_COMPONENT(){
             groups[apdu_data.set_group_component.group_id].modulus_size = buffer_size;
             break;
         case 1:
-            if (buffer_size > MAX_SMALLINT_SIZE)
+            if (buffer_size > MAX_SMALLINT_SIZE){
                 mExitSW(ERR_INTEGER_EXCEEDS_MAXINTSIZE);
+                return;
+            }
             mem_cpy(groups[apdu_data.set_group_component.group_id].q+(MAX_SMALLINT_SIZE-buffer_size), buffer, buffer_size);
             groups[apdu_data.set_group_component.group_id].q_size = buffer_size;
             break;
@@ -759,33 +904,46 @@ void handle_INS_SET_GROUP_COMPONENT(){
             break;
     }
 
+    mExit();
 }
 
 
 void handle_INS_SET_GENERATOR(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != GROUP_ID_SIZE + GEN_ID_SIZE)
+    if (Lc != GROUP_ID_SIZE + GEN_ID_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (GROUP_ID_SIZE + GEN_ID_SIZE));
+        return;
+    }
 
     temp_group_id = apdu_data.set_generator.group_id;
     temp_gen_id   = apdu_data.set_generator.genId;
 
-    if (temp_group_id >= NUM_GROUPS)
+    if (temp_group_id >= NUM_GROUPS){
         mExitSW(ERR_GROUPID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (temp_gen_id == 0 || temp_gen_id > NUM_GEN)
+    if (temp_gen_id == 0 || temp_gen_id > NUM_GEN){
         mExitSW(ERR_ID_OF_GROUP_GENERATOR_OUTSIDE_OF_RANGE);
+        return;
+    }
 
     if (mode == 2)
         checkBufferPrefix(INS_SET_GENERATOR, &apdu_data.set_generator.group_id, 2); // trick to get group_id || genId
 
-    if (buffer_size > MAX_BIGINT_SIZE)
+    if (buffer_size > MAX_BIGINT_SIZE){
         mExitSW(ERR_INTEGER_EXCEEDS_MAXINTSIZE);
+        return;
+    }
 
     mem_cpy(groups[temp_group_id].g[temp_gen_id-1]+(MAX_BIGINT_SIZE-buffer_size), buffer, buffer_size); // align the buffer data to the right-most bytes of g[]
     if (groups[temp_group_id].g_size[temp_gen_id-1] == 0) {
@@ -793,20 +951,27 @@ void handle_INS_SET_GENERATOR(){
     }
     groups[temp_group_id].g_size[temp_gen_id-1] = buffer_size;
 
+    mExit();
 }
 
 
 void handle_INS_LIST_GROUPS(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE)
+    if (Lc != PIN_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ PIN_SIZE);
+        return;
+    }
 
-    checkPin(apdu_data.pin);
+    if( !checkPin(apdu_data.pin) ) return;
 
     temp_size = 0; // size of dataout
     for (temp_group_id = 0; temp_group_id < NUM_GROUPS; temp_group_id++)
@@ -828,24 +993,34 @@ void handle_INS_LIST_GROUPS(){
 
 
 void handle_INS_READ_GROUP(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE + GROUP_ID_SIZE)
+    if (Lc != PIN_SIZE + GROUP_ID_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (PIN_SIZE + GROUP_ID_SIZE));
+        return;
+    }
 
-    checkPin(apdu_data.read_group_in.pin);
+    if( !checkPin(apdu_data.read_group_in.pin) ) return;
 
     temp_group_id = apdu_data.read_group_in.group_id;
 
-    if (temp_group_id >= NUM_GROUPS)
+    if (temp_group_id >= NUM_GROUPS){
         mExitSW(ERR_GROUPID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (!groupExists(temp_group_id))
+    if (!groupExists(temp_group_id)){
         mExitSW(ERR_GROUP_DOES_NOT_EXIST);
+        return;
+    }
 
     temp_size = 0;
 
@@ -879,25 +1054,37 @@ void handle_INS_READ_GROUP(){
 
 void handle_INS_READ_GROUP_COMPONENT(){
 
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE + GROUP_ID_SIZE + COMPTYPE_SIZE)
+    if (Lc != PIN_SIZE + GROUP_ID_SIZE + COMPTYPE_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (PIN_SIZE + GROUP_ID_SIZE + COMPTYPE_SIZE));
+        return;
+    }
 
-    checkPin(apdu_data.read_group_component_in.pin);
+    if( !checkPin(apdu_data.read_group_component_in.pin) ) return;
 
-    if (apdu_data.read_group_component_in.group_id >= NUM_GROUPS)
+    if (apdu_data.read_group_component_in.group_id >= NUM_GROUPS){
         mExitSW(ERR_GROUPID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (!groupExists(apdu_data.read_group_component_in.group_id))
+    if (!groupExists(apdu_data.read_group_component_in.group_id)){
         mExitSW(ERR_GROUP_DOES_NOT_EXIST);
+        return;
+    }
 
-    if (apdu_data.read_group_component_in.comptype > 3)
+    if (apdu_data.read_group_component_in.comptype > 3){
         mExitSW(ERR_COMPONENT_TYPE_OUTSIDE_OF_RANGE);
+        return;
+    }
 
     getGroupComponent(apdu_data.read_group_component_in.group_id, apdu_data.read_group_component_in.comptype);
 
@@ -910,28 +1097,37 @@ void handle_INS_READ_GROUP_COMPONENT(){
         output_large_data();
     }
 
-
 }
 
 
 void handle_INS_READ_GENERATOR(){
 
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE + GROUP_ID_SIZE + GEN_ID_SIZE)
+    if (Lc != PIN_SIZE + GROUP_ID_SIZE + GEN_ID_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (PIN_SIZE + GROUP_ID_SIZE + GEN_ID_SIZE));
+        return;
+    }
 
-    checkPin(apdu_data.read_generator_in.pin);
+    if( !checkPin(apdu_data.read_generator_in.pin) ) return;
 
-    if (apdu_data.read_generator_in.group_id >= NUM_GROUPS)
+    if (apdu_data.read_generator_in.group_id >= NUM_GROUPS){
         mExitSW(ERR_GROUPID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (!groupExists(apdu_data.read_generator_in.group_id))
+    if (!groupExists(apdu_data.read_generator_in.group_id)){
         mExitSW(ERR_GROUP_DOES_NOT_EXIST);
+        return;
+    }
 
     getGenerator(apdu_data.read_generator_in.group_id, apdu_data.read_generator_in.gen_id); // temp_size holds the true size of the generator
     temp_size = buffer_size;
@@ -950,20 +1146,30 @@ void handle_INS_READ_GENERATOR(){
 
 void handle_INS_REMOVE_GROUP(){
 
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != GROUP_ID_SIZE)
+    if (Lc != GROUP_ID_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ GROUP_ID_SIZE);
+        return;
+    }
 
-    if (apdu_data.group_id >= NUM_GROUPS)
+    if (apdu_data.group_id >= NUM_GROUPS){
         mExitSW(ERR_GROUPID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (!groupExists(apdu_data.group_id))
+    if (!groupExists(apdu_data.group_id)){
         mExitSW(ERR_GROUP_DOES_NOT_EXIST);
+        return;
+    }
 
     if (mode == MODE_WORKING)
         checkBufferPrefix(INS_REMOVE_GROUP, &apdu_data.group_id, GROUP_ID_SIZE);
@@ -975,26 +1181,37 @@ void handle_INS_REMOVE_GROUP(){
         groups[apdu_data.group_id].g_size[i] = 0;
     groups[apdu_data.group_id].num_generators = 0;
 
+    mExit();
 }
 
 
 void handle_INS_SET_COUNTER(){
 #if NUM_COUNTERS > 0
 
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != 4 + CURSOR_SIZE)
+    if (Lc != 4 + CURSOR_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (4 + CURSOR_SIZE));
+        return;
+    }
 
-    if ( (apdu_data.set_counter.counter_id < 1) || (apdu_data.set_counter.counter_id > NUM_COUNTERS) )
+    if ( (apdu_data.set_counter.counter_id < 1) || (apdu_data.set_counter.counter_id > NUM_COUNTERS) ){
         mExitSW(ERR_COUNTER_ID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (apdu_data.set_counter.key_id > NUM_ISSUERS)
+    if (apdu_data.set_counter.key_id > NUM_ISSUERS){
         mExitSW(ERR_KEY_ID_OUTSIDE_RANGE);
+        return;
+    }
 
     if (mode == MODE_WORKING)
         checkBufferEqual(INS_SET_COUNTER, &(apdu_data.set_counter.counter_id), 4+CURSOR_SIZE); // trick to get counter_id||key_id||...
@@ -1005,20 +1222,28 @@ void handle_INS_SET_COUNTER(){
     counters[temp_counter_id-1].exists = 1;
 
 #endif
+
+    mExit();
 }
 
 
 void handle_INS_INCREMENT_COUNTER(){
 #if NUM_COUNTERS > 0
 
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_WORKING)
+    if (mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc < 56)
+    if (Lc < 56){
         mExitSW(ERR_INCORRECT_MIN_SIZE_OF_INCOMMING_DATA ^ 0x38);
+        return;
+    }
 
     temp_key_id = apdu_data.increment_counter.key_id;
 
@@ -1029,20 +1254,28 @@ void handle_INS_INCREMENT_COUNTER(){
 
     extract(temp_key, temp_key_size);
 
-    if (buffer_size != 5)
+    if (buffer_size != 5){
         mExitSW(ERR_DATA_AUTHENTICATION_FAILURE);
+        return;
+    }
 
     temp_counter_id = buffer[0];
     mem_cpy(mem_session.small_buffer, buffer+1, CURSOR_SIZE);
 
-    if (temp_counter_id < 1 || temp_counter_id > NUM_COUNTERS)
+    if (temp_counter_id < 1 || temp_counter_id > NUM_COUNTERS){
         mExitSW(ERR_COUNTER_ID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (!counters[temp_counter_id-1].exists)
+    if (!counters[temp_counter_id-1].exists){
         mExitSW(ERR_COUNTER_DOES_NOT_EXIST);
+        return;
+    }
 
-    if (temp_key_id != counters[temp_counter_id-1].key_id)
+    if (temp_key_id != counters[temp_counter_id-1].key_id){
         mExitSW(ERR_DATA_AUTHENTICATION_FAILURE);
+        return;
+    }
 
     if (mem_cmp(mem_session.small_buffer,counters[temp_counter_id-1].cursor, CURSOR_SIZE) > 0) {
         mem_cpy(counters[temp_counter_id-1].cursor, mem_session.small_buffer, CURSOR_SIZE);
@@ -1052,22 +1285,29 @@ void handle_INS_INCREMENT_COUNTER(){
     mem_set(&temp_key, 0, MAX_BIGINT_SIZE);
 
 #endif
+    mExit();
 }
 
 
 void handle_INS_LIST_COUNTERS(){
 #if NUM_COUNTERS > 0
 
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE)
+    if (Lc != PIN_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ PIN_SIZE);
+        return;
+    }
 
-    checkPin(apdu_data.pin);
+    if( !checkPin(apdu_data.pin) ) return;
 
     temp_size = 0;
 
@@ -1087,6 +1327,8 @@ void handle_INS_LIST_COUNTERS(){
         output_large_data();
     }
 
+#else
+    mExit();
 #endif
 }
 
@@ -1094,51 +1336,73 @@ void handle_INS_LIST_COUNTERS(){
 void handle_INS_READ_COUNTER(){
 #if NUM_COUNTERS > 0
 
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE + COUNTER_ID_SIZE)
+    if (Lc != PIN_SIZE + COUNTER_ID_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (PIN_SIZE + COUNTER_ID_SIZE));
+        return;
+    }
 
-    checkPin(apdu_data.read_counter_in.pin);
+    if( !checkPin(apdu_data.read_counter_in.pin) ) return;
 
     temp_counter_id = apdu_data.read_counter_in.counter_id;
 
-    if (temp_counter_id < 1 || temp_counter_id > NUM_COUNTERS)
+    if (temp_counter_id < 1 || temp_counter_id > NUM_COUNTERS){
         mExitSW(ERR_COUNTER_ID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (!counters[temp_counter_id-1].exists)
+    if (!counters[temp_counter_id-1].exists){
         mExitSW(ERR_COUNTER_DOES_NOT_EXIST);
+        return;
+    }
 
     mem_cpy(apdu_data.dataout, &(counters[temp_counter_id-1].key_id), 3 + CURSOR_SIZE); // get key_id || index || ...
 
     mExitLa(3 + CURSOR_SIZE);
 
+#else
+    mExit();
 #endif
 }
 
 
 void handle_INS_REMOVE_COUNTER(){
 #if NUM_COUNTERS > 0
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != COUNTER_ID_SIZE)
+    if (Lc != COUNTER_ID_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ COUNTER_ID_SIZE);
+        return;
+    }
 
     temp_counter_id = apdu_data.counter_id;
 
-    if (temp_counter_id < 1 || temp_counter_id > NUM_COUNTERS)
+    if (temp_counter_id < 1 || temp_counter_id > NUM_COUNTERS){
         mExitSW(ERR_COUNTER_ID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (!counters[temp_counter_id-1].exists)
+    if (!counters[temp_counter_id-1].exists){
         mExitSW(ERR_COUNTER_DOES_NOT_EXIST);
+        return;
+    }
 
     if (mode == MODE_WORKING)
         checkBufferEqual(INS_REMOVE_COUNTER, &temp_counter_id, COUNTER_ID_SIZE);
@@ -1146,32 +1410,47 @@ void handle_INS_REMOVE_COUNTER(){
     mem_set(&(counters[temp_counter_id-1].counter_id), 0, 5+CURSOR_SIZE); // also set 'exists' to 0
 
 #endif
+    mExit();
 }
 
 
 void handle_INS_SET_ISSUER(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != 6)
+    if (Lc != 6){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ 6);
+        return;
+    }
 
     temp_issuer_id = apdu_data.set_issuer_in.issuer_id;
 
-    if (temp_issuer_id < 1 || temp_issuer_id > NUM_ISSUERS)
+    if (temp_issuer_id < 1 || temp_issuer_id > NUM_ISSUERS){
         mExitSW(ERR_ISSUERID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (apdu_data.set_issuer_in.group_id >= NUM_GROUPS)
+    if (apdu_data.set_issuer_in.group_id >= NUM_GROUPS){
         mExitSW(ERR_GROUPID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (apdu_data.set_issuer_in.gen_id_1 < 1 || apdu_data.set_issuer_in.gen_id_1 > NUM_GEN || apdu_data.set_issuer_in.gen_id_2 > NUM_GEN)
+    if (apdu_data.set_issuer_in.gen_id_1 < 1 || apdu_data.set_issuer_in.gen_id_1 > NUM_GEN || apdu_data.set_issuer_in.gen_id_2 > NUM_GEN){
         mExitSW(ERR_ID_OF_GROUP_GENERATOR_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (apdu_data.set_issuer_in.counter_id > NUM_COUNTERS)
+    if (apdu_data.set_issuer_in.counter_id > NUM_COUNTERS){
         mExitSW(ERR_COUNTER_ID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
     if (mode == MODE_WORKING)
         checkBufferEqual(INS_SET_ISSUER, &(temp_issuer_id), 6); // get issuer_id||group_id||...
@@ -1179,20 +1458,28 @@ void handle_INS_SET_ISSUER(){
     mem_cpy(&(issuers[temp_issuer_id-1].issuer_id), &(apdu_data.set_issuer_in.issuer_id), 6);
     issuers[temp_issuer_id-1].exists = 1;
 
+
+    mExit();
 }
 
 
 void handle_INS_LIST_ISSUERS(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE)
+    if (Lc != PIN_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ PIN_SIZE);
+        return;
+    }
 
-    checkPin(apdu_data.pin);
+    if( !checkPin(apdu_data.pin) ) return;
 
     temp_size = 0;
 
@@ -1211,29 +1498,38 @@ void handle_INS_LIST_ISSUERS(){
         output_large_data();
     }
 
-
 }
 
 
 void handle_INS_READ_ISSUER(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE+1)
+    if (Lc != PIN_SIZE+1){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (PIN_SIZE+1));
+        return;
+    }
 
-    checkPin(apdu_data.read_issuer_in.pin);
+    if( !checkPin(apdu_data.read_issuer_in.pin) ) return;
 
     temp_issuer_id = apdu_data.read_issuer_in.issuer_id;
 
-    if (temp_issuer_id < 1 || temp_issuer_id > NUM_ISSUERS)
+    if (temp_issuer_id < 1 || temp_issuer_id > NUM_ISSUERS){
         mExitSW(ERR_ISSUERID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (!issuers[temp_issuer_id-1].exists)
+    if (!issuers[temp_issuer_id-1].exists){
         mExitSW(ERR_ISSUER_DOES_NOT_EXIST);
+        return;
+    }
 
     mem_cpy(apdu_data.dataout, &(issuers[temp_issuer_id-1].group_id), 5);
 
@@ -1243,49 +1539,71 @@ void handle_INS_READ_ISSUER(){
 
 
 void handle_INS_REMOVE_ISSUER(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != 1)
+    if (Lc != 1){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ 1);
+        return;
+    }
 
     temp_issuer_id = apdu_data.issuer_id;
 
-    if (temp_issuer_id < 1 || temp_issuer_id > NUM_ISSUERS)
+    if (temp_issuer_id < 1 || temp_issuer_id > NUM_ISSUERS){
         mExitSW(ERR_ISSUERID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (!issuers[temp_issuer_id-1].exists)
+    if (!issuers[temp_issuer_id-1].exists){
         mExitSW(ERR_ISSUER_DOES_NOT_EXIST);
+        return;
+    }
 
     if (mode == MODE_WORKING)
         checkBufferEqual(INS_REMOVE_ISSUER, &temp_issuer_id, 1);
 
     mem_set(&(issuers[temp_issuer_id-1]), 0, 7); // also set 'exists' to 0
 
+
+    mExit();
 }
 
 
 void handle_INS_SET_PROVER(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc < 5)
+    if (Lc < 5){
         mExitSW(ERR_INCORRECT_MIN_SIZE_OF_INCOMMING_DATA  ^ 5);
+        return;
+    }
 
     temp_prover_id = apdu_data.set_prover_in.prover_id;
 
-    if (temp_prover_id < 1 || temp_prover_id > NUM_PROVERS)
+    if (temp_prover_id < 1 || temp_prover_id > NUM_PROVERS){
         mExitSW(ERR_PROVERID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
     for (i=0; i < Lc-5; i++)
-        if (apdu_data.set_prover_in.cred_ids[i] > NUM_CREDS)
+        if (apdu_data.set_prover_in.cred_ids[i] > NUM_CREDS){
             mExitSW(ERR_ONE_ID_OF_CREDIDS_IS_OUTSIDE_OF_RANGE);
+            return;
+        }
 
     if (mode == MODE_WORKING)
         checkBufferEqual(INS_SET_PROVER, &(apdu_data.set_prover_in.prover_id), Lc);
@@ -1299,28 +1617,40 @@ void handle_INS_SET_PROVER(){
     mem_cpy(provers[temp_prover_id-1].cred_ids, apdu_data.set_prover_in.cred_ids, Lc-5);
     provers[temp_prover_id-1].exists = 1;
 
+
+    mExit();
 }
 
 
 void handle_INS_READ_PROVER(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE + PROVER_ID_SIZE)
+    if (Lc != PIN_SIZE + PROVER_ID_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA  ^ (PIN_SIZE + PROVER_ID_SIZE));
+        return;
+    }
 
-    checkPin(apdu_data.read_prover_in.pin);
+    if( !checkPin(apdu_data.read_prover_in.pin) ) return;
 
     temp_prover_id = apdu_data.read_prover_in.prover_id;
 
-    if (temp_prover_id < 1 || temp_prover_id > NUM_PROVERS)
+    if (temp_prover_id < 1 || temp_prover_id > NUM_PROVERS){
         mExitSW(ERR_PROVERID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (!provers[temp_prover_id-1].exists)
+    if (!provers[temp_prover_id-1].exists){
         mExitSW(ERR_PROVER_DOES_NOT_EXIST);
+        return;
+    }
 
     mem_cpy(temp_buffer, &(provers[temp_prover_id-1].ksize), 4); // copy ksize || csize
     mem_cpy(temp_buffer+4, &(provers[temp_prover_id-1].proofsession), PROOFSESSION_SIZE + 1 + provers[temp_prover_id-1].cred_ids_size); // proofsession || proofstatus || cred_ids
@@ -1336,61 +1666,84 @@ void handle_INS_READ_PROVER(){
         output_large_data();
     }
 
-
 }
 
 
 void handle_INS_REMOVE_PROVER(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PROVER_ID_SIZE)
+    if (Lc != PROVER_ID_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA  ^ PROVER_ID_SIZE);
+        return;
+    }
 
     temp_prover_id = apdu_data.prover_id;
 
-    if (temp_prover_id < 1 || temp_prover_id > NUM_PROVERS)
+    if (temp_prover_id < 1 || temp_prover_id > NUM_PROVERS){
         mExitSW(ERR_PROVERID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (!provers[temp_prover_id-1].exists)
+    if (!provers[temp_prover_id-1].exists){
         mExitSW(ERR_PROVER_DOES_NOT_EXIST);
+        return;
+    }
 
     if (mode == 2)
         checkBufferEqual(INS_REMOVE_PROVER, &(temp_prover_id), 1);
 
     mem_set(&(provers[temp_prover_id-1]), 0, sizeof(PROVER));
 
+
+    mExit();
 }
 
 
-void handle_INS_START_COMMITMENTS(){
+void handle_INS_START_COMMITMENTS() {
 
 #ifdef SODER
-    if (!mCheckCase(4))
-	    mExitSW(ERR_BAD_ISO);
-#else
-    if (!mCheckCase(3))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
+#else
+    if (!mCheckCase(3)){
+        mExitSW(ERR_BAD_ISO);
+        return;
+    }
 #endif
 
-    if (mode != MODE_WORKING)
+    if (mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE + PROVER_ID_SIZE)
+    if (Lc != PIN_SIZE + PROVER_ID_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA  ^ (PIN_SIZE + PROVER_ID_SIZE));
+        return;
+    }
 
-    checkPin(apdu_data.start_commitments_in.pin);
+    if( !checkPin(apdu_data.start_commitments_in.pin) ) return;
 
     temp_prover_id = apdu_data.start_commitments_in.prover_id;
 
-    if (temp_prover_id < 1 || temp_prover_id > NUM_PROVERS)
+    if (temp_prover_id < 1 || temp_prover_id > NUM_PROVERS){
         mExitSW(ERR_PROVERID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (!provers[temp_prover_id-1].exists)
+    if (!provers[temp_prover_id-1].exists){
         mExitSW(ERR_PROVER_DOES_NOT_EXIST);
+        return;
+    }
 
     mem_set(provers[temp_prover_id-1].kx, 0, MAX_SMALLINT_SIZE - provers[temp_prover_id-1].ksize); // put 0x00's on the left of kx
 
@@ -1410,7 +1763,10 @@ void handle_INS_START_COMMITMENTS(){
 #ifdef SODER
     mem_cpy(apdu_data.proofsession, provers[temp_prover_id-1].proofsession, PROOFSESSION_SIZE);
     mExitLa(PROOFSESSION_SIZE);
+#else
+    mExit();
 #endif
+
 
 }
 
@@ -1419,35 +1775,51 @@ void handle_INS_START_RESPONSES(){
 
 #ifdef SODER
 
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_WORKING)
+    if (mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc < 6)
+    if (Lc < 6){
         mExitSW(ERR_INCORRECT_MIN_SIZE_OF_INCOMMING_DATA  ^ 6);
+        return;
+    }
 
-    checkPin(apdu_data.start_responses_in.pin);
+    if( !checkPin(apdu_data.start_responses_in.pin) ) return;
 
     temp_prover_id = apdu_data.start_responses_in.prover_id;
 
-    if (temp_prover_id < 1 || temp_prover_id > NUM_PROVERS)
+    if (temp_prover_id < 1 || temp_prover_id > NUM_PROVERS){
         mExitSW(ERR_PROVERID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (!provers[temp_prover_id-1].exists)
+    if (!provers[temp_prover_id-1].exists){
         mExitSW(ERR_PROVER_DOES_NOT_EXIST);
+        return;
+    }
 
-    if (current_prover_id != temp_prover_id)
+    if (current_prover_id != temp_prover_id){
         mExitSW(ERR_PROOF_SESSION_CANNOT_START);
+        return;
+    }
 
-    if (provers[temp_prover_id-1].proofstatus != 1)
+    if (provers[temp_prover_id-1].proofstatus != 1){
         mExitSW(ERR_PROOF_SESSION_CANNOT_START);
+        return;
+    }
 
     d = apdu_data.start_responses_in.input[0];
 
-    if(Lc-6 < (d * 16))
+    if(Lc-6 < (d * 16)){
         mExitSW(ERR_MALICIOUS_INPUT_RESPONSE_STAGE);
+        return;
+    }
 
     BOOL b_exit = 1;
     for (i=0; i<d; i++) {
@@ -1456,8 +1828,10 @@ void handle_INS_START_RESPONSES(){
             break;
         }
     }
-    if (b_exit)
+    if (b_exit){
         mExitSW(ERR_MALICIOUS_INPUT_RESPONSE_STAGE);
+        return;
+    }
 
     if (P1 == 0x00) {
 
@@ -1489,33 +1863,49 @@ void handle_INS_START_RESPONSES(){
 
 #else
 
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_WORKING)
+    if (mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc < 6)
+    if (Lc < 6){
         mExitSW(ERR_INCORRECT_MIN_SIZE_OF_INCOMMING_DATA ^ 6);
+        return;
+    }
 
-    checkPin(apdu_data.start_responses_in.pin);
+    if( !checkPin(apdu_data.start_responses_in.pin) ) return;
 
     temp_prover_id = apdu_data.start_responses_in.prover_id;
 
-    if (temp_prover_id < 1 || temp_prover_id > NUM_PROVERS)
+    if (temp_prover_id < 1 || temp_prover_id > NUM_PROVERS){
         mExitSW(ERR_PROVERID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (!provers[temp_prover_id-1].exists)
+    if (!provers[temp_prover_id-1].exists){
         mExitSW(ERR_PROVER_DOES_NOT_EXIST);
+        return;
+    }
 
-    if (current_prover_id != temp_prover_id)
+    if (current_prover_id != temp_prover_id){
         mExitSW(ERR_PROOF_SESSION_CANNOT_START);
+        return;
+    }
 
-    if (provers[temp_prover_id-1].proofstatus != 1)
+    if (provers[temp_prover_id-1].proofstatus != 1){
         mExitSW(ERR_PROOF_SESSION_CANNOT_START);
+        return;
+    }
 
-    if((Lc-PIN_SIZE-1) != provers[temp_prover_id-1].csize)
+    if((Lc-PIN_SIZE-1) != provers[temp_prover_id-1].csize){
         mExitSW(ERR_MALICIOUS_INPUT_RESPONSE_STAGE);
+        return;
+    }
 
     mem_cpy(temp_buffer, apdu_data.start_responses_in.input, provers[temp_prover_id-1].csize);
 
@@ -1526,33 +1916,47 @@ void handle_INS_START_RESPONSES(){
 
 #endif
 
+
+    mExit();
 }
 
 
 void handle_INS_SET_CREDENTIAL(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_WORKING)
+    if (mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE + 2)
+    if (Lc != PIN_SIZE + 2){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA  ^ (PIN_SIZE + 2));
+        return;
+    }
 
-    checkPin(apdu_data.set_credential_in.pin);
+    if( !checkPin(apdu_data.set_credential_in.pin) ) return;
 
     temp_credential_id = apdu_data.set_credential_in.credential_id;
 
-    if (temp_credential_id < 1 || temp_credential_id > NUM_CREDS)
+    if (temp_credential_id < 1 || temp_credential_id > NUM_CREDS){
         mExitSW(ERR_CREDENTIALID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
     temp_issuer_id = apdu_data.set_credential_in.issuer_id;
 
-    if (temp_issuer_id < 1 || temp_issuer_id > NUM_ISSUERS)
+    if (temp_issuer_id < 1 || temp_issuer_id > NUM_ISSUERS){
         mExitSW(ERR_ISSUERID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (!issuers[temp_issuer_id-1].exists)
+    if (!issuers[temp_issuer_id-1].exists){
         mExitSW(ERR_ISSUER_DOES_NOT_EXIST);
+        return;
+    }
 
     credentials[temp_credential_id-1].credential_id = temp_credential_id;
     credentials[temp_credential_id-1].issuer_id = temp_issuer_id;
@@ -1570,20 +1974,27 @@ void handle_INS_SET_CREDENTIAL(){
     credentials[temp_credential_id-1].prescount = 0;
     credentials[temp_credential_id-1].exists = 1;
 
+    mExit();
 }
 
 
 void handle_INS_LIST_CREDENTIALS(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_WORKING)
+    if (mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE)
+    if (Lc != PIN_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA  ^ PIN_SIZE);
+        return;
+    }
 
-    checkPin(apdu_data.pin);
+    if( !checkPin(apdu_data.pin) ) return;
 
     temp_size = 0;
 
@@ -1606,8 +2017,10 @@ void handle_INS_LIST_CREDENTIALS(){
 
 
 void handle_INS_READ_CREDENTIAL(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
     temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
 
@@ -1622,19 +2035,24 @@ void handle_INS_READ_CREDENTIAL(){
 
 
 void handle_INS_REMOVE_CREDENTIAL(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
     temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
 
     mem_set(&(credentials[temp_credential_id-1].credential_id), 0, sizeof(CREDENTIAL));
 
+    mExit();
 }
 
 
 void handle_INS_GET_CREDENTIAL_PUBLIC_KEY(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
     temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
 
@@ -1655,21 +2073,27 @@ void handle_INS_GET_CREDENTIAL_PUBLIC_KEY(){
 
 
 void handle_INS_GET_ISSUANCE_COMMITMENT(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
     temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
 
     temp_issuer_id = credentials[temp_credential_id-1].issuer_id;
     temp_status = credentials[temp_credential_id-1].status;
 
-    if (temp_status != 0)
+    if (temp_status != 0){
         mExitSW(ERR_CREDENTIAL_INAP_STATE);
+        return;
+    }
 
     accessSession(temp_credential_id);
 
-    if (provers[current_prover_id-1].proofstatus != 1)
+    if (provers[current_prover_id-1].proofstatus != 1){
         mExitSW(ERR_CURRENT_PROOF_SESSION_INAP_STAGE);
+        return;
+    }
 
     mem_set(temp_key, 0, MAX_BIGINT_SIZE-provers[current_prover_id-1].ksize);
 #ifdef TEST_MODE
@@ -1701,21 +2125,27 @@ void handle_INS_GET_ISSUANCE_COMMITMENT(){
 
 
 void handle_INS_GET_ISSUANCE_RESPONSE(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
     temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
 
     temp_issuer_id = credentials[temp_credential_id-1].issuer_id;
     temp_status = credentials[temp_credential_id-1].status;
 
-    if (temp_status != 1)
+    if (temp_status != 1){
         mExitSW(ERR_CREDENTIAL_INAP_STATE);
+        return;
+    }
 
     accessSession(temp_credential_id);
 
-    if (provers[current_prover_id-1].proofstatus != 2)
+    if (provers[current_prover_id-1].proofstatus != 2){
         mExitSW(ERR_CURRENT_PROOF_SESSION_INAP_STAGE);
+        return;
+    }
 
     singleOrDoubleResponse(temp_issuer_id,
                            provers[current_prover_id-1].c, provers[current_prover_id-1].csize,
@@ -1739,41 +2169,57 @@ void handle_INS_GET_ISSUANCE_RESPONSE(){
 
 
 void handle_INS_GET_PRESENTATION_COMMITMENT(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
     temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
 
     temp_issuer_id = credentials[temp_credential_id-1].issuer_id;
     temp_status = credentials[temp_credential_id-1].status;
 
-    if (temp_status != 2)
+    if (temp_status != 2){
         mExitSW(ERR_CREDENTIAL_INAP_STATE);
+        return;
+    }
 
     accessSession(temp_credential_id);
 
-    if (provers[current_prover_id-1].proofstatus != 1)
+    if (provers[current_prover_id-1].proofstatus != 1){
         mExitSW(ERR_CURRENT_PROOF_SESSION_INAP_STAGE);
+        return;
+    }
 
-    if (temp_issuer_id < 1 || temp_issuer_id > NUM_ISSUERS)
+    if (temp_issuer_id < 1 || temp_issuer_id > NUM_ISSUERS){
         mExitSW(ERR_ISSUERID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (!issuers[temp_issuer_id-1].exists)
+    if (!issuers[temp_issuer_id-1].exists){
         mExitSW(ERR_ISSUER_DOES_NOT_EXIST);
+        return;
+    }
 
 #if NUM_COUNTERS > 0
     temp_counter_id = issuers[temp_issuer_id-1].counter_id;
 
     if (temp_counter_id != 0) {
 
-        if (temp_counter_id < 1 || temp_counter_id > NUM_COUNTERS)
+        if (temp_counter_id < 1 || temp_counter_id > NUM_COUNTERS){
             mExitSW(ERR_COUNTER_ID_OUTSIDE_OF_RANGE);
+            return;
+        }
 
-        if (!counters[temp_counter_id-1].exists)
+        if (!counters[temp_counter_id-1].exists){
             mExitSW(ERR_COUNTER_DOES_NOT_EXIST);
+            return;
+        }
 
-        if (counters[temp_counter_id-1].index < counters[temp_counter_id-1].threshold)
+        if (counters[temp_counter_id-1].index < counters[temp_counter_id-1].threshold){
             mExitSW(ERR_PRESENTATION_CRED_RESTRICTED_BY_IMM_COUNTER);
+            return;
+        }
 
     }
 #endif
@@ -1805,21 +2251,27 @@ void handle_INS_GET_PRESENTATION_COMMITMENT(){
 
 
 void handle_INS_GET_PRESENTATION_RESPONSE(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
     temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
 
     temp_issuer_id = credentials[temp_credential_id-1].issuer_id;
     temp_status = credentials[temp_credential_id-1].status;
 
-    if (temp_status != 3)
+    if (temp_status != 3){
         mExitSW(ERR_CREDENTIAL_INAP_STATE);
+        return;
+    }
 
     accessSession(temp_credential_id);
 
-    if (provers[current_prover_id-1].proofstatus != 2)
+    if (provers[current_prover_id-1].proofstatus != 2){
         mExitSW(ERR_CURRENT_PROOF_SESSION_INAP_STAGE);
+        return;
+    }
 
     singleOrDoubleResponse(temp_issuer_id,
                            provers[current_prover_id-1].c, provers[current_prover_id-1].csize,
@@ -1848,19 +2300,27 @@ void handle_INS_GET_PRESENTATION_RESPONSE(){
 
 
 void handle_INS_GET_DEVICE_PUBLIC_KEY(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_WORKING)
+    if (mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE)
+    if (Lc != PIN_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA  ^ PIN_SIZE);
+        return;
+    }
 
-    checkPin(apdu_data.pin);
+    if( !checkPin(apdu_data.pin) ) return;
 
-    if (!groupExists(0))
+    if (!groupExists(0)){
         mExitSW(ERR_GROUP_DOES_NOT_EXIST);
+        return;
+    }
 
     getGenerator(0, 1);
     temp_gen_1_size = buffer_size;
@@ -1892,26 +2352,36 @@ void handle_INS_GET_DEVICE_PUBLIC_KEY(){
 
 
 void handle_INS_GET_DEVICE_COMMITMENT(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_WORKING)
+    if (mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc < PIN_SIZE)
+    if (Lc < PIN_SIZE){
         mExitSW(ERR_INCORRECT_MIN_SIZE_OF_INCOMMING_DATA  ^ PIN_SIZE);
+        return;
+    }
 
-    checkPin(apdu_data.pin);
+    if( !checkPin(apdu_data.pin) ) return;
 
     accessSession(0);
 
     // fetch provers[current_prover_id-1].kx, provers[current_prover_id-1].proofstatus
 
-    if (provers[current_prover_id-1].proofstatus != 1)
+    if (provers[current_prover_id-1].proofstatus != 1){
         mExitSW(ERR_CURRENT_PROOF_SESSION_INAP_STAGE);
+        return;
+    }
 
-    if (!groupExists(0))
+    if (!groupExists(0)){
         mExitSW(ERR_GROUP_DOES_NOT_EXIST);
+        return;
+    }
 
     // fetch groups[0].modulus
 
@@ -1945,26 +2415,36 @@ void handle_INS_GET_DEVICE_COMMITMENT(){
 
 
 void handle_INS_GET_DEVICE_RESPONSE(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_WORKING)
+    if (mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE)
+    if (Lc != PIN_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA  ^ PIN_SIZE);
+        return;
+    }
 
-    checkPin(apdu_data.pin);
+    if( !checkPin(apdu_data.pin) ) return;
 
     accessSession(0);
 
     // fetch provers[current_prover_id-1].kx, provers[current_prover_id-1].c, provers[current_prover_id-1].proofstatus
 
-    if (provers[current_prover_id-1].proofstatus != 2)
+    if (provers[current_prover_id-1].proofstatus != 2){
         mExitSW(ERR_CURRENT_PROOF_SESSION_INAP_STAGE);
+        return;
+    }
 
-    if (!groupExists(0))
+    if (!groupExists(0)){
         mExitSW(ERR_GROUP_DOES_NOT_EXIST);
+        return;
+    }
 
     // fetch groups[0].q
 
@@ -1986,19 +2466,27 @@ void handle_INS_GET_DEVICE_RESPONSE(){
 
 
 void handle_INS_GET_SCOPE_EXCLUSIVE_PSEUDONYM(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_WORKING)
+    if (mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc < PIN_SIZE + 1)
+    if (Lc < PIN_SIZE + 1){
         mExitSW(ERR_INCORRECT_MIN_SIZE_OF_INCOMMING_DATA  ^ (PIN_SIZE + 1));
+        return;
+    }
 
-    checkPin(apdu_data.get_scope_exclusive_pseudonym_in.pin);
+    if( !checkPin(apdu_data.get_scope_exclusive_pseudonym_in.pin) ) return;
 
-    if (!groupExists(0))
+    if (!groupExists(0)){
         mExitSW(ERR_GROUP_DOES_NOT_EXIST);
+        return;
+    }
 
     // fetch groups[0].modulus, groups[0].f
 
@@ -2027,26 +2515,36 @@ void handle_INS_GET_SCOPE_EXCLUSIVE_PSEUDONYM(){
 
 
 void handle_INS_GET_SCOPE_EXCLUSIVE_COMMITMENT(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_WORKING)
+    if (mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc < PIN_SIZE + 1)
+    if (Lc < PIN_SIZE + 1){
         mExitSW(ERR_INCORRECT_MIN_SIZE_OF_INCOMMING_DATA  ^ (PIN_SIZE + 1));
+        return;
+    }
 
-    checkPin(apdu_data.get_scope_exclusive_commitment_in.pin);
+    if( !checkPin(apdu_data.get_scope_exclusive_commitment_in.pin) ) return;
 
     accessSession(0);
 
     // fetch provers[current_prover_id-1].kx, provers[current_prover_id-1].proofstatus
 
-    if (provers[current_prover_id-1].proofstatus != 1)
+    if (provers[current_prover_id-1].proofstatus != 1){
         mExitSW(ERR_CURRENT_PROOF_SESSION_INAP_STAGE);
+        return;
+    }
 
-    if (!groupExists(0))
+    if (!groupExists(0)){
         mExitSW(ERR_GROUP_DOES_NOT_EXIST);
+        return;
+    }
 
     // fetch groups[0].modulus, groups[0].f
 
@@ -2080,26 +2578,36 @@ void handle_INS_GET_SCOPE_EXCLUSIVE_COMMITMENT(){
 
 
 void handle_INS_GET_SCOPE_EXCLUSIVE_RESPONSE(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_WORKING)
+    if (mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc < PIN_SIZE + 1)
+    if (Lc < PIN_SIZE + 1){
         mExitSW(ERR_INCORRECT_MIN_SIZE_OF_INCOMMING_DATA  ^ (PIN_SIZE + 1));
+        return;
+    }
 
-    checkPin(apdu_data.get_scope_exclusive_response_in.pin);
+    if( !checkPin(apdu_data.get_scope_exclusive_response_in.pin) ) return;
 
     accessSession(0);
 
     // fetch provers[current_prover_id-1].kx, provers[current_prover_id-1].c, provers[current_prover_id-1].proofstatus
 
-    if (provers[current_prover_id-1].proofstatus != 2)
+    if (provers[current_prover_id-1].proofstatus != 2){
         mExitSW(ERR_CURRENT_PROOF_SESSION_INAP_STAGE);
+        return;
+    }
 
-    if (!groupExists(0))
+    if (!groupExists(0)){
         mExitSW(ERR_GROUP_DOES_NOT_EXIST);
+        return;
+    }
 
     // fetch groups[0].q
 
@@ -2121,22 +2629,28 @@ void handle_INS_GET_SCOPE_EXCLUSIVE_RESPONSE(){
 
 
 void handle_INS_STORE_BLOB(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
     uri = accessURI(apdu_data.blob_in.datain, Lc);
 
     getBlobstoreInformations(&temp_blob_index, &temp_blobcount, &temp_uri_index, uri, Lc-PIN_SIZE);
 
-    if (temp_blobcount == MAX_NUMBER_OF_BLOBS)
+    if (temp_blobcount == MAX_NUMBER_OF_BLOBS){
         mExitSW(ERR_MAX_NBR_BLOB_REACHED);
+        return;
+    }
 
     if (temp_uri_index != MAX_NUMBER_OF_BLOBS) {
         temp_blob_index = temp_uri_index; // there already exists a blob with this uri, overwrite it
     }
 
-    if (buffer_size > MAX_BLOB_SIZE)
+    if (buffer_size > MAX_BLOB_SIZE){
         mExitSW(ERR_BLOB_TOO_LARGE);
+        return;
+    }
 
     blob_catalog[temp_blob_index].exists = 1;
     mem_cpy(blob_catalog[temp_blob_index].uri, uri, Lc-PIN_SIZE);
@@ -2145,20 +2659,27 @@ void handle_INS_STORE_BLOB(){
 
     segmentToStaticHigh(blob_store[temp_blob_index].buffer, buffer, buffer_size);
 
+    mExit();
 }
 
 
 void handle_INS_LIST_BLOBS(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE + 1)
+    if (Lc != PIN_SIZE + 1){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (PIN_SIZE + 1));
+        return;
+    }
 
-    checkPin(apdu_data.list_blobs_in.pin);
+    if( !checkPin(apdu_data.list_blobs_in.pin) ) return;
 
     getBlobstoreInformations(&temp_blob_index, &temp_blobcount, &temp_uri_index, NULL, NULL);
 
@@ -2173,6 +2694,7 @@ void handle_INS_LIST_BLOBS(){
         apdu_data.dataout[0] = temp_blobcount & 0xFF;
         apdu_data.dataout[1] = 0x00;
         mExitLa(2);
+        return;
     }
 
     temp_size = 0;
@@ -2214,15 +2736,19 @@ void handle_INS_LIST_BLOBS(){
 
 
 void handle_INS_READ_BLOB(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
     uri = accessURI(apdu_data.blob_in.datain, Lc);
 
     getBlobstoreInformations(&temp_blob_index, &temp_blobcount, &temp_uri_index, uri, Lc-PIN_SIZE);
 
-    if (temp_uri_index == MAX_NUMBER_OF_BLOBS)
+    if (temp_uri_index == MAX_NUMBER_OF_BLOBS){
         mExitSW(ERR_NO_BLOB_WITH_GIVEN_URI);
+        return;
+    }
 
     temp_buffer_size = blob_catalog[temp_uri_index].buffer_size;
     staticHighToSegment(temp_buffer, blob_store[temp_uri_index].buffer, temp_buffer_size);
@@ -2235,40 +2761,50 @@ void handle_INS_READ_BLOB(){
         remaining_size = temp_buffer_size;
         output_large_data();
     }
-
 }
 
 
 void handle_INS_REMOVE_BLOB(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
     uri = accessURI(apdu_data.blob_in.datain, Lc);
 
     getBlobstoreInformations(&temp_blob_index, &temp_blobcount, &temp_uri_index, uri, Lc-PIN_SIZE);
 
-    if (temp_uri_index == MAX_NUMBER_OF_BLOBS)
+    if (temp_uri_index == MAX_NUMBER_OF_BLOBS){
         mExitSW(ERR_NO_BLOB_WITH_GIVEN_URI);
+        return;
+    }
 
     blob_catalog[temp_uri_index].exists = 0;
     mem_set(blob_catalog[temp_uri_index].uri, 0, MAX_URI_SIZE);
     blob_catalog[temp_uri_index].uri_size = 0;
     blob_catalog[temp_uri_index].buffer_size = 0;
 
+    mExit();
 }
 
 
 void handle_INS_BACKUP_DEVICE(){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE + PASSWORD_SIZE)
+    if (Lc != PIN_SIZE + PASSWORD_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (PIN_SIZE + PASSWORD_SIZE));
+        return;
+    }
 
-    checkPin(apdu_data.backup_in.pin);
+    if( !checkPin(apdu_data.backup_in.pin) ) return;
 
     buffer_size = 0;
     mem_cpy(buffer+buffer_size, pin, PIN_SIZE);
@@ -2298,16 +2834,22 @@ void handle_INS_BACKUP_DEVICE(){
 
 
 void handle_INS_RESTORE_DEVICE(){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE + PASSWORD_SIZE)
+    if (Lc != PIN_SIZE + PASSWORD_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (PIN_SIZE + PASSWORD_SIZE));
+        return;
+    }
 
-    checkPin(apdu_data.backup_in.pin);
+    if( !checkPin(apdu_data.backup_in.pin) ) return;
 
     decrypt(device_id_prim, apdu_data.backup_in.password, 0x01);
 
@@ -2320,22 +2862,29 @@ void handle_INS_RESTORE_DEVICE(){
     mem_cpy(device_key+MAX_SMALLINT_SIZE-x_size, buffer+PIN_SIZE+PUK_SIZE, x_size);
 #endif
 
+    mExit();
 }
 
 
 void handle_INS_BACKUP_COUNTERS(){
 
 #if NUM_COUNTERS > 0
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE + PASSWORD_SIZE)
+    if (Lc != PIN_SIZE + PASSWORD_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (PIN_SIZE + PASSWORD_SIZE));
+        return;
+    }
 
-    checkPin(apdu_data.backup_in.pin);
+    if( !checkPin(apdu_data.backup_in.pin) ) return;
 
     buffer_size = 0;
 
@@ -2350,8 +2899,10 @@ void handle_INS_BACKUP_COUNTERS(){
         }
     }
 
-    if (buffer_size == 0)
+    if (buffer_size == 0){
         mExitSW(ERR_NO_CONTENT_TO_BACKUP);
+        return;
+    }
 
     encrypt(apdu_data.backup_in.password, 0x02);
 
@@ -2367,6 +2918,8 @@ void handle_INS_BACKUP_COUNTERS(){
         output_large_data();
     }
 
+#else
+    mExit();
 #endif
 
 }
@@ -2375,21 +2928,29 @@ void handle_INS_BACKUP_COUNTERS(){
 void handle_INS_RESTORE_COUNTERS(){
 
 #if NUM_COUNTERS > 0
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE + PASSWORD_SIZE)
+    if (Lc != PIN_SIZE + PASSWORD_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (PIN_SIZE + PASSWORD_SIZE));
+        return;
+    }
 
-    checkPin(apdu_data.backup_in.pin);
+    if( !checkPin(apdu_data.backup_in.pin) ) return;
 
     decrypt(device_id_prim, apdu_data.backup_in.password, 0x02);
 
-    if (buffer_size % 6 != 0)
+    if (buffer_size % 6 != 0){
         mExitSW(ERR_INVALID_BACKUP_ARCHIVE);
+        return;
+    }
 
     d = buffer_size / 6;
 
@@ -2397,43 +2958,58 @@ void handle_INS_RESTORE_COUNTERS(){
         mem_cpy(mem_session.small_buffer, buffer + 6*i, 6);
         // small_buffer contains counter_id (1 byte) || index (1 byte) || cursor (4 bytes)
         temp_counter_id = mem_session.small_buffer[0];
-        if (!counters[temp_counter_id-1].exists)
+        if (!counters[temp_counter_id-1].exists){
             mExitSW(ERR_COUNTER_DOES_NOT_EXIST);
+            return;
+        }
         counters[temp_counter_id-1].index = mem_session.small_buffer[1];
         mem_cpy(counters[temp_counter_id-1].cursor, mem_session.small_buffer+2, CURSOR_SIZE);
     }
 
 #endif
 
+    mExit();
 }
 
 
 
 #ifdef SODER    //TODO: remove if not necessary
 void handle_INS_BACKUP_CREDENTIAL(void){
-    if (!mCheckCase(4))
+    if (!mCheckCase(4)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE + PASSWORD_SIZE + 1)
+    if (Lc != PIN_SIZE + PASSWORD_SIZE + 1){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (PIN_SIZE + PASSWORD_SIZE + 1));
+        return;
+    }
 
-    checkPin(apdu_data.backup_credential_in.pin);
+    if( !checkPin(apdu_data.backup_credential_in.pin) ) return;
 
     temp_credential_id = apdu_data.backup_credential_in.credential_id;
 
-    if (temp_credential_id < 1 || temp_credential_id > NUM_CREDS)
+    if (temp_credential_id < 1 || temp_credential_id > NUM_CREDS){
         mExitSW(ERR_CREDENTIALID_OUTSIDE_OF_RANGE);
+        return;
+    }
 
-    if (!credentials[temp_credential_id - 1].exists)
+    if (!credentials[temp_credential_id - 1].exists){
         mExitSW(ERR_CREDENTIAL_DOES_NOT_EXIST);
+        return;
+    }
 
     // fetch credentials[temp_credential_id - 1].issuer_id, credentials[temp_credential_id - 1].status, credentials[temp_credential_id - 1].prescount, credentials[temp_credential_id - 1].v
 
-    if (credentials[temp_credential_id - 1].status != 2)
+    if (credentials[temp_credential_id - 1].status != 2){
         mExitSW(ERR_NO_CONTENT_TO_BACKUP);
+        return;
+    }
 
     buffer_size = 0;
     mem_cpy(buffer+buffer_size, &(credentials[temp_credential_id - 1].credential_id), 1);
@@ -2464,23 +3040,31 @@ void handle_INS_BACKUP_CREDENTIAL(void){
 }
 
 void handle_INS_RESTORE_CREDENTIAL(void){
-    if (!mCheckCase(3))
+    if (!mCheckCase(3)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);
+        return;
+    }
 
-    if (Lc != PIN_SIZE + PASSWORD_SIZE)
+    if (Lc != PIN_SIZE + PASSWORD_SIZE){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA ^ (PIN_SIZE + PASSWORD_SIZE));
+        return;
+    }
 
-    checkPin(apdu_data.backup_in.pin);
+    if( !checkPin(apdu_data.backup_in.pin) ) return;
 
     decrypt(device_id_prim, apdu_data.backup_in.password, 0x03);
 
     // buffer should contain credential_id || issuer_id || status || prescount || v
 
-    if (buffer[2] != 2)
+    if (buffer[2] != 2){
         mExitSW(ERR_INVALID_BACKUP_ARCHIVE);
+        return;
+    }
 
     temp_credential_id = buffer[0];
 
@@ -2496,13 +3080,16 @@ void handle_INS_RESTORE_CREDENTIAL(void){
     credentials[temp_credential_id - 1].kv_size = 0;
     credentials[temp_credential_id - 1].exists = 1;
 
+    mExit();
 }
 #endif
 
 
 void handle_INS_GET_INFO(void){
-    if (!mCheckCase(2))
+    if (!mCheckCase(2)){
         mExitSW(ERR_BAD_ISO);
+        return;
+    }
 
     temp_buffer_size = 0;
 
@@ -2544,19 +3131,19 @@ void handle_INS_GET_INFO(void){
 
     mExitLa(temp_buffer_size);
 
-
 }
 
 
 void handle_INS_NOTHING(void){
     // manyhue
+    mExit();
 }
 
 
 void handle_INS_GET_RESPONSE(void){
-    if (!mCheckCase(2))
+    if (!mCheckCase(2)) {
         mExitSW(ERR_BAD_ISO);
-
+        return;
+    }
     output_large_data();
-
 }

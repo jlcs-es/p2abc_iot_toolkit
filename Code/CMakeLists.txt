@@ -12,6 +12,7 @@ add_subdirectory(util_sc_tests)
 
 
 
-set(SOURCE_FILES main.cpp)
+#set(SOURCE_FILES main.cpp)
+set(SOURCE_FILES util_sc/BIOSC.c)
 add_executable(p2abc_iot_toolkit ${SOURCE_FILES})
 target_link_libraries(p2abc_iot_toolkit util_sc)

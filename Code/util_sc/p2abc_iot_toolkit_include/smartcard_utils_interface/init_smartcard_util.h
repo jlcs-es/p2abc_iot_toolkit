@@ -21,7 +21,7 @@ extern "C" {
 
 
 
-void init_smartcard_with_files(char * smartcard_status_file, char * APDU_command_file, char * APDU_response_file);
+void init_smartcard_from_file(char * smartcard_status_file);
 
 void init_smartcard_for_tests(); // uses stdout and test files
 

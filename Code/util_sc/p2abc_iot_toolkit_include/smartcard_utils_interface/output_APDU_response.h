@@ -1,35 +1,24 @@
-#ifndef __IO_APDU_VARIABLES_H
-#define __IO_APDU_VARIABLES_H
+#ifndef __OUTPUT_APDU_RESPONSE_H
+#define __OUTPUT_APDU_RESPONSE_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+//TODO renombrar a exit_util
+// incluir output APDU response, save sc status, ...
 
 /********************************************************************/
-/********************** IO APDU VARIABLES     ***********************/
+/********************** OUTPUT_APDU_RESPONSE  ***********************/
 /********************************************************************/
 //todo
 /********************************************************************/
 /** Manages the global APDU variables to set the values from the    */
 /* received APDU and set the values for the APDU response.          */
 /********************************************************************/
-/** Inherited from multos, the smartcard app starts with the APDU   */
-/* data already loaded into the global APDU variables, and exits    */
-/* leaving the response data in them. Calling this functions manages*/
-/* the variables as multos used to.                                 */
 /********************************************************************/
 /*      */
 /********************************************************************/
-
-
-
-/**
- * Initializes the APDU global variables to the values
- * of the received APDU command.
- */
-void init_apdu_command();
-
 
 
 /**
@@ -45,4 +34,4 @@ void output_apdu_response();
 }
 #endif
 
-#endif //__IO_APDU_VARIABLES_H
+#endif //__OUTPUT_APDU_RESPONSE_H

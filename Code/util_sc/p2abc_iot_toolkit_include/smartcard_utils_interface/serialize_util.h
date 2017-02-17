@@ -33,11 +33,11 @@ char* serialize_smartcard_status();
  * static data variables to the values given.
  * @param ascii json text
  */
-void deserialize_smartcard_status(const char * ascii);
+void deserialize_smartcard_status(const unsigned char * ascii);
 
 unsigned char* serialize_APDU_response(int * buf_len);
 
-void deserialize_APDU_command(const char * ascii, int length);
+void deserialize_APDU_command(const unsigned char * apdu_bytes, int length);
 
 
 

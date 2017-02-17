@@ -291,7 +291,7 @@ char* serialize_smartcard_status(){
 
 }
 
-void deserialize_smartcard_status(const char * ascii) {
+void deserialize_smartcard_status(const unsigned char * ascii) {
     cJSON * root = cJSON_Parse(ascii);
     int i;
 
@@ -552,6 +552,7 @@ unsigned char* serialize_APDU_response(int * buf_len){
     *p++ = SW1;
     *p = SW2;
 
+    return ar;
 }
 
 void deserialize_APDU_command(const BYTE * apdu_bytes, int length) {
