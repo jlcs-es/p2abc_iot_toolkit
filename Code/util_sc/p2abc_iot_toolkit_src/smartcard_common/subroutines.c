@@ -62,8 +62,8 @@ BOOL checkPin(BYTE* tested_pin) {
 
     // if this point is reached, the pin is incorrect. We eventually
     // exit.
-
-    pin_trials -= 1;
+    if(pin_trials != 0)
+        pin_trials -= 1;
 
     if (pin_trials == 0) {
         mode = MODE_LOCKED;

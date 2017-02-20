@@ -1,4 +1,5 @@
-project(util_sc_tests_tests)
+project(util_sc_tests)
 
-#add_subdirectory(lib/googletest-release-1.7.0)
+add_subdirectory(lib/googletest)
 add_subdirectory(basic_tests)
+add_subdirectory(apdu_tests)

@@ -63,7 +63,8 @@ int main(int argc, char **argv){
 //    }
 
     // Restore the smartcard environment
-    init_smartcard_from_json_file("./status.json");
+    json_file = "./status.json";
+    init_smartcard_from_json_file(json_file);
 
     // Loop listening for APDUs
     receive_commands();

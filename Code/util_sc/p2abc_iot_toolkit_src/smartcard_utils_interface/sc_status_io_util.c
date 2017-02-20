@@ -5,9 +5,7 @@
 #include <smartcard_utils_interface/error_codes.h>
 
 
-void init_smartcard_from_json_file(char * smartcard_status_file){
-    // ~ Save filename for mExit
-    json_file = smartcard_status_file;
+void init_smartcard_from_json_file(char * json_file){
     // 1. Open smartcard file
     FILE * f = fopen(json_file, "rb");
     if(f==NULL) exit(ERROR_CANT_OPEN_FILE);
@@ -27,7 +25,7 @@ void init_smartcard_from_json_file(char * smartcard_status_file){
     free(string);
 }
 
-void save_smartcard_to_json_file(){
+void save_smartcard_to_json_file(char * json_file){
     //TODO save write
     // 1. Open smartcard file
     FILE * f = fopen(json_file, "w+");

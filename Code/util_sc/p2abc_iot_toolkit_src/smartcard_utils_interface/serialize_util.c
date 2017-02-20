@@ -525,23 +525,13 @@ void deserialize_smartcard_status(unsigned char * ascii) {
 
 
 
-unsigned char* serialize_APDU_response(int * buf_len){
-
+void serialize_APDU_response(unsigned char* ap_r, int * buf_len){
     *buf_len = 2 + La; // APDU Response Length
-
-    unsigned char * ar = malloc(*buf_len);
-    if(ar == NULL)
-        exit(ERROR_CANT_MALLOC);
-
-    unsigned char * p = ar;
-    if(Le >= La){
-        mem_cpy(ar, apdu_data.dataout, La);
-        p += La;
-    }
+    mem_cpy(ap_r, apdu_data.dataout, La);
+    unsigned char * p = ap_r;
+    p += La;
     *p++ = SW1;
     *p = SW2;
-
-    return ar;
 }
 
 void deserialize_APDU_command(BYTE * apdu_bytes, int length) {
