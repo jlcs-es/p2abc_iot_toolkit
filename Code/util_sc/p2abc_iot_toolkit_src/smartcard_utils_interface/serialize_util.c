@@ -1,7 +1,7 @@
 #include <smartcard_utils_interface/serialize_util.h>
 
 /********************************************************************/
-/*            Serialization using JSON and Base64/HEX                   */
+/*            Implementation using JSON and Base64/HEX              */
 /********************************************************************/
 #include <smartcard_common/global_vars.h>
 #include <smartcard_external_utilities/base64.h>
@@ -10,6 +10,7 @@
 #include <smartcard_utils_interface/error_codes.h>
 #include <string.h>
 #include <smartcard_common/APDU_types.h>
+#include <debug.h>
 
 void serialize_BYTE(cJSON * object, char * name, BYTE value){
     char temp_hex_string[3];
@@ -291,7 +292,7 @@ char* serialize_smartcard_status(){
 
 }
 
-void deserialize_smartcard_status(const unsigned char * ascii) {
+void deserialize_smartcard_status(unsigned char * ascii) {
     cJSON * root = cJSON_Parse(ascii);
     int i;
 
@@ -516,31 +517,19 @@ void deserialize_smartcard_status(const unsigned char * ascii) {
     // BYTE temp_key[MAX_BIGINT_SIZE]
     deserialize_BYTE_ARRAY(root, "temp_key", temp_key, MAX_BIGINT_SIZE);
 
-
-
     //// ALL STATIC DATA ADDED
 
     cJSON_Delete(root);
 }
 
+
+
+
 unsigned char* serialize_APDU_response(int * buf_len){
 
-    WORD ar_len = 2; // APDU Response Length
-//    if(La > MAX_APDU_OUTPUT_DATA_SIZE) {
-//        SW1 = 0x6F;
-//        SW2 = 0x00;
-//    }
-//    if(Le == 0 || Le < La){
-//        SW1 = 0x61;
-//        SW2 = La;
-//    }
+    *buf_len = 2 + La; // APDU Response Length
 
-    if(APDU_Case == 2 || APDU_Case == 4)
-        ar_len += La;
-
-    // TODO : ver figura 36 La Handling de MDG, y se puede mejorar mucho el análisis de casos.
-
-    unsigned char * ar = malloc(ar_len);
+    unsigned char * ar = malloc(*buf_len);
     if(ar == NULL)
         exit(ERROR_CANT_MALLOC);
 
@@ -555,7 +544,7 @@ unsigned char* serialize_APDU_response(int * buf_len){
     return ar;
 }
 
-void deserialize_APDU_command(const BYTE * apdu_bytes, int length) {
+void deserialize_APDU_command(BYTE * apdu_bytes, int length) {
 
     if(length<4){
         exit(ERROR_APDU_TOO_SHORT);
@@ -608,6 +597,5 @@ void deserialize_APDU_command(const BYTE * apdu_bytes, int length) {
     if(length) {
         exit(ERROR_APDU_TOO_LONG);
     }
-
 
 }

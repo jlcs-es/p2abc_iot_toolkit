@@ -10,8 +10,3 @@ void imprimirHexadecimal(BYTE *buffer, int length){
     }
     cerr << endl;
 }
-
-
-void imprimirMensaje(char * msg) {
-    cerr << msg << endl;
-}

@@ -11,7 +11,7 @@
 /********************************************************************/
 
 
-#include <smartcard_utils_interface/init_smartcard_util.h>
+#include <smartcard_utils_interface/sc_status_io_util.h>
 #include <smartcard_utils_interface/error_codes.h>
 #include <smartcard_common/APDU_handler.h>
 #include <smartcard_common/global_vars.h>
@@ -19,6 +19,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <p2abc_iot_toolkit_include/debug.h>
 
 
 void receive_commands(){
@@ -34,21 +35,19 @@ void receive_commands(){
 
     BYTE command = 0x00;
     WORD apdu_len;
+    BYTE apdu_bytes[MAX_APDU_INPUT_DATA_SIZE];
     while(command != 0xff){
         scanf("%2hhx", &command);
         if(command == 0x01){    // 0x01 : APDU received
             // Read APDU Length
             scanf("%4hx", &apdu_len);
             // Read APDU
-            BYTE * apdu_bytes = malloc(apdu_len);   // TODO Make static using a "free" global var, or use a MAX_APDU_INPUT_DATA_SIZE array
-            if(apdu_bytes  == NULL) exit(ERROR_CANT_MALLOC);
-            for(i=0; i<apdu_len; i++){
+            for(int i=0; i<apdu_len; i++){
                 scanf("%2hhx", &apdu_bytes[i]);
                 //scanf("%c", &apdu_bytes[i]);
             }
             // Interpret the bytes
             deserialize_APDU_command(apdu_bytes, apdu_len);
-            free(apdu_bytes);
             // Handle the APDU Command
             handle_APDU();
         }
@@ -64,7 +63,7 @@ int main(int argc, char **argv){
 //    }
 
     // Restore the smartcard environment
-    init_smartcard_from_file("./status.json");
+    init_smartcard_from_json_file("./status.json");
 
     // Loop listening for APDUs
     receive_commands();

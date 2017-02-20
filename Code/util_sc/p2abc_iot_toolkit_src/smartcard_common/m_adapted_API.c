@@ -4,7 +4,7 @@
 #include <smartcard_utils_interface/crypto_util.h>
 #include <smartcard_utils_interface/arithmetic_util.h>
 #include <smartcard_common/global_vars.h>
-#include <smartcard_utils_interface/output_APDU_response.h>
+#include <smartcard_utils_interface/mExit_util.h>
 
 
 void mAESECBDecipher (BYTE *cipherText, BYTE *plainText, BYTE keyLength, BYTE *key){
@@ -84,10 +84,8 @@ BOOL mCheckCase (BYTE isoCase){
 }
 
 void mExit (void){
+    save_status();
     output_apdu_response();
-    //TODO
-    // llamar a save sc status ANTES de apdu response (consistencia por si se va la energía)
-    // en handle apdu todos deben llamar a mExit y hacer return, por el bucle de leer APDUs.
 }
 
 

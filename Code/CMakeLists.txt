@@ -3,16 +3,17 @@ project(p2abc_iot_toolkit)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-
+# SmartCard CODE
 add_subdirectory(util_sc)
 include_directories(util_sc util_sc/p2abc_iot_toolkit_include)
 
-
+# TESTS
 add_subdirectory(util_sc_tests)
 
 
-
+# MAIN
 #set(SOURCE_FILES main.cpp)
 set(SOURCE_FILES util_sc/BIOSC.c)
+
 add_executable(p2abc_iot_toolkit ${SOURCE_FILES})
 target_link_libraries(p2abc_iot_toolkit util_sc)

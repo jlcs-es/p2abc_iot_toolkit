@@ -144,7 +144,7 @@ void modularReduction(BYTE *result, BYTE *operand, BYTE *modulus, WORD operandLe
 /*   Implementation of the facade that delegates in SW BYTE arrays  */
 /* operations.                                                      */
 /********************************************************************/
-
+/*
 #include <arithmetic_implementation_v1.h>
 
 
@@ -166,5 +166,5 @@ void modularExponentiation(BYTE *result, BYTE *base, BYTE *exponent, BYTE *modul
 void modularReduction(BYTE *result, BYTE *operand, BYTE *modulus, WORD operandLength, WORD modulusLength){
     // TODO
 }
-
+*/
 #endif

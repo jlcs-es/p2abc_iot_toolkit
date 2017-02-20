@@ -1,17 +1,15 @@
-#include <smartcard_utils_interface/init_smartcard_util.h>
+#include <smartcard_utils_interface/sc_status_io_util.h>
 #include <smartcard_utils_interface/serialize_util.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <smartcard_utils_interface/error_codes.h>
 
 
-char * sc_status_file;
-
-void init_smartcard_from_file(char * smartcard_status_file){
+void init_smartcard_from_json_file(char * smartcard_status_file){
     // ~ Save filename for mExit
-    sc_status_file = smartcard_status_file;
+    json_file = smartcard_status_file;
     // 1. Open smartcard file
-    FILE * f = fopen( sc_status_file, "rb");
+    FILE * f = fopen(json_file, "rb");
     if(f==NULL) exit(ERROR_CANT_OPEN_FILE);
     // 2. Save to array of char
     fseek(f, 0, SEEK_END);
@@ -29,7 +27,17 @@ void init_smartcard_from_file(char * smartcard_status_file){
     free(string);
 }
 
-void init_smartcard_for_tests(){
-    // NOT IMPLEMENTED
+void save_smartcard_to_json_file(){
+    //TODO save write
+    // 1. Open smartcard file
+    FILE * f = fopen(json_file, "w+");
+    if(f==NULL) exit(ERROR_CANT_OPEN_FILE);
+    // 2. Save to array of char
+    char * json_string = serialize_smartcard_status();
+    if(json_string==NULL) exit(ERROR_CANT_MALLOC);
+    fputs(json_string, f);
+    // 3. Close smartcard file
+    fclose(f);
+    // 4. Free allocated string
+    free(json_string);
 }
-

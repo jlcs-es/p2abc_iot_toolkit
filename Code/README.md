@@ -12,3 +12,18 @@ The source code is organized in several directories.
 In summary, to port the implementation, change the TODO.
 
 This file was written before the implementation of the main process that will handle how the smartcard works in a system, so things may change in the future.
+
+
+
+
+
+## Special Interfaces
+
+* sc_status_io_util: one of the 2 only interfaces called from outside the core.
+
+    Varies depending on method of storing the static data. Current implementation: json files.
+Delegates on serialize_util for the json parser.
+ 
+ * serialize_util: only interface that knows the internal data structures of the core, 
+ and one of the 2 only interfaces to be called from outside the core (for APDU Command parsing).
+  

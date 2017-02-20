@@ -70,16 +70,10 @@ MEM_SESSION mem_session;
 /************************************************************************
  * Public data for the application (first data is placed at PB[0])
  ************************************************************************/
-// NOTE estos datos pueden ser de la respuesta APDU response y habrá que tenerlos en cuenta para la IO
 
 BYTE temp_buffer[2*MAX_BIGINT_SIZE]; // size max can be reached in the singleResponse subroutine, cannot be less than 512 bytes
 
 APDU_DATA apdu_data;
-
-//TODO : temp_buffer puede que necesite ser static data, o reconsiderar la ejecucion global del binario
-// porque el GET_RESPONSE parece ser que considera qu la tarjeta no se quita de la alimentación
-// y Multos mantiene la memoria de Public data, por ello temp_buffer se mantiene en public data.
-
 
 /************************************************************************
  * Static data for the application

@@ -5,13 +5,6 @@
 /******************************************************************************/
 
 // TODO : la documentación ¿pasarla al .h?
-// FIXME : el uso de WORD en vez de WORD / DWORD y la posibilidad que no quepa en los WORD del size usual de multosFuncion()
-// según referencias de multos: "an integer is a machine word, which is 2 byte"
-// "An integer is a machine word and, in the case of MULTOS, this is 2 bytes"
-//
-
-//crxAESEncryptCBC(ciphertext, iv, plaintext, plaintext_size, key)
-//mBlockEncipherCBC(0x06, plaintext_size, plaintext, ciphertext, 16, iv, 16, key);
 
 /////
 
@@ -90,11 +83,11 @@ BOOL checkPin(BYTE* tested_pin) {
  * check whether puk_trials > 0.
  ************************************************************************************************************************************************/
 
-void checkPuk(BYTE* tested_puk) {
+BOOL checkPuk(BYTE* tested_puk) {
 
     if (mem_cmp(tested_puk, puk, PUK_SIZE) == 0) {  // ** Adapted for util_sc ** //
         puk_trials = MAX_PUK_TRIALS;
-        return;
+        return TRUE;
     }
 
     // if this point is reached, the puk is incorrect. We eventually
@@ -105,11 +98,11 @@ void checkPuk(BYTE* tested_puk) {
     if (puk_trials == 0) {
         mode = MODE_DEAD;
         mExitSW(ERR_INCORRECT_PUK_AND_CARD_DEAD); // ** Adapted for util_sc ** //
-        return;
+        return FALSE;
     }
 
     mExitSW(ERR_INCORRECT_PUK); // ** Adapted for util_sc ** //
-
+    return FALSE;
 }
 
 
@@ -146,17 +139,21 @@ void sizeEncode(BYTE *s, WORD size) {
  *
  ************************************************************************************************************************************************/
 
-void getKey(BYTE *key, WORD *key_size, const BYTE key_id) {
+BOOL getKey(BYTE *key, WORD *key_size, const BYTE key_id) {
 
-    if (key_id > NUM_ISSUERS)
+    if (key_id > NUM_ISSUERS){
         mExitSW(ERR_KEY_ID_OUTSIDE_RANGE); // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
-    if (!auth_keys_sizes[key_id])
+    if (!auth_keys_sizes[key_id]){
         mExitSW(ERR_AUTHENTICATION_KEY_DOES_NOT_EXIST); // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
     *key_size = auth_keys_sizes[key_id];
     mem_cpy(key, auth_keys[key_id], auth_keys_sizes[key_id]);   // ** Adapted for util_sc ** //
-
+    return TRUE;
 }
 
 /************************************************************************************************************************************************
@@ -165,13 +162,15 @@ void getKey(BYTE *key, WORD *key_size, const BYTE key_id) {
  * Overwrites : temp_buffer, temp_buffer_size ???
  ************************************************************************************************************************************************/
 
-void publicKeyEncrypt(BYTE* key, WORD key_size) {
+BOOL publicKeyEncrypt(BYTE* key, WORD key_size) {
 
-    if (temp_buffer_size > key_size - 43)
+    if (temp_buffer_size > key_size - 43){
         mExitSW(ERR_AUTHENTICATION_KEY_TOO_SHORT); // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
     encryption(temp_buffer, &temp_buffer_size, temp_buffer, temp_buffer_size, key, key_size);
-
+    return TRUE;
 }
 
 /************************************************************************************************************************************************
@@ -211,15 +210,17 @@ void encryption(BYTE* dst, WORD* dst_size, const BYTE *src, const WORD src_size,
  * void extract(const BYTE *key, const WORD key_size)
  ************************************************************************************************************************************************/
 
-void extract(const BYTE *key, const WORD key_size) {
+BOOL extract(const BYTE *key, const WORD key_size) {
 
-    extraction(key, key_size, buffer, &buffer_size, mem_session.challenge, challenge_size);
+    if( !extraction(key, key_size, buffer, &buffer_size, mem_session.challenge, challenge_size) ) return FALSE;
 
     mem_set(mem_session.challenge, 0, CHALLENGE_MAX_SIZE);  // ** Adapted for util_sc ** //
 
-    if (buffer_size == 0)
+    if (buffer_size == 0){
         mExitSW(ERR_DATA_AUTHENTICATION_FAILURE); // ** Adapted for util_sc ** //
-
+        return FALSE;
+    }
+    return TRUE;
 }
 
 /************************************************************************************************************************************************
@@ -228,7 +229,7 @@ void extract(const BYTE *key, const WORD key_size) {
  * In case of success, the extraction is put back into sig.
  ************************************************************************************************************************************************/
 
-WORD extraction(const BYTE *n, const WORD n_size, BYTE *sig, WORD *sig_size, const BYTE *challenge, const WORD challenge_size) {
+BOOL extraction(const BYTE *n, const WORD n_size, BYTE *sig, WORD *sig_size, const BYTE *challenge, const WORD challenge_size) {
 
     BYTE exponent[1] = {3};
     BYTE hash_[HASH_SIZE]; // only used in the 'else' below
@@ -239,8 +240,10 @@ WORD extraction(const BYTE *n, const WORD n_size, BYTE *sig, WORD *sig_size, con
     BYTE *blob, *pad, *challenge_and_pad, *sigma, *m1, *m2, *hash;
     WORD m1_size, m2_size;
 
-    if (challenge_size < 16 || *sig_size < n_size)
+    if (challenge_size < 16 || *sig_size < n_size){
         mExitSW(ERR_DATA_AUTHENTICATION_FAILURE);  // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
     if (n_size == *sig_size) {
 
@@ -263,8 +266,10 @@ WORD extraction(const BYTE *n, const WORD n_size, BYTE *sig, WORD *sig_size, con
         L    = sizeDecode(pad + 1);
         blob = pad + 3;
 
-        if (b != 0 || L < 1 || L > n_size - 35 || mem_cmp(hash_prime, hash, HASH_SIZE)) // ** Adapted for util_sc ** //
-            mExitSW(ERR_DATA_AUTHENTICATION_FAILURE);   // ** Adapted for util_sc ** //
+        if (b != 0 || L < 1 || L > n_size - 35 || mem_cmp(hash_prime, hash, HASH_SIZE)){    // ** Adapted for util_sc ** //
+            mExitSW(ERR_DATA_AUTHENTICATION_FAILURE);
+            return FALSE;
+        } // ** Adapted for util_sc ** //
 
         mem_cpy(sig, blob, L);  // ** Adapted for util_sc ** //
         *sig_size = L;
@@ -302,40 +307,50 @@ WORD extraction(const BYTE *n, const WORD n_size, BYTE *sig, WORD *sig_size, con
         m1      = pad + 3;
         m1_size = pad_size - 3;
 
-        if (b != 0 || L != n_size - 35 + m2_size || mem_cmp(hash_prime, hash_, HASH_SIZE))  // ** Adapted for util_sc ** //
-            mExitSW(ERR_DATA_AUTHENTICATION_FAILURE);   // ** Adapted for util_sc ** //
+        if (b != 0 || L != n_size - 35 + m2_size || mem_cmp(hash_prime, hash_, HASH_SIZE)){   // ** Adapted for util_sc ** //
+            mExitSW(ERR_DATA_AUTHENTICATION_FAILURE);
+            return FALSE;
+        }  // ** Adapted for util_sc ** //
 
         mem_cpy(sig        , m1, m1_size);  // ** Adapted for util_sc ** //
         mem_cpy(sig+m1_size, m2, m2_size);  // ** Adapted for util_sc ** //
         *sig_size = m1_size + m2_size;
 
     }
-
+    return TRUE;
 }
 
 /************************************************************************************************************************************************
  * void checkBufferPrefix(BYTE ins, BYTE *datain, WORD datain_size)
  ************************************************************************************************************************************************/
 
-void checkBufferPrefix(BYTE ins, BYTE *datain, WORD datain_size) { // prefix = ins || datain
+BOOL checkBufferPrefix(BYTE ins, BYTE *datain, WORD datain_size) { // prefix = ins || datain
 
     WORD i, prefix_size;
 
     prefix_size = datain_size + 1;
 
-    if (buffer_size < prefix_size)
+    if (buffer_size < prefix_size){
         mExitSW(ERR_NEED_PRIOR_DATA_AUTHENTICATION_WRT_ROOT_KEY);   // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
-    if (authData == 0)
+    if (authData == 0){
         mExitSW(ERR_NEED_PRIOR_DATA_AUTHENTICATION_WRT_ROOT_KEY);   // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
-    if (authKeyId != 0)
+    if (authKeyId != 0){
         mExitSW(ERR_DATA_AUTHENTICATED_WRT_NON_ROOT_KEY);   // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
     authData = 0;
-
-    if (buffer[0] != ins || mem_cmp(datain, buffer+1, datain_size)) // prefix = ins || datain   // ** Adapted for util_sc ** //
+    // prefix = ins || datain   // ** Adapted for util_sc ** //
+    if (buffer[0] != ins || mem_cmp(datain, buffer+1, datain_size)){
         mExitSW(ERR_CMD_PARAMETERS_FAILED_ROOT_AUTHENTICATION); // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
     if (buffer_size > prefix_size) {
         for (i=0; i<buffer_size; i++)
@@ -343,19 +358,21 @@ void checkBufferPrefix(BYTE ins, BYTE *datain, WORD datain_size) { // prefix = i
     }
 
     buffer_size = buffer_size-prefix_size;
-
+    return TRUE;
 }
 
 /************************************************************************************************************************************************
  * void checkBufferEqual(BYTE ins, BYTE *datain, WORD datain_size) // content = ins || datain
  ************************************************************************************************************************************************/
 
-void checkBufferEqual(BYTE ins, BYTE *datain, WORD datain_size) {
+BOOL checkBufferEqual(BYTE ins, BYTE *datain, WORD datain_size) {
 
-    checkBufferPrefix(ins, datain, datain_size);
-    if (buffer_size != 0)
+    if( !checkBufferPrefix(ins, datain, datain_size) ) return FALSE;
+    if (buffer_size != 0){
         mExitSW(ERR_DATA_AUTHENTICATION_FAILURE);   // ** Adapted for util_sc ** //
-
+        return FALSE;
+    }
+    return TRUE;
 }
 
 /************************************************************************************************************************************************
@@ -412,42 +429,52 @@ void getGroupComponent(BYTE group_id, BYTE comptype) {
  * of the generator is put in buffer_size.
  ************************************************************************************************************************************************/
 
-void getGenerator(BYTE group_id, BYTE gen_id) {
+BOOL getGenerator(BYTE group_id, BYTE gen_id) {
 
-    if (gen_id == 0 || gen_id > NUM_GEN)
+    if (gen_id == 0 || gen_id > NUM_GEN){
         mExitSW(ERR_ID_OF_GROUP_GENERATOR_OUTSIDE_OF_RANGE);    // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
-    if (!generatorExists(group_id, gen_id))
+    if (!generatorExists(group_id, gen_id)){
         mExitSW(ERR_GENERATOR_DOES_NOT_EXIST);  // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
     mem_cpy(buffer, groups[group_id].g[gen_id-1], MAX_BIGINT_SIZE); // ** Adapted for util_sc ** //
     buffer_size = groups[group_id].g_size[gen_id-1];
-
+    return TRUE;
 }
 
 /************************************************************************************************************************************************
- * BYTE accessCredential(BYTE pin[PIN_SIZE], BYTE credential_id)
+ * BOOL checkAccessCredential(BYTE pin[PIN_SIZE], BYTE credential_id)
  ************************************************************************************************************************************************/
 
-BYTE accessCredential(BYTE *pin, BYTE credential_id) {
+BOOL checkAccessCredential(BYTE *pin, BYTE credential_id) {
 
-    if (mode != MODE_WORKING)
+    if (mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);   // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
-    if (Lc != 5)
+    if (Lc != 5){
         mExitSW(ERR_INCORRECT_SIZE_OF_INCOMMING_DATA  ^ 5); // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
-    checkPin(pin);
+    if( !checkPin(pin) ) return FALSE;
 
-    if (credential_id < 1 || credential_id > NUM_CREDS)
+    if (credential_id < 1 || credential_id > NUM_CREDS){
         mExitSW(ERR_CREDENTIALID_OUTSIDE_OF_RANGE); // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
-    if (!credentials[credential_id-1].exists)
+    if (!credentials[credential_id-1].exists){
         mExitSW(ERR_CREDENTIAL_DOES_NOT_EXIST); // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
-    return credential_id;
-
-
+    return TRUE;
 }
 
 /************************************************************************************************************************************************
@@ -463,28 +490,36 @@ BYTE accessCredential(BYTE *pin, BYTE credential_id) {
  * is stored in buffer_size.
  ************************************************************************************************************************************************/
 
-void singleOrDoubleExpo(BYTE issuer_id, BYTE *e1, WORD e1_size, BYTE *e2, WORD e2_size) {
+BOOL singleOrDoubleExpo(BYTE issuer_id, BYTE *e1, WORD e1_size, BYTE *e2, WORD e2_size) {
 
-    if (issuer_id < 1 || issuer_id > NUM_ISSUERS)
+    if (issuer_id < 1 || issuer_id > NUM_ISSUERS){
         mExitSW(ERR_ISSUERID_OUTSIDE_OF_RANGE); // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
-    if (!issuers[issuer_id-1].exists)
+    if (!issuers[issuer_id-1].exists){
         mExitSW(ERR_ISSUER_DOES_NOT_EXIST); // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
     temp_group_id = issuers[issuer_id-1].group_id;
     temp_gen_id_1 = issuers[issuer_id-1].gen_id_1;
     temp_gen_id_2 = issuers[issuer_id-1].gen_id_2;
 
-    if (temp_group_id >= NUM_GROUPS)
+    if (temp_group_id >= NUM_GROUPS){
         mExitSW(ERR_GROUPID_OUTSIDE_OF_RANGE);  // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
-    if (!groupExists(temp_group_id))
+    if (!groupExists(temp_group_id)){
         mExitSW(ERR_GROUP_DOES_NOT_EXIST);  // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
     temp_modulus      = groups[temp_group_id].modulus;
     temp_modulus_size = groups[temp_group_id].modulus_size;
 
-    getGenerator(temp_group_id, temp_gen_id_1); // put the generator in a buffer of MAX_BIGINT_SIZE bytes, the real size being stored in temp_gen_1_size
+    if( !getGenerator(temp_group_id, temp_gen_id_1) ) return FALSE; // put the generator in a buffer of MAX_BIGINT_SIZE bytes, the real size being stored in temp_gen_1_size
     temp_gen_1_size = buffer_size;
 
     // 8. call ModExp(e1,m)
@@ -510,7 +545,7 @@ void singleOrDoubleExpo(BYTE issuer_id, BYTE *e1, WORD e1_size, BYTE *e2, WORD e
         mem_cpy(temp_buffer, buffer, MAX_BIGINT_SIZE);  // ** Adapted for util_sc ** //
         temp_buffer_size = buffer_size; // = temp_modulus_size
 
-        getGenerator(temp_group_id, temp_gen_id_2);
+        if( !getGenerator(temp_group_id, temp_gen_id_2) ) return FALSE;
         temp_gen_2_size = buffer_size;
 
         if (temp_gen_2_size >= temp_modulus_size) {
@@ -538,21 +573,25 @@ void singleOrDoubleExpo(BYTE issuer_id, BYTE *e1, WORD e1_size, BYTE *e2, WORD e
         mModularMultiplication (temp_modulus_size, temp_modulus+MAX_BIGINT_SIZE-temp_modulus_size, buffer+MAX_BIGINT_SIZE-temp_modulus_size, temp_buffer+MAX_BIGINT_SIZE-temp_modulus_size); // this overwrites buffer  // ** Adapted for util_sc ** //
         // NOTE : la implementación de crxModularMultiplication hay que estudiarla por si no hace una mult. mod. solo
     }
-
+    return TRUE;
 }
 
 /************************************************************************************************************************************************
  * void accessSession(BYTE credential_id)
  ************************************************************************************************************************************************/
 
-void accessSession(BYTE credential_id) {
+BOOL checkAccessSession(BYTE credential_id) {
 
-    if (current_prover_id < 1 || current_prover_id > NUM_PROVERS)
+    if (current_prover_id < 1 || current_prover_id > NUM_PROVERS){
         mExitSW(ERR_PROVERID_OUTSIDE_OF_RANGE); // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
-    if (!provers[current_prover_id-1].exists)
+    if (!provers[current_prover_id-1].exists){
         mExitSW(ERR_PROVER_DOES_NOT_EXIST); // ** Adapted for util_sc ** //
-
+        return FALSE;
+    }
+    return TRUE;
 }
 
 /************************************************************************************************************************************************
@@ -561,37 +600,46 @@ void accessSession(BYTE credential_id) {
  * The result is stored in the left-most bytes of buffer, the size of the result is stored in buffer_size.
  ************************************************************************************************************************************************/
 
-void singleOrDoubleResponse(BYTE issuer_id, BYTE *c, WORD c_size, BYTE *x, WORD x_size, BYTE *kx, WORD kx_size, BYTE *v, WORD v_size, BYTE *kv, WORD kv_size) {
+BOOL singleOrDoubleResponse(BYTE issuer_id, BYTE *c, WORD c_size, BYTE *x, WORD x_size, BYTE *kx, WORD kx_size, BYTE *v, WORD v_size, BYTE *kv, WORD kv_size) {
 
-    if (issuer_id < 1 || issuer_id > NUM_ISSUERS)
+    if (issuer_id < 1 || issuer_id > NUM_ISSUERS){
         mExitSW(ERR_ISSUERID_OUTSIDE_OF_RANGE); // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
-    if (!issuers[issuer_id-1].exists)
+    if (!issuers[issuer_id-1].exists){
         mExitSW(ERR_ISSUER_DOES_NOT_EXIST); // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
     temp_group_id = issuers[issuer_id-1].group_id;
     temp_gen_id_2 = issuers[issuer_id-1].gen_id_2;
 
-    if (temp_group_id >= NUM_GROUPS)
+    if (temp_group_id >= NUM_GROUPS){
         mExitSW(ERR_GROUPID_OUTSIDE_OF_RANGE);  // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
-    if (!groupExists(temp_group_id))
+    if (!groupExists(temp_group_id)){
         mExitSW(ERR_GROUP_DOES_NOT_EXIST);  // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
     // fetch q = groups[temp_group_id].q;
 
-    singleResponse(kx, kx_size, c, c_size, x, x_size, groups[temp_group_id].q, groups[temp_group_id].q_size, 0); // the result is stored in the right-most bytes of buffer[0 ... MAX_BIGINT_SIZE-1], there are buffer_size significant bytes
+    // the result is stored in the right-most bytes of buffer[0 ... MAX_BIGINT_SIZE-1], there are buffer_size significant bytes
+    if( !singleResponse(kx, kx_size, c, c_size, x, x_size, groups[temp_group_id].q, groups[temp_group_id].q_size, 0) )
+        return FALSE;
 
     if (temp_gen_id_2 != 0) {
-
-        singleResponse(kv, kv_size, c, c_size, v, v_size, groups[temp_group_id].q, groups[temp_group_id].q_size, buffer_size);
-
+        if( !singleResponse(kv, kv_size, c, c_size, v, v_size, groups[temp_group_id].q, groups[temp_group_id].q_size, buffer_size) )
+            return FALSE;
     }
-
+    return TRUE;
 }
 
 /************************************************************************************************************************************************
- * void singleResponse(BYTE *k, WORD k_size, BYTE *c,
+ * BOOL singleResponse(BYTE *k, WORD k_size, BYTE *c,
  *                     WORD c_size, BYTE *u, WORD u_size,
  *                     BYTE *q, WORD q_size)
  *
@@ -604,7 +652,7 @@ void singleOrDoubleResponse(BYTE issuer_id, BYTE *c, WORD c_size, BYTE *x, WORD 
  * significant bytes and offset bytes is stored in buffer_size.
  ************************************************************************************************************************************************/
 
-void singleResponse(BYTE *k, WORD k_size, BYTE *c, WORD c_size, BYTE *u, WORD u_size, BYTE *q, WORD q_size, BYTE offset) {
+BOOL singleResponse(BYTE *k, WORD k_size, BYTE *c, WORD c_size, BYTE *u, WORD u_size, BYTE *q, WORD q_size, BYTE offset) {
 
     BYTE blockLength;
 
@@ -678,8 +726,10 @@ void singleResponse(BYTE *k, WORD k_size, BYTE *c, WORD c_size, BYTE *u, WORD u_
 
         // make sure that c*u fits a big integer
 
-        if (c_size + u_size > MAX_SMALLINT_SIZE)
+        if (c_size + u_size > MAX_SMALLINT_SIZE){
             mExitSW(ERR_INTEGER_EXCEEDS_MAXINTSIZE);    // ** Adapted for util_sc ** //
+            return FALSE;
+        }
 
         // compute c*u, put it in temp_buffer[0 ... MAX_SMALLINT_SIZE-1]
         // void multosBlockMultiply (const BYTE blockLength, BYTE *block1, BYTE *block2, BYTE *result);
@@ -703,7 +753,7 @@ void singleResponse(BYTE *k, WORD k_size, BYTE *c, WORD c_size, BYTE *u, WORD u_
         mem_cpy(buffer+offset, temp_buffer+MAX_SMALLINT_SIZE-k_size, k_size);   // ** Adapted for util_sc ** //
 
     }
-
+    return TRUE;
 }
 
 /************************************************************************************************************************************************
@@ -746,19 +796,25 @@ BYTE* accessURI(BYTE *datain, WORD Lc) {
     BYTE *uri;
     BYTE uri_size;
 
-    if (mode != MODE_ROOT && mode != MODE_WORKING)
+    if (mode != MODE_ROOT && mode != MODE_WORKING){
         mExitSW(ERR_BAD_MODE ^ mode);   // ** Adapted for util_sc ** //
+        return NULL;
+    }
 
-    if (Lc < 5)
+    if (Lc < 5){
         mExitSW(ERR_INCORRECT_MIN_SIZE_OF_INCOMMING_DATA ^ 5);  // ** Adapted for util_sc ** //
+        return NULL;
+    }
 
-    checkPin(datain);
+    if( !checkPin(datain) ) return NULL;
 
     uri = datain + PIN_SIZE;
     uri_size = Lc - PIN_SIZE;
 
-    if (uri_size > MAX_URI_SIZE)
+    if (uri_size > MAX_URI_SIZE){
         mExitSW(ERR_URI_TOO_LARGE); // ** Adapted for util_sc ** //
+        return NULL;
+    }
 
     return uri;
 
@@ -897,7 +953,7 @@ void encrypt(BYTE *password, BYTE label) {
  * process.
  ************************************************************************************************************************************************/
 
-void decrypt(BYTE *device_id_prim, BYTE *password, BYTE label) {
+BOOL decrypt(BYTE *device_id_prim, BYTE *password, BYTE label) {
 
     WORD L;
 
@@ -915,8 +971,10 @@ void decrypt(BYTE *device_id_prim, BYTE *password, BYTE label) {
 
     // temp_buffer contains : K (16 bytes)
 
-    if ((buffer_size & 0xf) != 0)
+    if ((buffer_size & 0xf) != 0){
         mExitSW(ERR_INVALID_BACKUP_ARCHIVE);    // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
     d = (buffer_size - 16)/16;
 
@@ -935,13 +993,17 @@ void decrypt(BYTE *device_id_prim, BYTE *password, BYTE label) {
     mem_cpy(device_id_prim, temp_buffer+22, 2); // ** Adapted for util_sc ** //
 
     mem_set(mem_session.small_buffer, 0, 4);    // ** Adapted for util_sc ** //
-    if (mem_cmp(temp_buffer+16, mem_session.small_buffer, 4) != 0)  // ** Adapted for util_sc ** //
+    if (mem_cmp(temp_buffer+16, mem_session.small_buffer, 4) != 0){
         mExitSW(ERR_INVALID_BACKUP_ARCHIVE);    // ** Adapted for util_sc ** //
+        return FALSE;
+    }  // ** Adapted for util_sc ** //
 
     mem_cpy(&L, temp_buffer+20, 2); // ** Adapted for util_sc ** //
 
-    if (L < 16*(d-1)+1 || L > 16*d)
+    if (L < 16*(d-1)+1 || L > 16*d){
         mExitSW(ERR_INVALID_BACKUP_ARCHIVE);    // ** Adapted for util_sc ** //
+        return FALSE;
+    }
 
     // SHA256(digest, plaintext_length, plaintext)
     // ** Adapted for util_sc ** // SHA256(temp_buffer+48, 32, temp_buffer);
@@ -962,24 +1024,13 @@ void decrypt(BYTE *device_id_prim, BYTE *password, BYTE label) {
     // buffer contains : data_1 (16 bytes) || ... || data_d (16 bytes)
 
     mem_set(mem_session.small_buffer, 0, 16*d - L); // ** Adapted for util_sc ** //
-    if (mem_cmp(buffer+L, mem_session.small_buffer, 16*d - L) != 0) // ** Adapted for util_sc ** //
+    if (mem_cmp(buffer+L, mem_session.small_buffer, 16*d - L) != 0){
         mExitSW(ERR_INVALID_BACKUP_ARCHIVE);    // ** Adapted for util_sc ** //
+        return FALSE;
+    } // ** Adapted for util_sc ** //
 
     buffer_size = L;
-
-}
-
-/************************************************************************************************************************************************
- * void print(BYTE *s, WORD size)
- *
- ************************************************************************************************************************************************/
-
-void print(void *s, WORD size) {
-
-    mem_cpy(apdu_data.dataout, (BYTE *)s, size);    // ** Adapted for util_sc ** //
-
-    mExitLa(size);   // ** Adapted for util_sc ** //
-
+    return TRUE;
 }
 
 /************************************************************************
@@ -1020,65 +1071,4 @@ void output_large_data(void) {
         return;
     }
 
-}
-
-/******************************************************************************
- * void segmentToStaticHigh(void *high_addr, const void *low_addr, size_t size)
- *
- * This routine copies the content of the buffer located in the normal
- * address space (ram of e2), starting at address low_addr, to the the
- * buffer (possibly) located in the higher part of the static memory,
- * starting at address high_addr. If high_addr+size < 0x8000, then
- * this routine can be replace by a memcpy.
- ******************************************************************************/
-
-/**
- // TODO :
- * Estos dos se usan solo una vez cada uno en el main para leer y escribir blobs
- * por lo que una copia de arrays debería bastar.
- *
- */
-
-
-void segmentToStaticHigh(void *high_addr, const void *low_addr, DWORD size)    // ** Adapted for util_sc ** //
-{
-
-    BYTE high_addr_32bits[4] = {0x00, 0x00, 0x00, 0x00};
-
-    // compute high_addr_32bits
-    mem_cpy(high_addr_32bits+2, &high_addr, 2); // ** Adapted for util_sc ** //
-    // TODO
-/*
-    // call MEMORY COPY ADDITION STATIC (non atomic)
-    __push ((__typechk(WORD, size))); // size of the data to copy
-    __push (__BLOCKCAST(4)(__typechk(BYTE *, high_addr_32bits))); // push the static offset
-    __push ((__typechk(WORD, (WORD)(low_addr)))); // address of the data in the low memory
-    __code (__PRIM, 0xDD, 0x80);
-*/
-}
-
-/******************************************************************************
- * void staticHighToSegment(void *low_addr, const void *high_addr, size_t size)
- *
- * This routine copies the content of the buffer (possibly) located in
- * the high address space, starting at address high_addr, to the the
- * buffer located in the lower part of the memory (ram of e2),
- * starting at address low_addr.
- ******************************************************************************/
-
-void staticHighToSegment(void *low_addr, const void *high_addr, DWORD size)    // ** Adapted for util_sc ** //
-{
-
-    BYTE high_addr_32bits[4] = {0x00, 0x00, 0x00, 0x00};
-
-    // compute high_addr_32bits
-    mem_cpy(high_addr_32bits+2, &high_addr, 2); // ** Adapted for util_sc ** //
-    // TODO
-/*
-    // call MEMORY COPY ADDITION STATIC (non atomic)
-    __push ((__typechk(WORD, size))); // size of the data to copy
-    __push ((__typechk(WORD, (WORD)(low_addr)))); // address of the data in the low memory
-    __push (__BLOCKCAST(4)(__typechk(BYTE *, high_addr_32bits))); // push the static offset
-    __code (__PRIM, 0xDD, 0x81);
-*/
 }

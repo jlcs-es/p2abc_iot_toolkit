@@ -236,6 +236,7 @@ void handle_APDU() {
         default:
             mExitSW(ERR_BAD_INS);
     }
+
 }
 
 
@@ -394,7 +395,7 @@ void handle_INS_SET_VIRGIN_MODE(){
     mem_set(provers, 0, sizeof(PROVER)*NUM_PROVERS);
     current_prover_id = 0;
     mem_set(credentials, 0, sizeof(CREDENTIAL)*NUM_CREDS);
-    //setStaticHigh(blob_store, 0x00, sizeof(BLOB_STORE_ITEM)*MAX_NUMBER_OF_BLOBS); // TODO !!!
+    mem_set(blob_store, 0x00, sizeof(BLOB_STORE_ITEM)*MAX_NUMBER_OF_BLOBS); // ** Adapted for util_sc ** //
     mem_set(blob_catalog, 0x00, sizeof(BLOB_CATALOG_ITEM)*MAX_NUMBER_OF_BLOBS);
     mem_set(temp_key, 0, MAX_BIGINT_SIZE);
 
@@ -458,7 +459,7 @@ void handle_INS_CHANGE_PIN(){
         return;
     }
 
-    if( !if( !checkPin(apdu_data.old_pin_and_new_pin) ) return ) return;
+    if( !checkPin(apdu_data.old_pin_and_new_pin) ) return;
 
     mem_cpy(pin, apdu_data.old_pin_and_new_pin + PIN_SIZE, PIN_SIZE);
 
@@ -484,7 +485,7 @@ void handle_INS_RESET_PIN(){
         return;
     }
 
-    checkPuk(apdu_data.puk_and_pin);
+    if( !checkPuk(apdu_data.puk_and_pin) ) return;
 
     mem_cpy(pin, apdu_data.puk_and_pin + PUK_SIZE, PIN_SIZE);
 
@@ -543,13 +544,13 @@ void handle_INS_INITIALIZE_DEVICE(){
     }
 #endif
 
-    getKey(temp_key, &temp_key_size, 0);
+    if( !getKey(temp_key, &temp_key_size, 0) ) return;
 
     mem_cpy(temp_buffer         , pin, PIN_SIZE);
     mem_cpy(temp_buffer+PIN_SIZE, puk, PUK_SIZE);
     temp_buffer_size = PIN_SIZE + PUK_SIZE;
 
-    publicKeyEncrypt(temp_key, temp_key_size);
+    if( !publicKeyEncrypt(temp_key, temp_key_size) )  return;
 
     mem_set(&temp_key, 0, MAX_BIGINT_SIZE);
 
@@ -679,11 +680,11 @@ void handle_INS_AUTHENTICATE_DATA(){
         return;
     }
 
-    getKey(temp_key, &temp_key_size, apdu_data.keyId);
+    if( !getKey(temp_key, &temp_key_size, apdu_data.keyId) ) return;
 
     authData = 0;
 
-    extract(temp_key, temp_key_size);
+    if( !extract(temp_key, temp_key_size) ) return;
 
     authData = 1;
 
@@ -716,10 +717,8 @@ void handle_INS_SET_AUTHENTICATION_KEY(){
         return;
     }
 
-    if (mode == MODE_WORKING){
-        checkBufferPrefix(INS_SET_AUTHENTICATION_KEY, &apdu_data.keyId, 1);
-        return;
-    }
+    if (mode == MODE_WORKING)
+        if( !checkBufferPrefix(INS_SET_AUTHENTICATION_KEY, &apdu_data.keyId, 1) ) return;
 
     if (buffer_size < 55){
         mExitSW(ERR_AUTHENTICATION_KEY_TOO_SHORT);
@@ -797,7 +796,7 @@ void handle_INS_READ_AUTHENTICATION_KEY(){
 
     if( !checkPin(apdu_data.read_authentication_key.pin) ) return;
 
-    getKey(temp_buffer, &temp_size, apdu_data.read_authentication_key.keyId);
+    if( !getKey(temp_buffer, &temp_size, apdu_data.read_authentication_key.keyId) ) return;
 
     if (temp_size <= MAX_APDU_OUTPUT_DATA_SIZE) {
         mem_cpy(apdu_data.auth_key, temp_buffer, temp_size);
@@ -838,7 +837,7 @@ void handle_INS_REMOVE_AUTHENTICATION_KEY(){
     }
 
     if (mode == MODE_WORKING)
-        checkBufferEqual(INS_REMOVE_AUTHENTICATION_KEY, &(apdu_data.keyId), KEY_ID_SIZE);
+        if( !checkBufferEqual(INS_REMOVE_AUTHENTICATION_KEY, &(apdu_data.keyId), KEY_ID_SIZE) ) return;
 
     mem_set(auth_keys[apdu_data.keyId], 0x00, auth_keys_sizes[apdu_data.keyId]);
     auth_keys_sizes[apdu_data.keyId] = 0;
@@ -875,7 +874,7 @@ void handle_INS_SET_GROUP_COMPONENT(){
     }
 
     if (mode == MODE_WORKING)
-        checkBufferPrefix(INS_SET_GROUP_COMPONENT, &apdu_data.set_group_component.group_id, 2); // trick to get group_id || comptype
+        if( !checkBufferPrefix(INS_SET_GROUP_COMPONENT, &apdu_data.set_group_component.group_id, 2) ) return; // trick to get group_id || comptype
 
     if (buffer_size > MAX_BIGINT_SIZE){
         mExitSW(ERR_INTEGER_EXCEEDS_MAXINTSIZE);
@@ -938,7 +937,7 @@ void handle_INS_SET_GENERATOR(){
     }
 
     if (mode == 2)
-        checkBufferPrefix(INS_SET_GENERATOR, &apdu_data.set_generator.group_id, 2); // trick to get group_id || genId
+        if( !checkBufferPrefix(INS_SET_GENERATOR, &apdu_data.set_generator.group_id, 2) ) return; // trick to get group_id || genId
 
     if (buffer_size > MAX_BIGINT_SIZE){
         mExitSW(ERR_INTEGER_EXCEEDS_MAXINTSIZE);
@@ -1129,7 +1128,7 @@ void handle_INS_READ_GENERATOR(){
         return;
     }
 
-    getGenerator(apdu_data.read_generator_in.group_id, apdu_data.read_generator_in.gen_id); // temp_size holds the true size of the generator
+    if( !getGenerator(apdu_data.read_generator_in.group_id, apdu_data.read_generator_in.gen_id) ) return; // temp_size holds the true size of the generator
     temp_size = buffer_size;
 
     if (temp_size <= MAX_APDU_OUTPUT_DATA_SIZE) {
@@ -1172,7 +1171,7 @@ void handle_INS_REMOVE_GROUP(){
     }
 
     if (mode == MODE_WORKING)
-        checkBufferPrefix(INS_REMOVE_GROUP, &apdu_data.group_id, GROUP_ID_SIZE);
+        if( !checkBufferPrefix(INS_REMOVE_GROUP, &apdu_data.group_id, GROUP_ID_SIZE) ) return;
 
     groups[apdu_data.group_id].modulus_size = 0;
     groups[apdu_data.group_id].q_size = 0;
@@ -1214,7 +1213,7 @@ void handle_INS_SET_COUNTER(){
     }
 
     if (mode == MODE_WORKING)
-        checkBufferEqual(INS_SET_COUNTER, &(apdu_data.set_counter.counter_id), 4+CURSOR_SIZE); // trick to get counter_id||key_id||...
+        if( !checkBufferEqual(INS_SET_COUNTER, &(apdu_data.set_counter.counter_id), 4+CURSOR_SIZE) ) return; // trick to get counter_id||key_id||...
 
     temp_counter_id = apdu_data.set_counter.counter_id;
 
@@ -1250,9 +1249,9 @@ void handle_INS_INCREMENT_COUNTER(){
     mem_cpy(buffer, apdu_data.increment_counter.sig, Lc-1);
     buffer_size = Lc-1;
 
-    getKey(temp_key, &temp_key_size, temp_key_id);
+    if( !getKey(temp_key, &temp_key_size, temp_key_id) ) return;
 
-    extract(temp_key, temp_key_size);
+    if( !extract(temp_key, temp_key_size) ) return;
 
     if (buffer_size != 5){
         mExitSW(ERR_DATA_AUTHENTICATION_FAILURE);
@@ -1405,7 +1404,7 @@ void handle_INS_REMOVE_COUNTER(){
     }
 
     if (mode == MODE_WORKING)
-        checkBufferEqual(INS_REMOVE_COUNTER, &temp_counter_id, COUNTER_ID_SIZE);
+        if( !checkBufferEqual(INS_REMOVE_COUNTER, &temp_counter_id, COUNTER_ID_SIZE) ) return;
 
     mem_set(&(counters[temp_counter_id-1].counter_id), 0, 5+CURSOR_SIZE); // also set 'exists' to 0
 
@@ -1453,7 +1452,7 @@ void handle_INS_SET_ISSUER(){
     }
 
     if (mode == MODE_WORKING)
-        checkBufferEqual(INS_SET_ISSUER, &(temp_issuer_id), 6); // get issuer_id||group_id||...
+        if( !checkBufferEqual(INS_SET_ISSUER, &(temp_issuer_id), 6) ) return; // get issuer_id||group_id||...
 
     mem_cpy(&(issuers[temp_issuer_id-1].issuer_id), &(apdu_data.set_issuer_in.issuer_id), 6);
     issuers[temp_issuer_id-1].exists = 1;
@@ -1567,7 +1566,7 @@ void handle_INS_REMOVE_ISSUER(){
     }
 
     if (mode == MODE_WORKING)
-        checkBufferEqual(INS_REMOVE_ISSUER, &temp_issuer_id, 1);
+        if( !checkBufferEqual(INS_REMOVE_ISSUER, &temp_issuer_id, 1) ) return;
 
     mem_set(&(issuers[temp_issuer_id-1]), 0, 7); // also set 'exists' to 0
 
@@ -1606,7 +1605,7 @@ void handle_INS_SET_PROVER(){
         }
 
     if (mode == MODE_WORKING)
-        checkBufferEqual(INS_SET_PROVER, &(apdu_data.set_prover_in.prover_id), Lc);
+        if( !checkBufferEqual(INS_SET_PROVER, &(apdu_data.set_prover_in.prover_id), Lc) ) return;
 
     mem_cpy(&(provers[temp_prover_id-1].prover_id), &(apdu_data.set_prover_in.prover_id), 5); // under the hood, this also initializes ksize and csize
     mem_set(&(provers[temp_prover_id-1].kx), 0, MAX_SMALLINT_SIZE);
@@ -1698,7 +1697,7 @@ void handle_INS_REMOVE_PROVER(){
     }
 
     if (mode == 2)
-        checkBufferEqual(INS_REMOVE_PROVER, &(temp_prover_id), 1);
+        if( !checkBufferEqual(INS_REMOVE_PROVER, &(temp_prover_id), 1) ) return;
 
     mem_set(&(provers[temp_prover_id-1]), 0, sizeof(PROVER));
 
@@ -2022,7 +2021,10 @@ void handle_INS_READ_CREDENTIAL(){
         return;
     }
 
-    temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
+    if( !checkAccessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id) )
+        return;
+    else
+        temp_credential_id = apdu_data.pin_and_credential_id.credential_id;
 
     apdu_data.dataout[0] = credentials[temp_credential_id-1].issuer_id;
     mem_cpy(apdu_data.dataout+1, &(credentials[temp_credential_id-1].v_size), 2);
@@ -2040,7 +2042,10 @@ void handle_INS_REMOVE_CREDENTIAL(){
         return;
     }
 
-    temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
+    if( !checkAccessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id) )
+        return;
+    else
+        temp_credential_id = apdu_data.pin_and_credential_id.credential_id;
 
     mem_set(&(credentials[temp_credential_id-1].credential_id), 0, sizeof(CREDENTIAL));
 
@@ -2054,11 +2059,15 @@ void handle_INS_GET_CREDENTIAL_PUBLIC_KEY(){
         return;
     }
 
-    temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
+    if( !checkAccessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id) )
+        return;
+    else
+        temp_credential_id = apdu_data.pin_and_credential_id.credential_id;
 
     temp_issuer_id = credentials[temp_credential_id-1].issuer_id;
 
-    singleOrDoubleExpo(temp_issuer_id, device_key, x_size, credentials[temp_credential_id-1].v, credentials[temp_credential_id-1].v_size);
+    if( !singleOrDoubleExpo(temp_issuer_id, device_key, x_size, credentials[temp_credential_id-1].v, credentials[temp_credential_id-1].v_size) )
+        return;
 
     if (buffer_size <= MAX_APDU_OUTPUT_DATA_SIZE) {
         mem_cpy(apdu_data.dataout, buffer+MAX_BIGINT_SIZE-buffer_size, buffer_size);
@@ -2078,7 +2087,10 @@ void handle_INS_GET_ISSUANCE_COMMITMENT(){
         return;
     }
 
-    temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
+    if( !checkAccessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id) )
+        return;
+    else
+        temp_credential_id = apdu_data.pin_and_credential_id.credential_id;
 
     temp_issuer_id = credentials[temp_credential_id-1].issuer_id;
     temp_status = credentials[temp_credential_id-1].status;
@@ -2088,7 +2100,7 @@ void handle_INS_GET_ISSUANCE_COMMITMENT(){
         return;
     }
 
-    accessSession(temp_credential_id);
+    if( !checkAccessSession(temp_credential_id) ) return;
 
     if (provers[current_prover_id-1].proofstatus != 1){
         mExitSW(ERR_CURRENT_PROOF_SESSION_INAP_STAGE);
@@ -2103,7 +2115,8 @@ void handle_INS_GET_ISSUANCE_COMMITMENT(){
 #endif
     temp_key_size = provers[current_prover_id-1].ksize;
 
-    singleOrDoubleExpo(temp_issuer_id, provers[current_prover_id-1].kx, provers[current_prover_id-1].ksize, temp_key+MAX_BIGINT_SIZE-MAX_SMALLINT_SIZE, provers[current_prover_id-1].ksize);
+    if( !singleOrDoubleExpo(temp_issuer_id, provers[current_prover_id-1].kx, provers[current_prover_id-1].ksize, temp_key+MAX_BIGINT_SIZE-MAX_SMALLINT_SIZE, provers[current_prover_id-1].ksize) )
+        return;
 
     credentials[temp_credential_id-1].status = 1;
     mem_cpy(credentials[temp_credential_id-1].kv, temp_key+MAX_BIGINT_SIZE-MAX_SMALLINT_SIZE, MAX_SMALLINT_SIZE);
@@ -2130,7 +2143,10 @@ void handle_INS_GET_ISSUANCE_RESPONSE(){
         return;
     }
 
-    temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
+    if( !checkAccessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id) )
+        return;
+    else
+        temp_credential_id = apdu_data.pin_and_credential_id.credential_id;
 
     temp_issuer_id = credentials[temp_credential_id-1].issuer_id;
     temp_status = credentials[temp_credential_id-1].status;
@@ -2140,19 +2156,20 @@ void handle_INS_GET_ISSUANCE_RESPONSE(){
         return;
     }
 
-    accessSession(temp_credential_id);
+    if( !checkAccessSession(temp_credential_id) ) return;
 
     if (provers[current_prover_id-1].proofstatus != 2){
         mExitSW(ERR_CURRENT_PROOF_SESSION_INAP_STAGE);
         return;
     }
 
-    singleOrDoubleResponse(temp_issuer_id,
+    if( ! singleOrDoubleResponse(temp_issuer_id,
                            provers[current_prover_id-1].c, provers[current_prover_id-1].csize,
                            device_key, x_size,
                            provers[current_prover_id-1].kx, provers[current_prover_id-1].ksize,
                            credentials[temp_credential_id-1].v, credentials[temp_credential_id-1].v_size,
-                           credentials[temp_credential_id-1].kv, provers[current_prover_id-1].ksize);
+                           credentials[temp_credential_id-1].kv, provers[current_prover_id-1].ksize) )
+        return;
 
     credentials[temp_credential_id-1].status = 2;
 
@@ -2174,7 +2191,10 @@ void handle_INS_GET_PRESENTATION_COMMITMENT(){
         return;
     }
 
-    temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
+    if( !checkAccessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id) )
+        return;
+    else
+        temp_credential_id = apdu_data.pin_and_credential_id.credential_id;
 
     temp_issuer_id = credentials[temp_credential_id-1].issuer_id;
     temp_status = credentials[temp_credential_id-1].status;
@@ -2184,7 +2204,7 @@ void handle_INS_GET_PRESENTATION_COMMITMENT(){
         return;
     }
 
-    accessSession(temp_credential_id);
+    if( !checkAccessSession(temp_credential_id) ) return;
 
     if (provers[current_prover_id-1].proofstatus != 1){
         mExitSW(ERR_CURRENT_PROOF_SESSION_INAP_STAGE);
@@ -2231,7 +2251,8 @@ void handle_INS_GET_PRESENTATION_COMMITMENT(){
     getRandomBytes(temp_key + MAX_BIGINT_SIZE-provers[current_prover_id-1].ksize, provers[current_prover_id-1].ksize);
 #endif
 
-    singleOrDoubleExpo(temp_issuer_id, provers[current_prover_id-1].kx, provers[current_prover_id-1].ksize, temp_key+MAX_BIGINT_SIZE-MAX_SMALLINT_SIZE, provers[current_prover_id-1].ksize);
+    if( !singleOrDoubleExpo(temp_issuer_id, provers[current_prover_id-1].kx, provers[current_prover_id-1].ksize, temp_key+MAX_BIGINT_SIZE-MAX_SMALLINT_SIZE, provers[current_prover_id-1].ksize) )
+        return;
 
     mem_cpy(credentials[temp_credential_id-1].kv, temp_key+MAX_BIGINT_SIZE-MAX_SMALLINT_SIZE, MAX_SMALLINT_SIZE);
     credentials[temp_credential_id-1].status = 3;
@@ -2256,7 +2277,10 @@ void handle_INS_GET_PRESENTATION_RESPONSE(){
         return;
     }
 
-    temp_credential_id = accessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id);
+    if( !checkAccessCredential(apdu_data.pin_and_credential_id.pin, apdu_data.pin_and_credential_id.credential_id) )
+        return;
+    else
+        temp_credential_id = apdu_data.pin_and_credential_id.credential_id;
 
     temp_issuer_id = credentials[temp_credential_id-1].issuer_id;
     temp_status = credentials[temp_credential_id-1].status;
@@ -2266,19 +2290,20 @@ void handle_INS_GET_PRESENTATION_RESPONSE(){
         return;
     }
 
-    accessSession(temp_credential_id);
+    if( !checkAccessSession(temp_credential_id) ) return;
 
     if (provers[current_prover_id-1].proofstatus != 2){
         mExitSW(ERR_CURRENT_PROOF_SESSION_INAP_STAGE);
         return;
     }
 
-    singleOrDoubleResponse(temp_issuer_id,
+    if( !singleOrDoubleResponse(temp_issuer_id,
                            provers[current_prover_id-1].c, provers[current_prover_id-1].csize,
                            device_key, x_size,
                            provers[current_prover_id-1].kx, provers[current_prover_id-1].ksize,
                            credentials[temp_credential_id-1].v, credentials[temp_credential_id-1].v_size,
-                           credentials[temp_credential_id-1].kv, provers[current_prover_id-1].ksize);
+                           credentials[temp_credential_id-1].kv, provers[current_prover_id-1].ksize) )
+        return;
 
     credentials[temp_credential_id-1].prescount += 1;
 
@@ -2322,7 +2347,7 @@ void handle_INS_GET_DEVICE_PUBLIC_KEY(){
         return;
     }
 
-    getGenerator(0, 1);
+    if( !getGenerator(0, 1) ) return;
     temp_gen_1_size = buffer_size;
 
     // void multosModularReduction (WORD operandLength, WORD modulusLength, BYTE *operand, BYTE *modulus);
@@ -2369,7 +2394,7 @@ void handle_INS_GET_DEVICE_COMMITMENT(){
 
     if( !checkPin(apdu_data.pin) ) return;
 
-    accessSession(0);
+    if( !checkAccessSession(0) ) return;
 
     // fetch provers[current_prover_id-1].kx, provers[current_prover_id-1].proofstatus
 
@@ -2385,7 +2410,7 @@ void handle_INS_GET_DEVICE_COMMITMENT(){
 
     // fetch groups[0].modulus
 
-    getGenerator(0, 1);
+    if( !getGenerator(0, 1) ) return;
 
     // void multosModularReduction (WORD operandLength, WORD modulusLength, BYTE *operand, BYTE *modulus);
     if (buffer_size >= groups[0].modulus_size) {
@@ -2432,7 +2457,7 @@ void handle_INS_GET_DEVICE_RESPONSE(){
 
     if( !checkPin(apdu_data.pin) ) return;
 
-    accessSession(0);
+    if( !checkAccessSession(0) ) return;
 
     // fetch provers[current_prover_id-1].kx, provers[current_prover_id-1].c, provers[current_prover_id-1].proofstatus
 
@@ -2448,10 +2473,11 @@ void handle_INS_GET_DEVICE_RESPONSE(){
 
     // fetch groups[0].q
 
-    singleResponse(provers[current_prover_id-1].kx, provers[current_prover_id-1].ksize,
+    if( !singleResponse(provers[current_prover_id-1].kx, provers[current_prover_id-1].ksize,
                    provers[current_prover_id-1].c, provers[current_prover_id-1].csize,
                    device_key, x_size,
-                   groups[0].q, groups[0].q_size, 0);
+                   groups[0].q, groups[0].q_size, 0) )
+        return;
 
     if (buffer_size <= MAX_APDU_OUTPUT_DATA_SIZE) {
         mem_cpy(apdu_data.dataout, buffer, buffer_size);
@@ -2532,7 +2558,7 @@ void handle_INS_GET_SCOPE_EXCLUSIVE_COMMITMENT(){
 
     if( !checkPin(apdu_data.get_scope_exclusive_commitment_in.pin) ) return;
 
-    accessSession(0);
+    if( !checkAccessSession(0) ) return;
 
     // fetch provers[current_prover_id-1].kx, provers[current_prover_id-1].proofstatus
 
@@ -2595,7 +2621,7 @@ void handle_INS_GET_SCOPE_EXCLUSIVE_RESPONSE(){
 
     if( !checkPin(apdu_data.get_scope_exclusive_response_in.pin) ) return;
 
-    accessSession(0);
+    if( !checkAccessSession(0) ) return;
 
     // fetch provers[current_prover_id-1].kx, provers[current_prover_id-1].c, provers[current_prover_id-1].proofstatus
 
@@ -2635,6 +2661,7 @@ void handle_INS_STORE_BLOB(){
     }
 
     uri = accessURI(apdu_data.blob_in.datain, Lc);
+    if(uri == NULL) return;
 
     getBlobstoreInformations(&temp_blob_index, &temp_blobcount, &temp_uri_index, uri, Lc-PIN_SIZE);
 
@@ -2657,7 +2684,7 @@ void handle_INS_STORE_BLOB(){
     blob_catalog[temp_blob_index].uri_size = Lc-PIN_SIZE;
     blob_catalog[temp_blob_index].buffer_size = buffer_size;
 
-    segmentToStaticHigh(blob_store[temp_blob_index].buffer, buffer, buffer_size);
+    mem_cpy(blob_store[temp_blob_index].buffer, buffer, buffer_size);
 
     mExit();
 }
@@ -2742,6 +2769,7 @@ void handle_INS_READ_BLOB(){
     }
 
     uri = accessURI(apdu_data.blob_in.datain, Lc);
+    if(uri == NULL) return;
 
     getBlobstoreInformations(&temp_blob_index, &temp_blobcount, &temp_uri_index, uri, Lc-PIN_SIZE);
 
@@ -2751,7 +2779,7 @@ void handle_INS_READ_BLOB(){
     }
 
     temp_buffer_size = blob_catalog[temp_uri_index].buffer_size;
-    staticHighToSegment(temp_buffer, blob_store[temp_uri_index].buffer, temp_buffer_size);
+    mem_cpy(temp_buffer, blob_store[temp_uri_index].buffer, temp_buffer_size);
 
     if (temp_buffer_size <= MAX_APDU_OUTPUT_DATA_SIZE) {
         mem_cpy(apdu_data.dataout, temp_buffer, temp_buffer_size);
@@ -2771,6 +2799,7 @@ void handle_INS_REMOVE_BLOB(){
     }
 
     uri = accessURI(apdu_data.blob_in.datain, Lc);
+    if(uri == NULL) return;
 
     getBlobstoreInformations(&temp_blob_index, &temp_blobcount, &temp_uri_index, uri, Lc-PIN_SIZE);
 
@@ -2851,7 +2880,7 @@ void handle_INS_RESTORE_DEVICE(){
 
     if( !checkPin(apdu_data.backup_in.pin) ) return;
 
-    decrypt(device_id_prim, apdu_data.backup_in.password, 0x01);
+    if( !decrypt(device_id_prim, apdu_data.backup_in.password, 0x01) ) return;
 
     mem_cpy(pin, buffer, PIN_SIZE);
     mem_cpy(puk, buffer+PIN_SIZE, PUK_SIZE);
@@ -2945,7 +2974,7 @@ void handle_INS_RESTORE_COUNTERS(){
 
     if( !checkPin(apdu_data.backup_in.pin) ) return;
 
-    decrypt(device_id_prim, apdu_data.backup_in.password, 0x02);
+    if( !decrypt(device_id_prim, apdu_data.backup_in.password, 0x02) ) return;
 
     if (buffer_size % 6 != 0){
         mExitSW(ERR_INVALID_BACKUP_ARCHIVE);
