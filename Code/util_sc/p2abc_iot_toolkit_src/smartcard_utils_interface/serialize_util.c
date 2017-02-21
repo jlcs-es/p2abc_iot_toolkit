@@ -524,7 +524,7 @@ void deserialize_smartcard_status(unsigned char * ascii) {
 
 
 
-
+// TODO dont use
 void serialize_APDU_response(unsigned char* ap_r, int * buf_len){
     *buf_len = 2 + La; // APDU Response Length
     mem_cpy(ap_r, apdu_data.dataout, La);

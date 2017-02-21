@@ -12,14 +12,10 @@
 
 
 #include <smartcard_utils_interface/sc_status_io_util.h>
-#include <smartcard_utils_interface/error_codes.h>
 #include <smartcard_common/APDU_handler.h>
 #include <smartcard_common/global_vars.h>
 #include <smartcard_utils_interface/serialize_util.h>
-
-#include <stdlib.h>
 #include <stdio.h>
-#include <p2abc_iot_toolkit_include/debug.h>
 
 
 void receive_commands(){
@@ -31,7 +27,7 @@ void receive_commands(){
  *          Finish the loop.
  */
 
-    // TODO : ahora se lee en formato AA cada byte.
+    // TODO : ahora se lee en formato AA cada byte. Cambiar a bytes.
 
     BYTE command = 0x00;
     WORD apdu_len;

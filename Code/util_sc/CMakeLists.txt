@@ -57,5 +57,4 @@ set(UTIL_SC_INCLUDE_FILES
 
 add_definitions( -DUSE_MINI_GMP )
 
-
-add_library(util_sc ${UTIL_SC_SRC_FILES} ${UTIL_SC_INCLUDE_FILES})
+add_library(util_sc STATIC ${UTIL_SC_SRC_FILES} ${UTIL_SC_INCLUDE_FILES})

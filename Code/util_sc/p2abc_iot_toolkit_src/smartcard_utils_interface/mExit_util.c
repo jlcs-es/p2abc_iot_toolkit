@@ -9,15 +9,14 @@
 /*   and delegates to sc_status_io to save the sc status to         */
 /*   the same json file from start                                  */
 /********************************************************************/
-#include <debug.h>
-#include <malloc.h>
 #include <smartcard_common/APDU_types.h>
+#include <smartcard_common/global_vars.h>
+#include <stdio.h>
 
 void output_apdu_response(){
-    int size;
-    BYTE ap_r[MAX_APDU_OUTPUT_DATA_SIZE];
-    serialize_APDU_response(ap_r, &size);
-    imprimirHexadecimal(ap_r, size);
+    for(i=0; i<La; ++i)     // data
+        printf("%02X", apdu_data.dataout[i]);
+    printf("%02X%02X", SW1, SW2);   // SW
 }
 
 void save_status(){
