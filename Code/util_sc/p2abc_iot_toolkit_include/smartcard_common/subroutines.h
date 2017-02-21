@@ -35,8 +35,8 @@ BOOL singleResponse(BYTE *k, WORD k_size, BYTE *c, WORD c_size, BYTE *u, WORD u_
 void scopeExclusiveGenerator(BYTE *scope, WORD scope_size, BYTE *m, WORD m_size, BYTE *f, WORD f_size);
 BYTE* accessURI(BYTE *datain, WORD Lc);
 void getBlobstoreInformations(WORD* first_available_index, WORD *blobcount, WORD *uri_index, BYTE *uri, BYTE uri_size);
-void encrypt(BYTE *password, BYTE label);
-BOOL decrypt(BYTE *device_id_prim, BYTE *password, BYTE label);
+void cipher(BYTE *password, BYTE label);
+BOOL decipher(BYTE *device_id_prim, BYTE *password, BYTE label);
 void output_large_data(void);
 
 #ifdef __cplusplus

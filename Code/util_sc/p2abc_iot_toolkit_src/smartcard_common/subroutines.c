@@ -866,7 +866,7 @@ void getBlobstoreInformations(WORD* first_available_index, WORD *blobcount, WORD
  * password. Store the result at the begining of buffer.
  ************************************************************************************************************************************************/
 
-void encrypt(BYTE *password, BYTE label) {
+void cipher(BYTE *password, BYTE label) {
 
     temp_buffer_size = 0;
     mem_cpy(temp_buffer+temp_buffer_size, master_backup_key, MASTER_BACKUP_KEY_SIZE);   // ** Adapted for util_sc ** //
@@ -953,7 +953,7 @@ void encrypt(BYTE *password, BYTE label) {
  * process.
  ************************************************************************************************************************************************/
 
-BOOL decrypt(BYTE *device_id_prim, BYTE *password, BYTE label) {
+BOOL decipher(BYTE *device_id_prim, BYTE *password, BYTE label) {
 
     WORD L;
 

@@ -2845,7 +2845,7 @@ void handle_INS_BACKUP_DEVICE(){
     buffer_size += x_size;
 #endif
 
-    encrypt(apdu_data.backup_in.password, 0x01);
+    cipher(apdu_data.backup_in.password, 0x01);
 
     mem_cpy(temp_buffer, buffer, buffer_size);
     temp_buffer_size = buffer_size;
@@ -2880,7 +2880,7 @@ void handle_INS_RESTORE_DEVICE(){
 
     if( !checkPin(apdu_data.backup_in.pin) ) return;
 
-    if( !decrypt(device_id_prim, apdu_data.backup_in.password, 0x01) ) return;
+    if( !decipher(device_id_prim, apdu_data.backup_in.password, 0x01) ) return;
 
     mem_cpy(pin, buffer, PIN_SIZE);
     mem_cpy(puk, buffer+PIN_SIZE, PUK_SIZE);
@@ -2933,7 +2933,7 @@ void handle_INS_BACKUP_COUNTERS(){
         return;
     }
 
-    encrypt(apdu_data.backup_in.password, 0x02);
+    cipher(apdu_data.backup_in.password, 0x02);
 
     mem_cpy(temp_buffer, buffer, buffer_size);
     temp_buffer_size = buffer_size;
@@ -2974,7 +2974,7 @@ void handle_INS_RESTORE_COUNTERS(){
 
     if( !checkPin(apdu_data.backup_in.pin) ) return;
 
-    if( !decrypt(device_id_prim, apdu_data.backup_in.password, 0x02) ) return;
+    if( !decipher(device_id_prim, apdu_data.backup_in.password, 0x02) ) return;
 
     if (buffer_size % 6 != 0){
         mExitSW(ERR_INVALID_BACKUP_ARCHIVE);
