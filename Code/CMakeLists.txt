@@ -3,12 +3,14 @@ project(p2abc_iot_toolkit)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
+
 # SmartCard CODE
 add_subdirectory(util_sc)
 include_directories(util_sc util_sc/p2abc_iot_toolkit_include)
 
 # TESTS
 add_subdirectory(util_sc_tests)
+
 
 
 # MAIN

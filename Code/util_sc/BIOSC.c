@@ -16,6 +16,7 @@
 #include <smartcard_common/global_vars.h>
 #include <smartcard_utils_interface/serialize_util.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 
 void receive_commands(){
@@ -50,6 +51,25 @@ void receive_commands(){
     }
 }
 
+void test_JSON1(){
+    mode = MODE_ROOT;
+    pin[0] = 0x01; pin[1] = 0x23; pin[2] = 0x45; pin[3] = 0xAB;
+    pin_trials = 0x12;
+    x_size = 0xABCD;
+    credentials[0].credential_id = 0x01;
+    credentials[1].credential_id = 0x02;
+    credentials[2].credential_id = 0x03;
+    auth_keys[0][2] = 0x62;
+    auth_keys[1][1] = 0x21;
+
+    char * json_string = serialize_smartcard_status();
+    FILE * f = fopen( "./status.json", "w+");
+    if(f==NULL) exit -1;
+    fputs(json_string, f);
+    free(json_string);
+    fclose(f);
+}
+
 
 int main(int argc, char **argv){
 
@@ -57,6 +77,8 @@ int main(int argc, char **argv){
 //        printf("Usage: %s smartcard_status_file", argv[0]);
 //        return -1;
 //    }
+
+    test_JSON1();
 
     // Restore the smartcard environment
     json_file = "./status.json";

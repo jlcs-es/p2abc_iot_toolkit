@@ -16,7 +16,7 @@ set(UTIL_SC_SRC_FILES
         p2abc_iot_toolkit_src/smartcard_utils_interface/mExit_util.c
 
         #p2abc_iot_toolkit_src/smartcard_external_utilities/arithmetic_implementation_v1.c
-        p2abc_iot_toolkit_src/smartcard_external_utilities/mini-gmp.c
+        #p2abc_iot_toolkit_src/smartcard_external_utilities/mini-gmp.c
         p2abc_iot_toolkit_src/smartcard_external_utilities/tiny-AES128.c
         p2abc_iot_toolkit_src/smartcard_external_utilities/tiny-SHA256.c
         p2abc_iot_toolkit_src/smartcard_external_utilities/cJSON.c
@@ -45,7 +45,7 @@ set(UTIL_SC_INCLUDE_FILES
         p2abc_iot_toolkit_include/smartcard_utils_interface/error_codes.h
 
         #p2abc_iot_toolkit_include/smartcard_external_utilities/arithmetic_implementation_v1.h
-        p2abc_iot_toolkit_include/smartcard_external_utilities/mini-gmp.h
+        #p2abc_iot_toolkit_include/smartcard_external_utilities/mini-gmp.h
         p2abc_iot_toolkit_include/smartcard_external_utilities/tiny-AES128.h
         p2abc_iot_toolkit_include/smartcard_external_utilities/tiny-SHA256.h
         p2abc_iot_toolkit_include/smartcard_external_utilities/base64.h
@@ -57,4 +57,5 @@ set(UTIL_SC_INCLUDE_FILES
 
 add_definitions( -DUSE_MINI_GMP )
 
-add_library(util_sc STATIC ${UTIL_SC_SRC_FILES} ${UTIL_SC_INCLUDE_FILES})
+add_library(util_sc ${UTIL_SC_SRC_FILES} ${UTIL_SC_INCLUDE_FILES})
+target_link_libraries(util_sc gmp)

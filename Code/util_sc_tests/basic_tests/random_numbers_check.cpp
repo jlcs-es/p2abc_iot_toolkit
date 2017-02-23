@@ -1,11 +1,11 @@
 #include <gtest/gtest.h>
 #include <p2abc_iot_toolkit_include/smartcard_common/m_adapted_API.h>
-#include <p2abc_iot_toolkit_include/smartcard_adaptor/system_funcs.h>
+#include <p2abc_iot_toolkit_include/smartcard_utils_interface/crypto_util.h>
 
 
 TEST(RandomNumberGenerationTest, Gen8Bytesrnd) {
 
-    init_seed(1);
+    crypto_InitSeed(1);
 
     BYTE buffer[8];
     for (int i = 0; i < 8; i++) {

@@ -1,12 +1,12 @@
 #include <gtest/gtest.h>
 #include <p2abc_iot_toolkit_include/smartcard_common/subroutines.h>
-#include <p2abc_iot_toolkit_include/smartcard_adaptor/system_funcs.h>
+#include <p2abc_iot_toolkit_include/smartcard_utils_interface/crypto_util.h>
 #include <p2abc_iot_toolkit_include/smartcard_common/global_vars.h>
 #include <iostream>
 
 TEST(RandomBytesTest, Gen85Bytesrnd) {
 
-    init_seed(1);
+    crypto_InitSeed(1);
 
     BYTE buffer[85];
     for (int i = 0; i < 85; i++) {

@@ -1,7 +1,6 @@
 #include <gtest/gtest.h>
-#include <p2abc_iot_toolkit_include/smartcard_adaptor/arithmetic_util.h>
+#include <p2abc_iot_toolkit_include/smartcard_utils_interface/arithmetic_util.h>
 
-#include <debug.h>
 
 TEST(MultiplicationTest, Test1) {
     WORD length = 10;
