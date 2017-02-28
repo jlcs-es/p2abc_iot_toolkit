@@ -9,8 +9,6 @@
 #include <smartcard_utils_interface/system_funcs.h>
 #include <smartcard_utils_interface/error_codes.h>
 #include <string.h>
-#include <smartcard_common/APDU_types.h>
-#include <debug.h>
 
 void serialize_BYTE(cJSON * object, char * name, BYTE value){
     char temp_hex_string[3];
