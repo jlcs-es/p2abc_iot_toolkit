@@ -5,6 +5,11 @@
 #ifndef L_CRYPTODEV_H
 #define L_CRYPTODEV_H
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <linux/types.h>
 #ifndef __KERNEL__
 #define __user
@@ -296,5 +301,12 @@ enum cryptodev_crk_op_t {
  */
 #define CIOCASYNCCRYPT    _IOW('c', 110, struct crypt_op)
 #define CIOCASYNCFETCH    _IOR('c', 111, struct crypt_op)
+
+
+
+#ifdef __cplusplus
+}
+#endif
+
 
 #endif /* L_CRYPTODEV_H */

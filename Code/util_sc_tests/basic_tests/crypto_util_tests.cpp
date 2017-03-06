@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <p2abc_iot_toolkit_include/smartcard_utils_interface/crypto_util.h>
+#include <p2abc_iot_toolkit_include/smartcard_external_utilities/tiny-SHA256.h>
 
 
 /********************************************************************/
@@ -16,7 +17,7 @@ TEST(SHA256Test, abc){
     crypto_SHA256(buf, text, strlen((const char *) text) );
 
     for (int i = 0; i < 32; i++) {
-        EXPECT_EQ(hash[i], buf[i]);
+        EXPECT_EQ(buf[i], hash[i]);
     }
 
     for (int i = 0; i < 32; i++) {
@@ -33,7 +34,7 @@ TEST(SHA256Test, abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq) {
     BYTE buf[32];
     crypto_SHA256(buf, text, strlen((const char *) text));
     for (int i = 0; i < 32; i++)
-        EXPECT_EQ(hash[i], buf[i]);
+        EXPECT_EQ(buf[i], hash[i]);
 }
 
 
@@ -47,7 +48,7 @@ TEST(SHA256Test, Rosettacode) {
     crypto_SHA256(buf, text, strlen((const char *) text) );
 
     for (int i = 0; i < 32; i++) {
-        EXPECT_EQ(hash[i], buf[i]);
+        EXPECT_EQ(buf[i], hash[i]);
     }
 }
 

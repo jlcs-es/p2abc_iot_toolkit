@@ -12,7 +12,16 @@ extern "C" {
 
 static char version[64]= "ABC4Trust Card Lite - Jose Luis Canovas 2016 - IoT Toolkit v1  "; // 64 bytes
 
-/* Internal APDU variables. */
+
+/************************************************************************
+ * Toolkit variables
+ ************************************************************************/
+
+WORD connfd;
+
+/************************************************************************
+ * Internal APDU variables.
+ ************************************************************************/
 extern BYTE ProtocolFlags;
 extern BYTE ProtocolType;
 extern BYTE GetResponseCLA;

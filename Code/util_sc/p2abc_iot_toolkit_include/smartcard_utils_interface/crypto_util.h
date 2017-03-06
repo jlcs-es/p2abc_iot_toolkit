@@ -1,11 +1,11 @@
 #ifndef __CRYPTO_UTIL_H
 #define __CRYPTO_UTIL_H
 
-#include "smartcard_common/defs_types.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include "smartcard_common/defs_types.h"
 
 /********************************************************************/
 /************************** CRYPTO UTIL *****************************/

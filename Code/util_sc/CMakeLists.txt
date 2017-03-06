@@ -18,10 +18,10 @@ set(UTIL_SC_SRC_FILES
         #p2abc_iot_toolkit_src/smartcard_external_utilities/arithmetic_implementation_v1.c
         #p2abc_iot_toolkit_src/smartcard_external_utilities/mini-gmp.c
 
-        p2abc_iot_toolkit_src/smartcard_external_utilities/tiny-AES128.c
-        p2abc_iot_toolkit_src/smartcard_external_utilities/tiny-SHA256.c
-        p2abc_iot_toolkit_src/smartcard_external_utilities/cryptodev-AES128.c
-        p2abc_iot_toolkit_src/smartcard_external_utilities/cryptodev-SHA256.c
+        #p2abc_iot_toolkit_src/smartcard_external_utilities/tiny-AES128.c
+        #p2abc_iot_toolkit_src/smartcard_external_utilities/tiny-SHA256.c
+        #p2abc_iot_toolkit_src/smartcard_external_utilities/cryptodev-AES128.c
+        #p2abc_iot_toolkit_src/smartcard_external_utilities/cryptodev-SHA256.c
 
         p2abc_iot_toolkit_src/smartcard_external_utilities/cJSON.c
 
@@ -51,11 +51,11 @@ set(UTIL_SC_INCLUDE_FILES
         #p2abc_iot_toolkit_include/smartcard_external_utilities/arithmetic_implementation_v1.h
         #p2abc_iot_toolkit_include/smartcard_external_utilities/mini-gmp.h
 
-        p2abc_iot_toolkit_include/smartcard_external_utilities/tiny-AES128.h
-        p2abc_iot_toolkit_include/smartcard_external_utilities/tiny-SHA256.h
-        p2abc_iot_toolkit_include/smartcard_external_utilities/cryptodev.h
-        p2abc_iot_toolkit_include/smartcard_external_utilities/cryptodev-AES128.h
-        p2abc_iot_toolkit_include/smartcard_external_utilities/cryptodev-SHA256.h
+        #p2abc_iot_toolkit_include/smartcard_external_utilities/tiny-AES128.h
+        #p2abc_iot_toolkit_include/smartcard_external_utilities/tiny-SHA256.h
+        #p2abc_iot_toolkit_include/smartcard_external_utilities/cryptodev.h
+        #p2abc_iot_toolkit_include/smartcard_external_utilities/cryptodev-AES128.h
+        #p2abc_iot_toolkit_include/smartcard_external_utilities/cryptodev-SHA256.h
 
         p2abc_iot_toolkit_include/smartcard_external_utilities/base64.h
         p2abc_iot_toolkit_include/smartcard_external_utilities/cJSON.h
@@ -65,9 +65,11 @@ set(UTIL_SC_INCLUDE_FILES
 
 # TODO añadir ficheros con if else según los definitions
 
+add_library(util_sc ${UTIL_SC_SRC_FILES} ${UTIL_SC_INCLUDE_FILES})
+
+add_definitions( -UUSE_CRYPTODEV)
 
 add_definitions( -DUSE_MINI_GMP )
-add_definitions( -DUSE_CRYPTODEV)
-
-add_library(util_sc ${UTIL_SC_SRC_FILES} ${UTIL_SC_INCLUDE_FILES})
 target_link_libraries(util_sc gmp)
+add_definitions( -DUSE_OPENSSL )
+target_link_libraries(util_sc crypto)

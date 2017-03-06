@@ -1,22 +1,24 @@
 #include <smartcard_utils_interface/mExit_util.h>
-#include <smartcard_utils_interface/serialize_util.h>
-#include <smartcard_common/defs_types.h>
-#include <smartcard_utils_interface/sc_status_io_util.h>
 ///////////////////////////////////////////////////////////////////////
-
 /********************************************************************/
-/*   Implementation that prints to Standard Output the APDU bytes   */
+
+/*   Implementation that writes to connfd the APDU bytes            */
 /*   and delegates to sc_status_io to save the sc status to         */
 /*   the same json file from start                                  */
 /********************************************************************/
+#include <smartcard_common/defs_types.h>
+#include <smartcard_utils_interface/sc_status_io_util.h>
 #include <smartcard_common/APDU_types.h>
 #include <smartcard_common/global_vars.h>
-#include <stdio.h>
+#include <unistd.h>
 
 void output_apdu_response(){
-    for(i=0; i<La; ++i)     // data
-        printf("%02X", apdu_data.dataout[i]);
-    printf("%02X%02X", SW1, SW2);   // SW
+    WORD APDUlength = La + 2;
+    write(connfd, &APDUlength, 2);
+    write(connfd, apdu_data.dataout, La);
+    write(connfd, &SW1, 1);
+    write(connfd, &SW2, 1);
+    fsync(connfd);
 }
 
 void save_status(){

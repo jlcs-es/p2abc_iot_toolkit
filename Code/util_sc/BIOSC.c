@@ -17,7 +17,10 @@
 #include <smartcard_utils_interface/serialize_util.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <sys/socket.h>
+#include <p2abc_iot_toolkit_include/smartcard_utils_interface/error_codes.h>
+#include <netinet/in.h>
+#include <unistd.h>
 
 void receive_commands(){
 /*
@@ -28,30 +31,83 @@ void receive_commands(){
  *          Finish the loop.
  */
 
-    // TODO : ahora se lee en formato AA cada byte. Cambiar a bytes.
-
     BYTE command = 0x00;
     WORD apdu_len;
     BYTE apdu_bytes[MAX_APDU_INPUT_DATA_SIZE];
     while(command != 0xff){
-        scanf("%2hhx", &command);
+        read(connfd, &command, 1);
         if(command == 0x01){    // 0x01 : APDU received
             // Read APDU Length
-            scanf("%4hx", &apdu_len);
+            read(connfd, &apdu_len, 2);
             // Read APDU
-            for(int i=0; i<apdu_len; i++){
-                scanf("%2hhx", &apdu_bytes[i]);
-                //scanf("%c", &apdu_bytes[i]);
-            }
+            read(connfd, apdu_bytes, apdu_len);
             // Interpret the bytes
             deserialize_APDU_command(apdu_bytes, apdu_len);
             // Handle the APDU Command
             handle_APDU();
         }
     }
+
+
+
+
+
+    // -todoahora se lee en formato AA cada byte. Cambiar a bytes.
+
+//    BYTE command = 0x00;
+//    WORD apdu_len;
+//    BYTE apdu_bytes[MAX_APDU_INPUT_DATA_SIZE];
+//    while(command != 0xff){
+//        scanf("%2hhx", &command);
+//        if(command == 0x01){    // 0x01 : APDU received
+//            // Read APDU Length
+//            scanf("%4hx", &apdu_len);
+//            // Read APDU
+//            for(int i=0; i<apdu_len; i++){
+//                scanf("%2hhx", &apdu_bytes[i]);
+//                //scanf("%c", &apdu_bytes[i]);
+//            }
+//            // Interpret the bytes
+//            deserialize_APDU_command(apdu_bytes, apdu_len);
+//            // Handle the APDU Command
+//            handle_APDU();
+//        }
+//    }
 }
 
-void test_JSON1(){
+
+int listen_conn(int port) {
+
+    int sockfd, connfd;
+    if( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) < 0 ){
+        exit(ERROR_SOCKET);
+    }
+
+    struct sockaddr_in servaddr;
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_port = htons(port);
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+
+    if( bind(sockfd, (struct sockaddr *)&servaddr, sizeof(servaddr)) < 0 ){
+        exit(ERROR_SOCKET);
+    }
+
+    if( listen(sockfd, 5) < 0 ){
+        exit(ERROR_SOCKET);
+    }
+
+    if ( (connfd = accept(sockfd, (struct sockaddr *)NULL, NULL)) < 0 )
+        exit(ERROR_SOCKET);
+
+    return connfd;
+}
+
+
+
+
+
+
+void create_json(){
     mode = MODE_ROOT;
     pin[0] = 0x01; pin[1] = 0x23; pin[2] = 0x45; pin[3] = 0xAB;
     pin_trials = 0x12;
@@ -78,14 +134,20 @@ int main(int argc, char **argv){
 //        return -1;
 //    }
 
-    test_JSON1();
+    create_json();
 
     // Restore the smartcard environment
     json_file = "./status.json";
     init_smartcard_from_json_file(json_file);
 
+
+    // Open socket and listen on port
+    connfd = listen_conn(8888);
+
     // Loop listening for APDUs
     receive_commands();
+
+    close(connfd);
 
     return 0;
 

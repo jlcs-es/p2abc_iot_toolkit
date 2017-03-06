@@ -1,11 +1,13 @@
 #ifndef __SHA_256_H
 #define __SHA_256_H
 
-#include "smartcard_common/defs_types.h"
-
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#include "smartcard_common/defs_types.h"
+
+
 // SHA256
 
 // MACROS

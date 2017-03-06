@@ -13,7 +13,7 @@
 #define	KEY_SIZE	16
 
 
-int aes128_ctx_init(struct cryptodev_ctx* ctx, int cfd, const unsigned char *key, unsigned int key_size, enum cryptodev_crypto_op_t mode)
+int aes128_ctx_init(struct cryptodev_ctx* ctx, int cfd, const unsigned char *key, enum cryptodev_crypto_op_t mode)
 {
 #ifdef CIOCGSESSINFO
     struct session_info_op siop;
@@ -23,7 +23,7 @@ int aes128_ctx_init(struct cryptodev_ctx* ctx, int cfd, const unsigned char *key
     ctx->cfd = cfd;
 
     ctx->sess.cipher = mode;
-    ctx->sess.keylen = key_size;
+    ctx->sess.keylen = KEY_SIZE;
     ctx->sess.key = (void*)key;
     if (ioctl(ctx->cfd, CIOCGSESSION, &ctx->sess)) {
         fprintf(stderr, "ioctl(CIOCGSESSION)\n");
@@ -49,12 +49,12 @@ int aes128_ctx_init(struct cryptodev_ctx* ctx, int cfd, const unsigned char *key
     return 0;
 }
 
-int aes128cbc_ctx_init(struct cryptodev_ctx* ctx, int cfd, const unsigned char *key, unsigned int key_size){
-    return aes128_ctx_init(ctx, cfd, key, key_size, CRYPTO_AES_CBC);
+int aes128cbc_ctx_init(struct cryptodev_ctx* ctx, int cfd, const unsigned char *key){
+    return aes128_ctx_init(ctx, cfd, key, CRYPTO_AES_CBC);
 }
 
-int aes128ecb_ctx_init(struct cryptodev_ctx* ctx, int cfd, const unsigned char *key, unsigned int key_size){
-    return aes128_ctx_init(ctx, cfd, key, key_size, CRYPTO_AES_ECB);
+int aes128ecb_ctx_init(struct cryptodev_ctx* ctx, int cfd, const unsigned char *key){
+    return aes128_ctx_init(ctx, cfd, key, CRYPTO_AES_ECB);
 }
 
 void aes_ctx_deinit(struct cryptodev_ctx* ctx)

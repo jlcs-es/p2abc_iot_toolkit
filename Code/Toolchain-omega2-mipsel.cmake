@@ -18,4 +18,9 @@ SET(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 
 
 # http://www.vtk.org/Wiki/CMake_Cross_Compiling
+
+# Use the commands:
+# mkdir build
+# cd build
 # cmake -DCMAKE_TOOLCHAIN_FILE=Toolchain-omega2-mipsel.cmake ..
+# make

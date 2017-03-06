@@ -1,7 +1,16 @@
 #include <smartcard_common/global_vars.h>
 
 
-/* Internal APDU variables. */
+
+/************************************************************************
+ * Toolkit variables
+ ************************************************************************/
+
+WORD connfd;
+
+/************************************************************************
+ * Internal APDU variables.
+ ************************************************************************/
 BYTE ProtocolFlags;
 BYTE ProtocolType;
 BYTE GetResponseCLA;
