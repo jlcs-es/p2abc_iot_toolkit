@@ -1,6 +1,7 @@
 Code/.idea
 Code/cmake-build-debug
 .DS_Store
+.directory
 
 # Compiled Object files
 *.slo
