@@ -9,6 +9,7 @@
 #include <smartcard_utils_interface/system_funcs.h>
 #include <smartcard_utils_interface/error_codes.h>
 #include <string.h>
+#include <macrologger.h>
 
 void serialize_BYTE(cJSON * object, char * name, BYTE value){
     char temp_hex_string[3];
@@ -534,55 +535,121 @@ void serialize_APDU_response(unsigned char* ap_r, int * buf_len){
 
 void deserialize_APDU_command(BYTE * apdu_bytes, int length) {
 
-    if(length<4){
+    // FIXME en vez de exit, deberían enviar una APDUResponse de APDUCommand mal formada (?) ~ OpenSC no lo hace ~
+
+    LOG_INFO("Interpreting APDU of length %d", length);
+
+    LOG_BYTES(apdu_bytes, length, "The APDU bytes to interpret");
+
+    if (length < 4) {
+        LOG_ERROR("APDU too short. length = %d", length);
         exit(ERROR_APDU_TOO_SHORT);
     }
 
-    Le = 0; La = 0; Lc = 0;
-    SW1 = 0x90; SW2 = 0x00;
+    Le = 0;
+    La = 0;
+    Lc = 0;
+    SW1 = 0x90;
+    SW2 = 0x00;
 
-    BYTE * ab = apdu_bytes;
+    BYTE *ab = apdu_bytes;
     CLA = *ab++;
     INS = *ab++;
     P1 = *ab++;
     P2 = *ab++;
     length -= 4;
 
-    if(!length){
+    if (!length) {
         // Case 1
         APDU_Case = 1;
         return;
     }
 
-    if(length == 1){
-        // Case 2
-        APDU_Case = 2;
-        Le = *ab++;
-        length--;
-    } else {
-        Lc = *ab++;
-        length--;
-        if(length < Lc) {
-            exit(ERROR_APDU_TOO_SHORT);
+    if (*ab == 0 && length >= 3) {
+
+        // EXTENDED APDU
+
+        ab++;
+        if (length == 3) {
+            Le = (*ab++)<<8;
+            Le += *ab++;
+//            if (Le == 0)
+//                Le = 0xffff+1;
+            // TODO hacer DWORD
+            length -= 3;
+            APDU_Case = 2;
         }
-        // Copy Lc bytes of data
-        mem_cpy(apdu_data.buffer, ab, Lc);
+        else {
+            Lc = (*ab++)<<8;
+            Lc += *ab++;
+            length -= 3;
+            if (length < Lc) {
+                LOG_ERROR("APDU too short. length = %d", length);
+                exit(ERROR_APDU_TOO_SHORT);
+            }
+            // Copy Lc bytes of data
+            mem_cpy(apdu_data.buffer, ab, Lc);
 
-        length -= Lc;
-        ab += Lc;
+            length -= Lc;
+            ab += Lc;
 
-        if(!length){
-            // Case 3
-            APDU_Case = 3;
-        } else {
+            if (!length) {
+                // Case 3
+                APDU_Case = 3;
+            } else {
+                // Case 4
+                APDU_Case = 4;
+
+                /* at this point the apdu has a Lc, so Le is on 2 bytes */
+                if (length < 2) {
+                    LOG_ERROR("APDU too short (need 2 more bytes). length = %d", length);
+                    exit(ERROR_APDU_TOO_LONG);
+                }
+                Le = (*ab++)<<8;
+                Le += *ab++;
+//                if (Le == 0)
+//                    Le = 0xffff+1;
+                length -= 2;
+            }
+        }
+    } else {
+
+        // SHORT APDU
+
+        if (length == 1) {
+            // Case 2
+            APDU_Case = 2;
             Le = *ab++;
             length--;
-            APDU_Case = 4;
+        } else {
+            Lc = *ab++;
+            length--;
+            if (length < Lc) {
+                LOG_ERROR("APDU too short. length = %d", length);
+                exit(ERROR_APDU_TOO_SHORT);
+            }
+            // Copy Lc bytes of data
+            mem_cpy(apdu_data.buffer, ab, Lc);
+
+            length -= Lc;
+            ab += Lc;
+
+            if (!length) {
+                // Case 3
+                APDU_Case = 3;
+            } else {
+                // Case 4
+                APDU_Case = 4;
+                Le = *ab++;
+                length--;
+            }
+
         }
 
     }
 
     if(length) {
+        LOG_ERROR("APDU too long. length = %d", length);
         exit(ERROR_APDU_TOO_LONG);
     }
 

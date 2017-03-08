@@ -6,9 +6,8 @@ import binascii
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
 
 # get local machine name
-#host = socket.gethostname()                           
-
-host = "192.168.33.96"
+host = socket.gethostname()
+#host = "192.168.33.96"
 
 port = 8888
 

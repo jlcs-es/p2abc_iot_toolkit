@@ -25,7 +25,6 @@ set(UTIL_SC_SRC_FILES
 
         p2abc_iot_toolkit_src/smartcard_external_utilities/cJSON.c
 
-        p2abc_iot_toolkit_src/debug.cpp
         )
 
 set(UTIL_SC_INCLUDE_FILES
@@ -60,7 +59,7 @@ set(UTIL_SC_INCLUDE_FILES
         p2abc_iot_toolkit_include/smartcard_external_utilities/base64.h
         p2abc_iot_toolkit_include/smartcard_external_utilities/cJSON.h
 
-        p2abc_iot_toolkit_include/debug.h
+        p2abc_iot_toolkit_include/macrologger.h
         ) #CLion/IDEs add header files to project only if explecitly referenced and used
 
 # TODO añadir ficheros con if else según los definitions
@@ -73,3 +72,5 @@ add_definitions( -DUSE_MINI_GMP )
 target_link_libraries(util_sc gmp)
 add_definitions( -DUSE_OPENSSL )
 target_link_libraries(util_sc crypto)
+
+target_link_libraries(util_sc m)
