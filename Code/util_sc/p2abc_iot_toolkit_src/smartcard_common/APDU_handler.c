@@ -5,7 +5,7 @@
 #include <smartcard_utils_interface/system_funcs.h>
 #include <smartcard_common/subroutines.h>
 #include <smartcard_common/defs_ins.h>
-
+#include <macrologger.h>
 
 void handle_APDU() {
 
@@ -20,220 +20,291 @@ void handle_APDU() {
     {
         #ifdef TEST_PATRAS_MODE       //TODO: remove if not necessary
         case INS_GET_KX_AND_DEVICE_KEY:
+            LOG_INFO("Handling INS_GET_KX_AND_DEVICE_KEY 0x%02X", INS_GET_KX_AND_DEVICE_KEY);
             handle_INS_GET_KX_AND_DEVICE_KEY();
             break;
         case INS_TEST:
+            LOG_INFO("Handling INS_TEST 0x%02X", INS_TEST);
             handle_INS_TEST();
             break;
         #endif
         case INS_GET_MODE:
+            LOG_INFO("Handling INS_GET_MODE 0x%02X", INS_GET_MODE);
             handle_INS_GET_MODE();
             break;
         case INS_SET_ROOT_MODE:
+            LOG_INFO("Handling INS_SET_ROOT_MODE 0x%02X", INS_SET_ROOT_MODE);
             handle_INS_SET_ROOT_MODE();
             break;
         case INS_SET_WORKING_MODE:
+            LOG_INFO("Handling INS_SET_WORKING_MODE 0x%02X", INS_SET_WORKING_MODE);
             handle_INS_SET_WORKING_MODE();
             break;
         case INS_SET_VIRGIN_MODE:
+            LOG_INFO("Handling INS_SET_VIRGIN_MODE 0x%02X", INS_SET_VIRGIN_MODE);
             handle_INS_SET_VIRGIN_MODE();
             break;
         case INS_SET_FAST_VIRGIN_MODE:
+            LOG_INFO("Handling INS_SET_FAST_VIRGIN_MODE 0x%02X", INS_SET_FAST_VIRGIN_MODE);
             handle_INS_SET_FAST_VIRGIN_MODE();
             break;
         case INS_PIN_TRIALS_LEFT:
+            LOG_INFO("Handling INS_PIN_TRIALS_LEFT 0x%02X", INS_PIN_TRIALS_LEFT);
             handle_INS_PIN_TRIALS_LEFT();
             break;
         case INS_PUK_TRIALS_LEFT:
+            LOG_INFO("Handling INS_PUK_TRIALS_LEFT 0x%02X", INS_PUK_TRIALS_LEFT);
             handle_INS_PUK_TRIALS_LEFT();
             break;
         case INS_CHANGE_PIN:
+            LOG_INFO("Handling INS_CHANGE_PIN 0x%02X", INS_CHANGE_PIN);
             handle_INS_CHANGE_PIN();
             break;
         case INS_RESET_PIN:
+            LOG_INFO("Handling INS_RESET_PIN 0x%02X", INS_RESET_PIN);
             handle_INS_RESET_PIN();
             break;
         case INS_INITIALIZE_DEVICE:
+            LOG_INFO("Handling INS_INITIALIZE_DEVICE 0x%02X", INS_INITIALIZE_DEVICE);
             handle_INS_INITIALIZE_DEVICE();
             break;
         case INS_GET_DEVICE_ID:
+            LOG_INFO("Handling INS_GET_DEVICE_ID 0x%02X", INS_GET_DEVICE_ID);
             handle_INS_GET_DEVICE_ID();
             break;
         case INS_GET_VERSION:
+            LOG_INFO("Handling INS_GET_VERSION 0x%02X", INS_GET_VERSION);
             handle_INS_GET_VERSION();
             break;
         case INS_PUT_DATA:
+            LOG_INFO("Handling INS_PUT_DATA 0x%02X", INS_PUT_DATA);
             handle_INS_PUT_DATA();
             break;
         case INS_GET_CHALLENGE:
+            LOG_INFO("Handling INS_GET_CHALLENGE 0x%02X", INS_GET_CHALLENGE);
             handle_INS_GET_CHALLENGE();
             break;
         case INS_AUTHENTICATE_DATA:
+            LOG_INFO("Handling INS_AUTHENTICATE_DATA 0x%02X", INS_AUTHENTICATE_DATA);
             handle_INS_AUTHENTICATE_DATA();
             break;
         case INS_SET_AUTHENTICATION_KEY:
+            LOG_INFO("Handling INS_SET_AUTHENTICATION_KEY 0x%02X", INS_SET_AUTHENTICATION_KEY);
             handle_INS_SET_AUTHENTICATION_KEY();
             break;
         case INS_LIST_AUTHENTICATION_KEYS:
+            LOG_INFO("Handling INS_LIST_AUTHENTICATION_KEYS 0x%02X", INS_LIST_AUTHENTICATION_KEYS);
             handle_INS_LIST_AUTHENTICATION_KEYS();
             break;
         case INS_READ_AUTHENTICATION_KEY:
+            LOG_INFO("Handling INS_READ_AUTHENTICATION_KEY 0x%02X", INS_READ_AUTHENTICATION_KEY);
             handle_INS_READ_AUTHENTICATION_KEY();
             break;
         case INS_REMOVE_AUTHENTICATION_KEY:
+            LOG_INFO("Handling INS_REMOVE_AUTHENTICATION_KEY 0x%02X", INS_REMOVE_AUTHENTICATION_KEY);
             handle_INS_REMOVE_AUTHENTICATION_KEY();
             break;
         case INS_SET_GROUP_COMPONENT:
+            LOG_INFO("Handling INS_SET_GROUP_COMPONENT 0x%02X", INS_SET_GROUP_COMPONENT);
             handle_INS_SET_GROUP_COMPONENT();
             break;
         case INS_SET_GENERATOR:
+            LOG_INFO("Handling INS_SET_GENERATOR 0x%02X", INS_SET_GENERATOR);
             handle_INS_SET_GENERATOR();
             break;
         case INS_LIST_GROUPS:
+            LOG_INFO("Handling INS_LIST_GROUPS 0x%02X", INS_LIST_GROUPS);
             handle_INS_LIST_GROUPS();
             break;
         case INS_READ_GROUP:
+            LOG_INFO("Handling INS_READ_GROUP 0x%02X", INS_READ_GROUP);
             handle_INS_READ_GROUP();
             break;
         case INS_READ_GROUP_COMPONENT:
+            LOG_INFO("Handling INS_READ_GROUP_COMPONENT 0x%02X", INS_READ_GROUP_COMPONENT);
             handle_INS_READ_GROUP_COMPONENT();
             break;
         case INS_READ_GENERATOR:
+            LOG_INFO("Handling INS_READ_GENERATOR 0x%02X", INS_READ_GENERATOR);
             handle_INS_READ_GENERATOR();
             break;
         case INS_REMOVE_GROUP:
+            LOG_INFO("Handling INS_REMOVE_GROUP 0x%02X", INS_REMOVE_GROUP);
             handle_INS_REMOVE_GROUP();
             break;
         case INS_SET_COUNTER:
+            LOG_INFO("Handling INS_SET_COUNTER 0x%02X", INS_SET_COUNTER);
             handle_INS_SET_COUNTER();
             break;
         case INS_INCREMENT_COUNTER:
+            LOG_INFO("Handling INS_INCREMENT_COUNTER 0x%02X", INS_INCREMENT_COUNTER);
             handle_INS_INCREMENT_COUNTER();
             break;
         case INS_LIST_COUNTERS:
+            LOG_INFO("Handling INS_LIST_COUNTERS 0x%02X", INS_LIST_COUNTERS);
             handle_INS_LIST_COUNTERS();
             break;
         case INS_READ_COUNTER:
+            LOG_INFO("Handling INS_READ_COUNTER 0x%02X", INS_READ_COUNTER);
             handle_INS_READ_COUNTER();
             break;
         case INS_REMOVE_COUNTER:
+            LOG_INFO("Handling INS_REMOVE_COUNTER 0x%02X", INS_REMOVE_COUNTER);
             handle_INS_REMOVE_COUNTER();
             break;
         case INS_SET_ISSUER:
+            LOG_INFO("Handling INS_SET_ISSUER 0x%02X", INS_SET_ISSUER);
             handle_INS_SET_ISSUER();
             break;
         case INS_LIST_ISSUERS:
+            LOG_INFO("Handling INS_LIST_ISSUERS 0x%02X", INS_LIST_ISSUERS);
             handle_INS_LIST_ISSUERS();
             break;
         case INS_READ_ISSUER:
+            LOG_INFO("Handling INS_READ_ISSUER 0x%02X", INS_READ_ISSUER);
             handle_INS_READ_ISSUER();
             break;
         case INS_REMOVE_ISSUER:
+            LOG_INFO("Handling INS_REMOVE_ISSUER 0x%02X", INS_REMOVE_ISSUER);
             handle_INS_REMOVE_ISSUER();
             break;
         case INS_SET_PROVER:
+            LOG_INFO("Handling INS_SET_PROVER 0x%02X", INS_SET_PROVER);
             handle_INS_SET_PROVER();
             break;
         case INS_READ_PROVER:
+            LOG_INFO("Handling INS_READ_PROVER 0x%02X", INS_READ_PROVER);
             handle_INS_READ_PROVER();
             break;
         case INS_REMOVE_PROVER:
+            LOG_INFO("Handling INS_REMOVE_PROVER 0x%02X", INS_REMOVE_PROVER);
             handle_INS_REMOVE_PROVER();
             break;
         case INS_START_COMMITMENTS:
+            LOG_INFO("Handling INS_START_COMMITMENTS 0x%02X", INS_START_COMMITMENTS);
             handle_INS_START_COMMITMENTS();
             break;
         case INS_START_RESPONSES:
+            LOG_INFO("Handling INS_START_RESPONSES 0x%02X", INS_START_RESPONSES);
             handle_INS_START_RESPONSES();
             break;
         case INS_SET_CREDENTIAL:
+            LOG_INFO("Handling INS_SET_CREDENTIAL 0x%02X", INS_SET_CREDENTIAL);
             handle_INS_SET_CREDENTIAL();
             break;
         case INS_LIST_CREDENTIALS:
+            LOG_INFO("Handling INS_LIST_CREDENTIALS 0x%02X", INS_LIST_CREDENTIALS);
             handle_INS_LIST_CREDENTIALS();
             break;
         case INS_READ_CREDENTIAL:
+            LOG_INFO("Handling INS_READ_CREDENTIAL 0x%02X", INS_READ_CREDENTIAL);
             handle_INS_READ_CREDENTIAL();
             break;
         case INS_REMOVE_CREDENTIAL:
+            LOG_INFO("Handling INS_REMOVE_CREDENTIAL 0x%02X", INS_REMOVE_CREDENTIAL);
             handle_INS_REMOVE_CREDENTIAL();
             break;
         case INS_GET_CREDENTIAL_PUBLIC_KEY:
+            LOG_INFO("Handling INS_GET_CREDENTIAL_PUBLIC_KEY 0x%02X", INS_GET_CREDENTIAL_PUBLIC_KEY);
             handle_INS_GET_CREDENTIAL_PUBLIC_KEY();
             break;
         case INS_GET_ISSUANCE_COMMITMENT:
+            LOG_INFO("Handling INS_GET_ISSUANCE_COMMITMENT 0x%02X", INS_GET_ISSUANCE_COMMITMENT);
             handle_INS_GET_ISSUANCE_COMMITMENT();
             break;
         case INS_GET_ISSUANCE_RESPONSE:
+            LOG_INFO("Handling INS_GET_ISSUANCE_RESPONSE 0x%02X", INS_GET_ISSUANCE_RESPONSE);
             handle_INS_GET_ISSUANCE_RESPONSE();
             break;
         case INS_GET_PRESENTATION_COMMITMENT:
+            LOG_INFO("Handling INS_GET_PRESENTATION_COMMITMENT 0x%02X", INS_GET_PRESENTATION_COMMITMENT);
             handle_INS_GET_PRESENTATION_COMMITMENT();
             break;
         case INS_GET_PRESENTATION_RESPONSE:
+            LOG_INFO("Handling INS_GET_PRESENTATION_RESPONSE 0x%02X", INS_GET_PRESENTATION_RESPONSE);
             handle_INS_GET_PRESENTATION_RESPONSE();
             break;
         case INS_GET_DEVICE_PUBLIC_KEY:
+            LOG_INFO("Handling INS_GET_DEVICE_PUBLIC_KEY 0x%02X", INS_GET_DEVICE_PUBLIC_KEY);
             handle_INS_GET_DEVICE_PUBLIC_KEY();
             break;
         case INS_GET_DEVICE_COMMITMENT:
+            LOG_INFO("Handling INS_GET_DEVICE_COMMITMENT 0x%02X", INS_GET_DEVICE_COMMITMENT);
             handle_INS_GET_DEVICE_COMMITMENT();
             break;
         case INS_GET_DEVICE_RESPONSE:
+            LOG_INFO("Handling INS_GET_DEVICE_RESPONSE 0x%02X", INS_GET_DEVICE_RESPONSE);
             handle_INS_GET_DEVICE_RESPONSE();
             break;
         case INS_GET_SCOPE_EXCLUSIVE_PSEUDONYM:
+            LOG_INFO("Handling INS_GET_SCOPE_EXCLUSIVE_PSEUDONYM 0x%02X", INS_GET_SCOPE_EXCLUSIVE_PSEUDONYM);
             handle_INS_GET_SCOPE_EXCLUSIVE_PSEUDONYM();
             break;
         case INS_GET_SCOPE_EXCLUSIVE_COMMITMENT:
+            LOG_INFO("Handling INS_GET_SCOPE_EXCLUSIVE_COMMITMENT 0x%02X", INS_GET_SCOPE_EXCLUSIVE_COMMITMENT);
             handle_INS_GET_SCOPE_EXCLUSIVE_COMMITMENT();
             break;
         case INS_GET_SCOPE_EXCLUSIVE_RESPONSE:
+            LOG_INFO("Handling INS_GET_SCOPE_EXCLUSIVE_RESPONSE 0x%02X", INS_GET_SCOPE_EXCLUSIVE_RESPONSE);
             handle_INS_GET_SCOPE_EXCLUSIVE_RESPONSE();
             break;
         case INS_STORE_BLOB:
+            LOG_INFO("Handling INS_STORE_BLOB 0x%02X", INS_STORE_BLOB);
             handle_INS_STORE_BLOB();
             break;
         case INS_LIST_BLOBS:
+            LOG_INFO("Handling INS_LIST_BLOBS 0x%02X", INS_LIST_BLOBS);
             handle_INS_LIST_BLOBS();
             break;
         case INS_READ_BLOB:
+            LOG_INFO("Handling INS_READ_BLOB 0x%02X", INS_READ_BLOB);
             handle_INS_READ_BLOB();
             break;
         case INS_REMOVE_BLOB:
+            LOG_INFO("Handling INS_REMOVE_BLOB 0x%02X", INS_REMOVE_BLOB);
             handle_INS_REMOVE_BLOB();
             break;
         case INS_BACKUP_DEVICE:
+            LOG_INFO("Handling INS_BACKUP_DEVICE 0x%02X", INS_BACKUP_DEVICE);
             handle_INS_BACKUP_DEVICE();
             break;
         case INS_RESTORE_DEVICE:
+            LOG_INFO("Handling INS_RESTORE_DEVICE 0x%02X", INS_RESTORE_DEVICE);
             handle_INS_RESTORE_DEVICE();
             break;
         case INS_BACKUP_COUNTERS:
+            LOG_INFO("Handling INS_BACKUP_COUNTERS 0x%02X", INS_BACKUP_COUNTERS);
             handle_INS_BACKUP_COUNTERS();
             break;
         case INS_RESTORE_COUNTERS:
+            LOG_INFO("Handling INS_RESTORE_COUNTERS 0x%02X", INS_RESTORE_COUNTERS);
             handle_INS_RESTORE_COUNTERS();
             break;
         #ifdef SODER //TODO: remove if not necessary
         case INS_BACKUP_CREDENTIAL:
+            LOG_INFO("Handling INS_BACKUP_CREDENTIAL 0x%02X", INS_BACKUP_CREDENTIAL);
             handle_INS_BACKUP_CREDENTIAL();
             break;
         case INS_RESTORE_CREDENTIAL:
+            LOG_INFO("Handling INS_RESTORE_CREDENTIAL 0x%02X", INS_RESTORE_CREDENTIAL);
             handle_INS_RESTORE_CREDENTIAL();
             break;
         #endif
         case INS_GET_INFO:
+            LOG_INFO("Handling INS_GET_INFO 0x%02X", INS_GET_INFO);
             handle_INS_GET_INFO();
             break;
         case INS_NOTHING:
+            LOG_INFO("Handling INS_NOTHING 0x%02X", INS_NOTHING);
             handle_INS_NOTHING();
             break;
         case INS_GET_RESPONSE:
+            LOG_INFO("Handling INS_GET_RESPONSE 0x%02X", INS_GET_RESPONSE);
             handle_INS_GET_RESPONSE();
             break;
 
         default:
+            LOG_INFO("Handling failed, ERR_BAD_INS");
             mExitSW(ERR_BAD_INS);
     }
 

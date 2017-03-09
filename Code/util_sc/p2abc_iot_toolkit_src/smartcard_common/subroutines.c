@@ -16,7 +16,7 @@
 #include <smartcard_common/defs_consts.h>
 #include <smartcard_common/defs_errs.h>
 #include <smartcard_common/global_vars.h>
-
+#include <macrologger.h>
 
 /************************************************************************************************************************************************
  * void getRandomBytes(BYTE* buffer, WORD size)
@@ -185,7 +185,7 @@ void encryption(BYTE* dst, WORD* dst_size, const BYTE *src, const WORD src_size,
     temp_rand_size = key_size - 35 - src_size; // should be 83
 
 #ifdef TEST_MODE
-    memset(mem_session.pad+3+src_size, 0xbc, temp_rand_size);
+    mem_set(mem_session.pad+3+src_size, 0xbc, temp_rand_size);
 #else
     getRandomBytes(mem_session.pad+3+src_size, temp_rand_size);
 #endif
@@ -194,9 +194,12 @@ void encryption(BYTE* dst, WORD* dst_size, const BYTE *src, const WORD src_size,
     sizeEncode(mem_session.pad+1, src_size);
     mem_cpy(mem_session.pad+3, src, src_size);  // ** Adapted for util_sc ** //
     pad_size = key_size-32; // should be 96
+    // NOTE : ¿32 de los 4bytes=32bits que ...??¿¿
+    LOG_DEBUG("encryption() pad_size = &d (should be 96)", pad_size);
 
     //Deprecated: SHA256(mem_session.pad+pad_size, pad_size, mem_session.pad); // compute (pad || h)
     mSecureHash(pad_size, 32, mem_session.pad+pad_size, mem_session.pad); // SHA256 compute (pad || h) // ** Adapted for util_sc ** //
+    // NOTE : msgLen en bytes pero pad_size en bits?
 
     mModularExponentiation(1, key_size, exponent, (BYTE*)key, mem_session.pad, dst); // ** Adapted for util_sc ** //
 

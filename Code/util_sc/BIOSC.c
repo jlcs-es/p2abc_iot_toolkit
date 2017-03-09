@@ -109,14 +109,6 @@ int listen_conn(int port) {
 
 void create_json(){
     mode = MODE_ROOT;
-    pin[0] = 0x01; pin[1] = 0x23; pin[2] = 0x45; pin[3] = 0xAB;
-    pin_trials = 0x12;
-    x_size = 0xABCD;
-    credentials[0].credential_id = 0x01;
-    credentials[1].credential_id = 0x02;
-    credentials[2].credential_id = 0x03;
-    auth_keys[0][2] = 0x62;
-    auth_keys[1][1] = 0x21;
 
     char * json_string = serialize_smartcard_status();
     FILE * f = fopen( "./status.json", "w+");

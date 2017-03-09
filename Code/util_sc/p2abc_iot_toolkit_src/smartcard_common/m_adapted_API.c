@@ -136,7 +136,7 @@ void mModularReduction (WORD operandLength, WORD modulusLength, BYTE *operand, B
 void mSecureHash(WORD msgLen, WORD hashLen, BYTE *hashOut, BYTE *msgIn) {
     if(hashLen != 32)
         return; // TODO: avisar de error de implementación
-    crypto_SHA256(hashOut, msgIn, hashLen);
+    crypto_SHA256(hashOut, msgIn, msgLen);
 }
 
 

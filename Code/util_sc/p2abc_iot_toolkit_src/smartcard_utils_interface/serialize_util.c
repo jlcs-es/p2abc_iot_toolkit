@@ -575,7 +575,7 @@ void deserialize_APDU_command(BYTE * apdu_bytes, int length) {
             Le += *ab++;
 //            if (Le == 0)
 //                Le = 0xffff+1;
-            // TODO hacer DWORD
+// Convert Le to DWORD or like now, we use short responses and GET RESPONSE trick.
             length -= 3;
             APDU_Case = 2;
         }
@@ -620,6 +620,8 @@ void deserialize_APDU_command(BYTE * apdu_bytes, int length) {
             // Case 2
             APDU_Case = 2;
             Le = *ab++;
+//            if (Le == 0)
+//                Le = 0xff+1;
             length--;
         } else {
             Lc = *ab++;
@@ -641,6 +643,8 @@ void deserialize_APDU_command(BYTE * apdu_bytes, int length) {
                 // Case 4
                 APDU_Case = 4;
                 Le = *ab++;
+//                if (Le == 0)
+//                    Le = 0xff+1;
                 length--;
             }
 

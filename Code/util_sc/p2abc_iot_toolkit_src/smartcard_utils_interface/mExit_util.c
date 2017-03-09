@@ -20,7 +20,7 @@ void output_apdu_response(){
     write(connfd, &SW1, 1);
     write(connfd, &SW2, 1);
     fsync(connfd);
-    LOG_BYTES(apdu_data.dataout, La, "apdu_data.dataout");
+    LOG_BYTES(apdu_data.dataout, La, "APDU Response");
     LOG_DEBUG("SW = %02X%02X", SW1, SW2);
 }
 
