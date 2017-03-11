@@ -10,6 +10,7 @@
 #include <smartcard_utils_interface/error_codes.h>
 #include <string.h>
 #include <macrologger.h>
+#include <smartcard_common/APDU_types.h>
 
 void serialize_BYTE(cJSON * object, char * name, BYTE value){
     char temp_hex_string[3];
@@ -537,9 +538,7 @@ void deserialize_APDU_command(BYTE * apdu_bytes, int length) {
 
     // FIXME en vez de exit, deberían enviar una APDUResponse de APDUCommand mal formada (?) ~ OpenSC no lo hace ~
 
-    LOG_INFO("Interpreting APDU of length %d", length);
-
-    LOG_BYTES(apdu_bytes, length, "The APDU bytes to interpret");
+    LOG_BYTES(apdu_bytes, length, "The %d APDU bytes to interpret", length);
 
     if (length < 4) {
         LOG_ERROR("APDU too short. length = %d", length);
@@ -568,6 +567,7 @@ void deserialize_APDU_command(BYTE * apdu_bytes, int length) {
     if (*ab == 0 && length >= 3) {
 
         // EXTENDED APDU
+        LOG_DEBUG("Extended APDU");
 
         ab++;
         if (length == 3) {
@@ -615,6 +615,7 @@ void deserialize_APDU_command(BYTE * apdu_bytes, int length) {
     } else {
 
         // SHORT APDU
+        LOG_DEBUG("Short APDU");
 
         if (length == 1) {
             // Case 2

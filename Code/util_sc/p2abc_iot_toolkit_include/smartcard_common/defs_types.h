@@ -1,6 +1,8 @@
 #ifndef __DEFS_TYPES_H
 #define __DEFS_TYPES_H
 
+// TODO: remove and replace the if else macro with the platform correct types
+#include <limits.h>
 
 #ifdef __cplusplus
 extern "C" {

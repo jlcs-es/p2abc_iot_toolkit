@@ -57,7 +57,7 @@ typedef struct
   BYTE c[HASH_SIZE];
   BYTE proofsession[PROOFSESSION_SIZE];
   BYTE proofstatus;
-  BYTE cred_ids[NUM_CREDS];
+  BYTE cred_ids[NUM_CREDS];                 // TODO: hacer NUM_CREDS 4 por problemas en el init() ?????
   BYTE cred_ids_size; // also called 't' in the documentation
   BYTE exists;
 } PROVER;

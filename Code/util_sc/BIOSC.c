@@ -126,6 +126,13 @@ int main(int argc, char **argv){
 //        return -1;
 //    }
 
+    printf("BYTE: %d\n" ,sizeof(BYTE));
+    printf("SBYTE: %d\n", sizeof(SBYTE));
+    printf("WORD: %d\n", sizeof(WORD));
+    printf("SWORD: %d\n", sizeof(SWORD));
+    printf("DWORD: %d\n", sizeof(DWORD));
+    printf("SDWORD: %d\n", sizeof(SDWORD));
+
     create_json();
 
     // Restore the smartcard environment

@@ -1669,11 +1669,12 @@ void handle_INS_SET_PROVER(){
         return;
     }
 
-    for (i=0; i < Lc-5; i++)
-        if (apdu_data.set_prover_in.cred_ids[i] > NUM_CREDS){
+    for (i=0; i < Lc-5; i++) {   // cred_ids starts after 5 bytes (prover_id x1, ksize x2, csize x2) in the command data
+        if (apdu_data.set_prover_in.cred_ids[i] > NUM_CREDS) {
             mExitSW(ERR_ONE_ID_OF_CREDIDS_IS_OUTSIDE_OF_RANGE);
             return;
         }
+    }
 
     if (mode == MODE_WORKING)
         if( !checkBufferEqual(INS_SET_PROVER, &(apdu_data.set_prover_in.prover_id), Lc) ) return;
