@@ -13,7 +13,7 @@ extern "C" {
  ************************************************************************/
 
 
-typedef struct
+typedef struct __attribute__((__packed__))
 {
   BYTE group_id;
   BYTE modulus[MAX_BIGINT_SIZE];
@@ -27,7 +27,7 @@ typedef struct
   BYTE num_generators;           // number of generators
 } GROUP;
 
-typedef struct
+typedef struct __attribute__((__packed__))
 {
   BYTE counter_id;
   BYTE key_id;
@@ -37,7 +37,7 @@ typedef struct
   BYTE exists;
 } COUNTER;
 
-typedef struct
+typedef struct __attribute__((__packed__))
 {
   BYTE issuer_id;
   BYTE group_id;
@@ -48,7 +48,7 @@ typedef struct
   BYTE exists;
 } ISSUER;
 
-typedef struct
+typedef struct __attribute__((__packed__))
 {
   BYTE prover_id;
   WORD ksize;
@@ -62,7 +62,7 @@ typedef struct
   BYTE exists;
 } PROVER;
 
-typedef struct
+typedef struct __attribute__((__packed__))
 {
   BYTE credential_id;
   BYTE issuer_id;
@@ -75,7 +75,7 @@ typedef struct
   BYTE exists;
 } CREDENTIAL; /* do NOT change the order of the structure elements */
 
-typedef struct
+typedef struct __attribute__((__packed__))
 {
   BYTE exists;
   BYTE uri[MAX_URI_SIZE];
@@ -83,7 +83,7 @@ typedef struct
   WORD buffer_size;
 } BLOB_CATALOG_ITEM;
 
-typedef struct
+typedef struct __attribute__((__packed__))
 {
   BYTE buffer[MAX_BLOB_SIZE];
 } BLOB_STORE_ITEM;

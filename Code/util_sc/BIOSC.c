@@ -21,6 +21,8 @@
 #include <p2abc_iot_toolkit_include/smartcard_utils_interface/error_codes.h>
 #include <netinet/in.h>
 #include <unistd.h>
+#include <macrologger.h>
+#include <p2abc_iot_toolkit_include/smartcard_common/abc4T_types.h>
 
 void receive_commands(){
 /*
@@ -138,7 +140,6 @@ int main(int argc, char **argv){
     // Restore the smartcard environment
     json_file = "./status.json";
     init_smartcard_from_json_file(json_file);
-
 
     // Open socket and listen on port
     connfd = listen_conn(8888);
