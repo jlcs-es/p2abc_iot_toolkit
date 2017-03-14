@@ -97,15 +97,27 @@ void crypto_AES128_CBC_Decipher (BYTE *plainText, BYTE *cipherText, WORD inputLe
 #include <openssl/aes.h>
 #include <openssl/rand.h>
 
+//void crypto_InitSeed(DWORD seed){
+//    RAND_seed(&seed, 4);    // TODO check
+//}
+//
+//BYTE crypto_RandomByte(){
+//    BYTE b;
+//    //RAND_bytes(&b, 1);    // FIXME
+//    RAND_pseudo_bytes(&b, 1);
+//    return b;
+//}
+
+#include <stdlib.h>
+
 void crypto_InitSeed(DWORD seed){
-    RAND_seed(&seed, 4);    // TODO check
+    srand(seed);
 }
 
 BYTE crypto_RandomByte(){
-    BYTE b;
-    RAND_bytes(&b, 1);
-    return b;
+    return (BYTE)(rand() % 256);
 }
+
 
 
 void crypto_SHA256(BYTE *digest, BYTE *message, WORD length) {

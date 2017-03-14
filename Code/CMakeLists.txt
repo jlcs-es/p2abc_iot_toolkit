@@ -19,3 +19,11 @@ set(SOURCE_FILES util_sc/BIOSC.c)
 
 add_executable(p2abc_iot_toolkit ${SOURCE_FILES})
 target_link_libraries(p2abc_iot_toolkit util_sc)
+
+include (TestBigEndian)
+TEST_BIG_ENDIAN(IS_BIG_ENDIAN)
+if(IS_BIG_ENDIAN)
+    message(STATUS "BIG_ENDIAN")
+else()
+    message(STATUS "LITTLE_ENDIAN")
+endif()

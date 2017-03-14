@@ -18,6 +18,49 @@
 #include <smartcard_common/global_vars.h>
 #include <macrologger.h>
 
+/********************************************************************************
+ * Rectify endianness in little endian machines
+ *  Multos is Big Endian and therefore all inherited code is written with that in mind
+ *******************************************************************************/
+
+int isLittleEndian() {
+    WORD i = 1;
+    BYTE *p = (BYTE *)&i;
+
+    if (p[0] == 1)
+        return TRUE;
+    else
+        return FALSE;
+}
+
+
+WORD rectifyWordEndianness(WORD w) {
+    BYTE c1, c2;
+    if(isLittleEndian()){
+        c1 = w & 255;
+        c2 = (w >> 8) & 255;
+        return (c1 << 8) + c2;
+    } else {
+        return w;
+    }
+}
+
+
+
+DWORD rectifyDWordEndianness(DWORD dw) {
+    BYTE c1, c2, c3, c4;
+    if(isLittleEndian()){
+        c1 = dw & 255;
+        c2 = (dw >> 8) & 255;
+        c3 = (dw >> 16) & 255;
+        c4 = (dw >> 24) & 255;
+        return ((int)c1 << 24) + ((int)c2 << 16) + ((int)c3 << 8) + c4;
+    } else {
+        return dw;
+    }
+}
+
+
 /************************************************************************************************************************************************
  * void getRandomBytes(BYTE* buffer, WORD size)
  *
@@ -893,7 +936,8 @@ void cipher(BYTE *password, BYTE label) {
     mem_set(temp_buffer+16+pad_size, 0, 4); // ** Adapted for util_sc ** //
     pad_size += 4;
 
-    mem_cpy(temp_buffer+16+pad_size, &buffer_size, 2);  // ** Adapted for util_sc ** //
+    WORD temp_word = rectifyWordEndianness(buffer_size);
+    mem_cpy(temp_buffer+16+pad_size, &temp_word, 2);  // ** Adapted for util_sc ** //
     pad_size += 2;
 
     mem_cpy(temp_buffer+16+pad_size, &device_id, ID_SIZE);  // ** Adapted for util_sc ** //
@@ -1002,6 +1046,7 @@ BOOL decipher(BYTE *device_id_prim, BYTE *password, BYTE label) {
     }  // ** Adapted for util_sc ** //
 
     mem_cpy(&L, temp_buffer+20, 2); // ** Adapted for util_sc ** //
+    L = rectifyWordEndianness(L);
 
     if (L < 16*(d-1)+1 || L > 16*d){
         mExitSW(ERR_INVALID_BACKUP_ARCHIVE);    // ** Adapted for util_sc ** //

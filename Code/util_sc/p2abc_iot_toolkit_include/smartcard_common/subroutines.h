@@ -11,6 +11,9 @@ extern "C" {
 
 #define MIN(a,b) (((a) < (b)) ? (a) : (b))
 
+WORD rectifyWordEndianness(WORD w);
+DWORD rectifyDWordEndianness(DWORD dw);
+
 void getRandomBytes(BYTE* buffer, WORD size);
 BOOL checkPin(BYTE* tested_pin);
 BOOL checkPuk(BYTE* tested_puk);

@@ -6,6 +6,7 @@
 #include <smartcard_common/subroutines.h>
 #include <smartcard_common/defs_ins.h>
 #include <macrologger.h>
+#include <smartcard_common/abc4T_types.h>
 
 void handle_APDU() {
 
@@ -325,14 +326,17 @@ void handle_INS_GET_KX_AND_DEVICE_KEY(void){
     }
 
     temp_size = 0;
+    WORD temp_word = rectifyWordEndianness( provers[current_prover_id-1].ksize );
 
-    mem_cpy(temp_buffer+temp_size, &(provers[current_prover_id-1].ksize), 2);
+    mem_cpy(temp_buffer+temp_size, &temp_word, 2);
     temp_size += 2;
 
     mem_cpy(temp_buffer+temp_size, provers[current_prover_id-1].kx + MAX_SMALLINT_SIZE - provers[current_prover_id-1].ksize, provers[current_prover_id-1].ksize);
     temp_size += provers[current_prover_id-1].ksize;
 
-    mem_cpy(temp_buffer+temp_size, &x_size, 2);
+    temp_word = rectifyWordEndianness( x_size );
+
+    mem_cpy(temp_buffer+temp_size, &temp_word, 2);
     temp_size += 2;
 
     mem_cpy(temp_buffer+temp_size, device_key+MAX_SMALLINT_SIZE-x_size, x_size);
@@ -832,7 +836,8 @@ void handle_INS_LIST_AUTHENTICATION_KEYS(){
     for (authKeyId=0; authKeyId < NUM_ISSUERS; authKeyId++) {
         if (auth_keys_sizes[authKeyId]) {
             mem_cpy(temp_buffer + temp_size, &authKeyId, 1);
-            mem_cpy(temp_buffer + temp_size + 1, &(auth_keys_sizes[authKeyId]), 2);
+            WORD temp_word = rectifyWordEndianness(auth_keys_sizes[authKeyId]);
+            mem_cpy(temp_buffer + temp_size + 1, &temp_word, 2);
             temp_size = temp_size + 3;
         }
     }
@@ -1094,16 +1099,18 @@ void handle_INS_READ_GROUP(){
 
     temp_size = 0;
 
+    WORD temp_word = rectifyWordEndianness(buffer_size);
+
     getGroupComponent(temp_group_id, 0x00);
-    mem_cpy(temp_buffer+temp_size, &buffer_size, SIZE_SIZE);
+    mem_cpy(temp_buffer+temp_size, &temp_word, SIZE_SIZE);
     temp_size += SIZE_SIZE;
 
     getGroupComponent(temp_group_id, 0x01);
-    mem_cpy(temp_buffer+temp_size, &buffer_size, SIZE_SIZE);
+    mem_cpy(temp_buffer+temp_size, &temp_word, SIZE_SIZE);
     temp_size += SIZE_SIZE;
 
     getGroupComponent(temp_group_id, 0x02);
-    mem_cpy(temp_buffer+temp_size, &buffer_size, SIZE_SIZE);
+    mem_cpy(temp_buffer+temp_size, &temp_word, SIZE_SIZE);
     temp_size += SIZE_SIZE;
 
     getGroupComponent(temp_group_id, 0x03);
@@ -1680,6 +1687,10 @@ void handle_INS_SET_PROVER(){
         if( !checkBufferEqual(INS_SET_PROVER, &(apdu_data.set_prover_in.prover_id), Lc) ) return;
 
     mem_cpy(&(provers[temp_prover_id-1].prover_id), &(apdu_data.set_prover_in.prover_id), 5); // under the hood, this also initializes ksize and csize
+    //
+    provers[temp_prover_id-1].ksize = rectifyWordEndianness( provers[temp_prover_id-1].ksize );
+    provers[temp_prover_id-1].csize = rectifyWordEndianness( provers[temp_prover_id-1].csize );
+    //
     mem_set(&(provers[temp_prover_id-1].kx), 0, MAX_SMALLINT_SIZE);
     mem_set(&(provers[temp_prover_id-1].c), 0, HASH_SIZE);
     mem_set(&(provers[temp_prover_id-1].proofsession), 0, PROOFSESSION_SIZE);
@@ -1723,7 +1734,11 @@ void handle_INS_READ_PROVER(){
         return;
     }
 
-    mem_cpy(temp_buffer, &(provers[temp_prover_id-1].ksize), 4); // copy ksize || csize
+    WORD temp_word;
+    temp_word = rectifyWordEndianness(provers[temp_prover_id-1].ksize);
+    mem_cpy(temp_buffer, &temp_word, 2); // copy ksize
+    temp_word = rectifyWordEndianness(provers[temp_prover_id-1].csize);
+    mem_cpy(temp_buffer+2, &temp_word, 2); // copy csize
     mem_cpy(temp_buffer+4, &(provers[temp_prover_id-1].proofsession), PROOFSESSION_SIZE + 1 + provers[temp_prover_id-1].cred_ids_size); // proofsession || proofstatus || cred_ids
 
     temp_size = 5 + PROOFSESSION_SIZE + provers[temp_prover_id-1].cred_ids_size;
@@ -2099,8 +2114,11 @@ void handle_INS_READ_CREDENTIAL(){
         temp_credential_id = apdu_data.pin_and_credential_id.credential_id;
 
     apdu_data.dataout[0] = credentials[temp_credential_id-1].issuer_id;
-    mem_cpy(apdu_data.dataout+1, &(credentials[temp_credential_id-1].v_size), 2);
-    mem_cpy(apdu_data.dataout+3, &(credentials[temp_credential_id-1].kv_size), 2);
+    WORD temp_word;
+    temp_word = rectifyWordEndianness(credentials[temp_credential_id-1].v_size);
+    mem_cpy(apdu_data.dataout+1, &temp_word, 2);
+    temp_word = credentials[temp_credential_id-1].kv_size;
+    mem_cpy(apdu_data.dataout+3, &temp_word, 2);
     mem_cpy(apdu_data.dataout+5, &(credentials[temp_credential_id-1].status), 2); // status || prescount
 
     mExitLa(7);
@@ -3194,40 +3212,51 @@ void handle_INS_GET_INFO(void){
 
     temp_buffer_size = 0;
 
+    WORD temp_word;
+
     temp_size = CHALLENGE_MAX_SIZE;
-    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_size, 2);
+    temp_word = rectifyWordEndianness(temp_size);
+    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_word, 2);
     temp_buffer_size += 2;
 
     temp_size = NUM_ISSUERS;
-    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_size, 2);
+    temp_word = rectifyWordEndianness(temp_size);
+    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_word, 2);
     temp_buffer_size += 2;
 
     temp_size = MAX_NUMBER_OF_BLOBS;
-    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_size, 2);
+    temp_word = rectifyWordEndianness(temp_size);
+    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_word, 2);
     temp_buffer_size += 2;
 
     temp_size = NUM_GROUPS;
-    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_size, 2);
+    temp_word = rectifyWordEndianness(temp_size);
+    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_word, 2);
     temp_buffer_size += 2;
 
     temp_size = NUM_COUNTERS;
-    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_size, 2);
+    temp_word = rectifyWordEndianness(temp_size);
+    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_word, 2);
     temp_buffer_size += 2;
 
     temp_size = NUM_AUTH_KEYS;
-    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_size, 2);
+    temp_word = rectifyWordEndianness(temp_size);
+    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_word, 2);
     temp_buffer_size += 2;
 
     temp_size = MAX_URI_SIZE;
-    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_size, 2);
+    temp_word = rectifyWordEndianness(temp_size);
+    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_word, 2);
     temp_buffer_size += 2;
 
     temp_size = MAX_BLOB_SIZE;
-    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_size, 2);
+    temp_word = rectifyWordEndianness(temp_size);
+    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_word, 2);
     temp_buffer_size += 2;
 
     temp_size = MAX_BIGINT_SIZE;
-    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_size, 2);
+    temp_word = rectifyWordEndianness(temp_size);
+    mem_cpy(apdu_data.dataout+temp_buffer_size, &temp_word, 2);
     temp_buffer_size += 2;
 
     mExitLa(temp_buffer_size);

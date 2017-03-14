@@ -14,7 +14,7 @@ extern "C" {
 
 typedef struct __attribute__((__packed__))
 {
-  BYTE pin[4];
+  BYTE pin[PIN_SIZE];
   BYTE keyId;
 } APDU_READ_AUTHENTICATION_KEY;
 

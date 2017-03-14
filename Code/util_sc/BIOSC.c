@@ -23,6 +23,7 @@
 #include <unistd.h>
 #include <macrologger.h>
 #include <p2abc_iot_toolkit_include/smartcard_common/abc4T_types.h>
+#include <p2abc_iot_toolkit_include/smartcard_utils_interface/crypto_util.h>
 
 void receive_commands(){
 /*
@@ -134,6 +135,10 @@ int main(int argc, char **argv){
     printf("SWORD: %d\n", sizeof(SWORD));
     printf("DWORD: %d\n", sizeof(DWORD));
     printf("SDWORD: %d\n", sizeof(SDWORD));
+
+
+    // init random seed
+    crypto_InitSeed(0x1234abcd);
 
     create_json();
 
