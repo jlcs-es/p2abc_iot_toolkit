@@ -111,6 +111,30 @@ int listen_conn(int port) {
 
 
 void create_json(){
+    pin_trials = MAX_PIN_TRIALS;
+    puk_trials = MAX_PUK_TRIALS;
+    memset(device_id, 0, ID_SIZE);
+    x_size = 0;
+    memset(device_key, 0, MAX_SMALLINT_SIZE);
+    memset(puk, 0, PUK_SIZE);
+    memset(pin, 0, PIN_SIZE);
+    memset(auth_keys, 0, NUM_AUTH_KEYS*MAX_BIGINT_SIZE);
+    memset(auth_keys_sizes, 0, sizeof(WORD)*NUM_AUTH_KEYS);
+    memset(buffer, 0, BUFFER_MAX_SIZE);
+    buffer_size = 0;
+    authData = 0;
+    memset(groups, 0, sizeof(GROUP)*NUM_GROUPS);
+#if NUM_COUNTERS > 0
+    memset(counters, 0, sizeof(COUNTER)*NUM_COUNTERS);
+#endif
+    memset(issuers, 0, sizeof(ISSUER)*NUM_ISSUERS);
+    memset(provers, 0, sizeof(PROVER)*NUM_PROVERS);
+    current_prover_id = 0;
+    memset(credentials, 0, sizeof(CREDENTIAL)*NUM_CREDS);
+    memset(blob_store, 0x00, sizeof(BLOB_STORE_ITEM)*MAX_NUMBER_OF_BLOBS); // ** Adapted for util_sc ** //
+    memset(blob_catalog, 0x00, sizeof(BLOB_CATALOG_ITEM)*MAX_NUMBER_OF_BLOBS);
+    memset(temp_key, 0, MAX_BIGINT_SIZE);
+
     mode = MODE_ROOT;
 
     char * json_string = serialize_smartcard_status();
