@@ -27,7 +27,7 @@ test1 = bytearray([0x01, 0x04, 0x00, 0xbc, 0x06, 0x00, 0x00])
 
 s.send(test1)
 print(binascii.hexlify(bytearray(s.recv(2048))))
-print(binascii.hexlify(bytearray(s.recv(2048))))
+#print(binascii.hexlify(bytearray(s.recv(2048))))
 
 
 '''
@@ -40,7 +40,7 @@ test2 = bytearray([0x01, 0x05, 0x00, 0xbc, 0x84, 0x00, 0x00, 0xff])
 
 s.send(test2)
 print(binascii.hexlify(bytearray(s.recv(2048))))
-print(binascii.hexlify(bytearray(s.recv(2048))))
+#print(binascii.hexlify(bytearray(s.recv(2048))))
 
 
 

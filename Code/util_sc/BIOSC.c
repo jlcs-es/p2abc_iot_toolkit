@@ -30,52 +30,30 @@ void receive_commands(){
  * Read from standard input a byte for the operation:
  *  - 0x01 : APDU received.
  *          Read a WORD for APDU length and then as many bytes as said length.
- *  - 0xff : Connection closed.
+ *  - 0xff : Close connection.
  *          Finish the loop.
  */
-
+    LOG_DEBUG("Start receive_commands loop");
     BYTE command = 0x00;
     WORD apdu_len;
     BYTE apdu_bytes[MAX_APDU_INPUT_DATA_SIZE];
     while(command != 0xff){
-        read(connfd, &command, 1);
+        if(read(connfd, &command, 1) <= 0)
+            return;
         if(command == 0x01){    // 0x01 : APDU received
             // Read APDU Length
-            read(connfd, &apdu_len, 2);
+            if(read(connfd, &apdu_len, 2)<=0)
+                return;
             // Read APDU
-            read(connfd, apdu_bytes, apdu_len);
+            if(read(connfd, apdu_bytes, apdu_len)<=0)
+                return;
             // Interpret the bytes
             deserialize_APDU_command(apdu_bytes, apdu_len);
             // Handle the APDU Command
             handle_APDU();
         }
     }
-
-
-
-
-
-    // -todoahora se lee en formato AA cada byte. Cambiar a bytes.
-
-//    BYTE command = 0x00;
-//    WORD apdu_len;
-//    BYTE apdu_bytes[MAX_APDU_INPUT_DATA_SIZE];
-//    while(command != 0xff){
-//        scanf("%2hhx", &command);
-//        if(command == 0x01){    // 0x01 : APDU received
-//            // Read APDU Length
-//            scanf("%4hx", &apdu_len);
-//            // Read APDU
-//            for(int i=0; i<apdu_len; i++){
-//                scanf("%2hhx", &apdu_bytes[i]);
-//                //scanf("%c", &apdu_bytes[i]);
-//            }
-//            // Interpret the bytes
-//            deserialize_APDU_command(apdu_bytes, apdu_len);
-//            // Handle the APDU Command
-//            handle_APDU();
-//        }
-//    }
+    LOG_DEBUG("Finish connection with FF command");
 }
 
 
@@ -99,8 +77,9 @@ int listen_conn(int port) {
         exit(ERROR_SOCKET);
     }
 
-    if ( (connfd = accept(sockfd, (struct sockaddr *)NULL, NULL)) < 0 )
+    if ( (connfd = accept(sockfd, (struct sockaddr *)NULL, NULL)) < 0 ){
         exit(ERROR_SOCKET);
+    }
 
     return connfd;
 }
@@ -131,7 +110,7 @@ void create_json(){
     memset(provers, 0, sizeof(PROVER)*NUM_PROVERS);
     current_prover_id = 0;
     memset(credentials, 0, sizeof(CREDENTIAL)*NUM_CREDS);
-    memset(blob_store, 0x00, sizeof(BLOB_STORE_ITEM)*MAX_NUMBER_OF_BLOBS); // ** Adapted for util_sc ** //
+    memset(blob_store, 0x00, sizeof(BLOB_STORE_ITEM)*MAX_NUMBER_OF_BLOBS);
     memset(blob_catalog, 0x00, sizeof(BLOB_CATALOG_ITEM)*MAX_NUMBER_OF_BLOBS);
     memset(temp_key, 0, MAX_BIGINT_SIZE);
 
@@ -172,10 +151,9 @@ int main(int argc, char **argv){
 
     // Open socket and listen on port
     connfd = listen_conn(8888);
-
     // Loop listening for APDUs
     receive_commands();
-
+    // Close the socket
     close(connfd);
 
     return 0;

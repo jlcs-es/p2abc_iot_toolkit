@@ -17,7 +17,7 @@ static char version[64]= "ABC4Trust Card Lite - Jose Luis Canovas 2016 - IoT Too
  * Toolkit variables
  ************************************************************************/
 
-WORD connfd;
+SDWORD connfd;
 
 /************************************************************************
  * Internal APDU variables.
