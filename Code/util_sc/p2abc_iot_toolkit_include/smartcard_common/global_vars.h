@@ -10,6 +10,13 @@
 extern "C" {
 #endif
 
+
+#ifdef TESTING_SC
+extern BYTE test_device_key[32];
+extern BYTE test_pin[4];
+extern BYTE test_puk[8];
+#endif
+
 static char version[64]= "ABC4Trust Card Lite - Jose Luis Canovas 2016 - IoT Toolkit v1  "; // 64 bytes
 
 
@@ -17,7 +24,7 @@ static char version[64]= "ABC4Trust Card Lite - Jose Luis Canovas 2016 - IoT Too
  * Toolkit variables
  ************************************************************************/
 
-SDWORD connfd;
+extern SDWORD connfd;
 
 /************************************************************************
  * Internal APDU variables.
@@ -94,7 +101,8 @@ extern BYTE *buffer_ptr;
 typedef union
 {
     BYTE small_buffer[SMALL_BUFFER_MAX_SIZE];
-    BYTE pad[MAX_BIGINT_SIZE-32];
+    // BYTE pad[MAX_BIGINT_SIZE-32]; // FIX
+    BYTE pad[MAX_BIGINT_SIZE];
     BYTE challenge[CHALLENGE_MAX_SIZE];
 } MEM_SESSION;
 extern MEM_SESSION mem_session;

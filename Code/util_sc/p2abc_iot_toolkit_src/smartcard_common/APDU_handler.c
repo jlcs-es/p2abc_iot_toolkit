@@ -591,6 +591,7 @@ void handle_INS_INITIALIZE_DEVICE(){
     mem_cpy(device_id, apdu_data.id_and_size, ID_SIZE);
 
     temp_size = sizeDecode(apdu_data.id_and_size + ID_SIZE);
+    LOG_DEBUG("temp_size = %04X  | %u", temp_size, temp_size);
 
     if (temp_size < MIN_X_SIZE){
         mExitSW(ERR_DEVICE_KEY_SHORTER_THAN_MIN_X_SIZE);
@@ -604,10 +605,10 @@ void handle_INS_INITIALIZE_DEVICE(){
 
     x_size = temp_size;
 
-#ifdef TEST_MODE
+#ifdef TESTING_SC
     mem_cpy(device_key+MAX_SMALLINT_SIZE-temp_size, test_device_key, temp_size);
-      mem_cpy(pin, test_pin, PIN_SIZE);
-      mem_cpy(puk, test_puk, PUK_SIZE);
+    mem_cpy(pin, test_pin, PIN_SIZE);
+    mem_cpy(puk, test_puk, PUK_SIZE);
 #else
     getRandomBytes(device_key+MAX_SMALLINT_SIZE-temp_size, temp_size);
     getRandomBytes(temp_buffer, PIN_SIZE+PUK_SIZE);
@@ -721,7 +722,7 @@ void handle_INS_GET_CHALLENGE(){
     if (!challenge_size)
         challenge_size = CHALLENGE_MAX_SIZE;
 
-#ifdef TEST_MODE
+#ifdef TESTING_SC
     mem_set(mem_session.challenge, 0xaa, challenge_size);
 #else
     getRandomBytes(mem_session.challenge, challenge_size);
@@ -1833,7 +1834,7 @@ void handle_INS_START_COMMITMENTS() {
 
     mem_set(provers[temp_prover_id-1].kx, 0, MAX_SMALLINT_SIZE - provers[temp_prover_id-1].ksize); // put 0x00's on the left of kx
 
-#ifdef TEST_MODE
+#ifdef TESTING_SC
     mem_set(provers[temp_prover_id-1].kx + MAX_SMALLINT_SIZE - provers[temp_prover_id-1].ksize, 0xaa, provers[temp_prover_id-1].ksize);
     mem_set(provers[temp_prover_id-1].proofsession, 0xaa, PROOFSESSION_SIZE);
 #else
@@ -2047,7 +2048,7 @@ void handle_INS_SET_CREDENTIAL(){
     credentials[temp_credential_id-1].credential_id = temp_credential_id;
     credentials[temp_credential_id-1].issuer_id = temp_issuer_id;
     mem_set(credentials[temp_credential_id-1].v, 0, MAX_SMALLINT_SIZE-x_size);
-#ifdef TEST_MODE
+#ifdef TESTING_SC
     mem_set(credentials[temp_credential_id-1].v+MAX_SMALLINT_SIZE-x_size, 0xaa, x_size);
 #else
     getRandomBytes(credentials[temp_credential_id-1].v+MAX_SMALLINT_SIZE-x_size, x_size);
@@ -2198,7 +2199,7 @@ void handle_INS_GET_ISSUANCE_COMMITMENT(){
     }
 
     mem_set(temp_key, 0, MAX_BIGINT_SIZE-provers[current_prover_id-1].ksize);
-#ifdef TEST_MODE
+#ifdef TESTING_SC
     mem_set(temp_key + MAX_BIGINT_SIZE-provers[current_prover_id-1].ksize, 0xbb, provers[current_prover_id-1].ksize);
 #else
     getRandomBytes(temp_key + MAX_BIGINT_SIZE-provers[current_prover_id-1].ksize, provers[current_prover_id-1].ksize);
@@ -2335,7 +2336,7 @@ void handle_INS_GET_PRESENTATION_COMMITMENT(){
 #endif
 
     mem_set(temp_key, 0, MAX_BIGINT_SIZE-provers[current_prover_id-1].ksize);
-#ifdef TEST_MODE
+#ifdef TESTING_SC
     mem_set(temp_key + MAX_BIGINT_SIZE-provers[current_prover_id-1].ksize, 0xaa, provers[current_prover_id-1].ksize);
 #else
     getRandomBytes(temp_key + MAX_BIGINT_SIZE-provers[current_prover_id-1].ksize, provers[current_prover_id-1].ksize);

@@ -39,7 +39,7 @@ extern "C" {
 #define PROVER_ID_SIZE 1
 #define SIZE_SIZE 2 // change this at your own risk
 
-#ifdef TEST_MODE
+#ifdef TESTING_SC
   #define NUM_ISSUERS 3
   #define MAX_NUMBER_OF_BLOBS 10
   #define NUM_GROUPS ((NUM_ISSUERS)+1)

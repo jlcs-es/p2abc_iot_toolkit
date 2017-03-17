@@ -24,6 +24,7 @@
 #include <macrologger.h>
 #include <p2abc_iot_toolkit_include/smartcard_common/abc4T_types.h>
 #include <p2abc_iot_toolkit_include/smartcard_utils_interface/crypto_util.h>
+#include <p2abc_iot_toolkit_include/smartcard_common/subroutines.h>
 
 void receive_commands(){
 /*
@@ -44,6 +45,7 @@ void receive_commands(){
             // Read APDU Length
             if(read(connfd, &apdu_len, 2)<=0)
                 return;
+            apdu_len = rectifyWordEndianness(apdu_len);
             // Read APDU
             if(read(connfd, apdu_bytes, apdu_len)<=0)
                 return;

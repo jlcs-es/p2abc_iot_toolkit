@@ -12,9 +12,11 @@
 #include <smartcard_common/global_vars.h>
 #include <unistd.h>
 #include <macrologger.h>
+#include <smartcard_common/subroutines.h>
 
 void output_apdu_response(){
     WORD APDUlength = La + 2;
+    APDUlength = rectifyWordEndianness(APDUlength);
     write(connfd, &APDUlength, 2);
     write(connfd, apdu_data.dataout, La);
     write(connfd, &SW1, 1);

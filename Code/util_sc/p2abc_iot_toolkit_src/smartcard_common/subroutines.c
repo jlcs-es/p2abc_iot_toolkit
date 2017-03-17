@@ -227,7 +227,7 @@ void encryption(BYTE* dst, WORD* dst_size, const BYTE *src, const WORD src_size,
 
     temp_rand_size = key_size - 35 - src_size; // should be 83
 
-#ifdef TEST_MODE
+#ifdef TESTING_SC
     mem_set(mem_session.pad+3+src_size, 0xbc, temp_rand_size);
 #else
     getRandomBytes(mem_session.pad+3+src_size, temp_rand_size);
@@ -240,11 +240,15 @@ void encryption(BYTE* dst, WORD* dst_size, const BYTE *src, const WORD src_size,
     // NOTE : ¿32 de los 4bytes=32bits que ...??¿¿
     LOG_DEBUG("encryption() pad_size = %d (should be 96) (?)", pad_size);
 
+    BYTE * array = mem_session.pad+pad_size;
     //Deprecated: SHA256(mem_session.pad+pad_size, pad_size, mem_session.pad); // compute (pad || h)
     mSecureHash(pad_size, 32, mem_session.pad+pad_size, mem_session.pad); // SHA256 compute (pad || h) // ** Adapted for util_sc ** //
     // NOTE : msgLen en bytes pero pad_size en bits?
+    LOG_BYTES(array, 32, "HASH OUT");
 
     mModularExponentiation(1, key_size, exponent, (BYTE*)key, mem_session.pad, dst); // ** Adapted for util_sc ** //
+
+    LOG_BYTES(dst, key_size, "MOD EXP OUT");
 
     *dst_size = key_size;
 
@@ -943,7 +947,7 @@ void cipher(BYTE *password, BYTE label) {
     mem_cpy(temp_buffer+16+pad_size, &device_id, ID_SIZE);  // ** Adapted for util_sc ** //
     pad_size += ID_SIZE;
 
-#ifdef TEST_MODE
+#ifdef TESTING_SC
     memset(temp_buffer+16+pad_size, 0xaa, 8);
 #else
     getRandomBytes(temp_buffer+16+pad_size, 8);

@@ -6,7 +6,7 @@
 /********************************************************************/
 
 
-#ifdef USE_MINI_GMP
+#ifdef USE_GMP
 
 /********************************************************************/
 /*   Implementation of the adapter which delegates in miniGMP       */

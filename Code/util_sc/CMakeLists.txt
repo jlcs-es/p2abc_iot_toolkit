@@ -68,7 +68,7 @@ add_library(util_sc ${UTIL_SC_SRC_FILES} ${UTIL_SC_INCLUDE_FILES})
 
 add_definitions( -UUSE_CRYPTODEV)
 
-add_definitions( -DUSE_MINI_GMP )
+add_definitions( -DUSE_GMP )
 target_link_libraries(util_sc gmp)
 add_definitions( -DUSE_OPENSSL )
 target_link_libraries(util_sc crypto)
