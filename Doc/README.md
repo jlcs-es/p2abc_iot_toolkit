@@ -1,2 +1,2 @@
 # Documentation
-Port of Idemix to Contiky
+Port of P2ABCE with Idemix to IoT
