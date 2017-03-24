@@ -1,0 +1,4 @@
+@startuml
+  "IoT device" as IoT -> "P2ABC Web Services" as P2ABC : HTTP POST foo/bar + data
+  IoT <-- P2ABC : XML file
+@enduml
