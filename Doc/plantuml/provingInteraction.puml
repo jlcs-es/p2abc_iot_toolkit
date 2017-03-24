@@ -1,0 +1,31 @@
+@startuml
+  box "Raspberry Pi" #FFFF99
+  participant "Identity delegation\nservice" as RpiId
+  participant "User delegation\nservice" as RpiUser
+  end box
+  participant "IoT device (Prover)" as IoT
+  participant Verifier
+
+  note over IoT, Verifier #AAFFAA : Create presentation policy alternatives
+  IoT -> Verifier : /createPresentationPolicy + presentationPolicyAlternatives.xml
+  IoT <-- Verifier : presentationPolicyAlternatives.xml
+
+  note over IoT, RpiUser #FFAAAA : Create presentation UI return
+  RpiUser <<- IoT : /createPresentationToken + presentationPolicyAlternatives.xml
+  RpiUser o<-[#3366FF]->o IoT : APDU's
+  RpiUser -->> IoT : uiPresentationArguments.xml
+
+  note over IoT, RpiId  #DDAAAA : Select first posisble identity
+  RpiId <<- IoT : /presentation + uiPresentationArguments.xml
+  RpiId -->> IoT : uiPresentationReturn.xml
+
+  note over IoT, RpiUser #FFAAAA : Create presentation token
+  RpiUser <<- IoT : /createPresentationTokenUi + uiPresentationReturn.xml
+  RpiUser -->> IoT : **presentationToken.xml**
+
+  note over IoT, Verifier #FFFF99 : Verify presentation token against presentation policy
+  IoT -> Verifier : /verifyTokenAgainstPolicy + presentationPolicyAlternativesAndPresentationToken.xml
+  IoT <-- Verifier : presentationTokenDescription.xml
+
+
+@enduml
