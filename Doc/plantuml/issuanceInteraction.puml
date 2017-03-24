@@ -1,0 +1,42 @@
+@startuml
+  skinparam SequenceMessageAlign center
+
+  box "Raspberry Pi" #FFFF99
+  participant "Identity delegation\nservice" as RpiId
+  participant "User delegation\nservice" as RpiUser
+  end box
+  participant "IoT device (User)\nwith SW smartcard" as IoT
+  participant Issuer
+
+  note over IoT, Issuer #AAFFAA: Init issuance protocol
+  IoT -> Issuer : /initIssuanceProtocol + issuancePolicyAndAttributes.xml
+  IoT <-- Issuer : issuanceMessageAndBoolean.xml
+  RpiUser <<- IoT : /extractIssuanceMessage + issuanceMessageAndBoolean.xml
+  RpiUser -->> IoT : firstIssuanceMessage.xml
+
+  note over RpiUser, IoT #FFAAAA : First issuance protocol step for the user
+  RpiUser <<- IoT : /issuanceProtocolStep + firstIssuanceMessage.xml
+  RpiUser o<-[#3366FF]->o IoT : APDU's
+  RpiUser -->> IoT : issuanceReturn.xml
+
+  note over RpiId, IoT #DDAAAA : Select first usable identity
+  RpiId <<- IoT : /issuance + issuanceReturn.xml
+  RpiId -->> IoT : uiIssuanceReturn.xml
+
+  note over RpiUser, IoT #FFAAAA : Second issuance protocol step (first step for the user)
+  RpiUser <<- IoT : /issuanceProtocolStepUi + uiIssuanceReturn.xml
+  RpiUser -->> IoT : secondIssuanceMessage.xml
+
+  note over IoT, Issuer #AAFFAA : Second issuance protocol step (second step for the issuer)
+  IoT -> Issuer : /issuanceProtocolStep + secondIssuanceMessage.xml
+  IoT <-- Issuer : thirdIssuanceMessageAndBoolean.xml
+  RpiUser <<- IoT : /extractIssuanceMessage + thirdIssuanceMessageAndBoolean.xml
+  RpiUser -->> IoT : thirdIssuanceMessage.xml
+
+  note over RpiUser, IoT #FFAAAA : Third issuance protocol step (second step for the user)
+  RpiUser <<- IoT : /issuanceProtocolStep + thirdIssuanceMessage.xml
+  RpiUser o<-[#3366FF]->o IoT : APDU's
+  RpiUser -->> IoT : fourthIssuanceMessageAndBoolean.xml
+
+
+@enduml

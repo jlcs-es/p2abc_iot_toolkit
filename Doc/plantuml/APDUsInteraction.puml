@@ -1,0 +1,320 @@
+@startuml
+box "Raspberry Pi" #FFFF99
+
+participant "User delegation\nservice" as RpiUser
+end box
+participant "IoT device (User)\nwith SW smartcard" as IoT
+
+
+RpiUser -[#3366FF]> IoT : APDU Command: INS_GET_MODE 0xBC 0x02 0x00 0x00 0x01
+RpiUser <-[#3366FF]- IoT : APDU Response: MODE ROOT 0x01 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_SET_AUTHENTICATION_KEY 0x20
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_INITIALIZE_DEVICE 0x12
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 6101
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_GET_RESPONSE 0xC0
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_CHANGE_PIN 0x0E
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_GET_MODE 0x02
+RpiUser <-[#3366FF]- IoT : APDU Response: 0x01 SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_SET_GROUP_COMPONENT 0x28
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_SET_GROUP_COMPONENT 0x28
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_SET_GROUP_COMPONENT 0x28
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_SET_GENERATOR 0x2A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_SET_PROVER 0x48
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_GET_CHALLENGE 0x1C
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_GET_MODE 0x02
+RpiUser <-[#3366FF]- IoT : APDU Response: 0x01 SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_SET_GROUP_COMPONENT 0x28
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_SET_GENERATOR 0x2A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_SET_GENERATOR 0x2A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_SET_ISSUER 0x40
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_SET_WORKING_MODE 0x06
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT :
+RpiUser <-[#3366FF]- IoT :
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_LIST_BLOBS 0x72
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_GET_SCOPE_EXCLUSIVE_PSEUDONYM 0x6A
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_BLOB 0x74
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9F25
+|||
+RpiUser -[#3366FF]> IoT : APDU Command:
+RpiUser <-[#3366FF]- IoT : APDU Response:
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_BLOB 0x74
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9F25
+|||
+RpiUser -[#3366FF]> IoT : APDU Command:
+RpiUser <-[#3366FF]- IoT : APDU Response:
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_SET_CREDENTIAL 0x52
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_GROUP_COMPONENT 0x30
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_GROUP_COMPONENT 0x30
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_GENERATOR 0x32
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_CREDENTIAL 0x56
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_GENERATOR 0x32
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_GENERATOR 0x32
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_GROUP_COMPONENT 0x30
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_GROUP_COMPONENT 0x30
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_GET_CREDENTIAL_PUBLIC_KEY 0x5A
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_START_COMMITMENTS 0x4E
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_CREDENTIAL 0x56
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+||||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_GET_ISSUANCE_COMMITMENT 0x5C
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_GET_SCOPE_EXCLUSIVE_COMMITMENT 0x6C
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_START_RESPONSES 0x50
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_GET_DEVICE_RESPONSE 0x68
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_CREDENTIAL 0x56
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_GET_ISSUANCE_RESPONSE 0x5E
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_ISSUER 0x44
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_CREDENTIAL 0x56
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_START_COMMITMENTS 0x4E
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_CREDENTIAL 0x56
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_GET_PRESENTATION_COMMITMENT 0x60
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_START_RESPONSES 0x50
+RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_GET_DEVICE_RESPONSE 0x68
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_CREDENTIAL 0x56
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_GET_PRESENTATION_RESPONSE 0x62
+RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
+@enduml
