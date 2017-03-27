@@ -3,11 +3,17 @@ box "Raspberry Pi" #FFFF99
 
 participant "User delegation\nservice" as RpiUser
 end box
-participant "IoT device (User)\nwith SW smartcard" as IoT
+participant "IoT device\nwith SW smartcard" as IoT
 
-
+== Init IoT smartcard ==
+RpiUser -[#3366FF]> IoT : APDU Command: isAndroid 0xBC 0x8E 0x00 0x00 0x00
+RpiUser <-[#3366FF]- IoT : APDU Response: ERR_BAD_INS SW = 6D00
+|||
 RpiUser -[#3366FF]> IoT : APDU Command: INS_GET_MODE 0xBC 0x02 0x00 0x00 0x01
-RpiUser <-[#3366FF]- IoT : APDU Response: MODE ROOT 0x01 9000
+RpiUser <-[#3366FF]- IoT : APDU Response: MODE ROOT 0x01 SW = 9000
+|||
+RpiUser -[#3366FF]> IoT : APDU Command: INS_GET_MODE 0x02
+RpiUser <-[#3366FF]- IoT : APDU Response: MODE ROOT 0x01 SW = 9000
 |||
 RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
 RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
@@ -89,27 +95,24 @@ RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
 |||
 RpiUser -[#3366FF]> IoT : APDU Command: INS_SET_WORKING_MODE 0x06
 RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
-|||
-RpiUser -[#3366FF]> IoT :
-RpiUser <-[#3366FF]- IoT :
-|||
+
+== First issuance protocol step for the user ==
+
+
 RpiUser -[#3366FF]> IoT : APDU Command: INS_LIST_BLOBS 0x72
 RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
-|||
+
+== Second issuance protocol step (first step for the user) ==
+
+
 RpiUser -[#3366FF]> IoT : APDU Command: INS_GET_SCOPE_EXCLUSIVE_PSEUDONYM 0x6A
 RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
 |||
 RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_BLOB 0x74
 RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9F25
 |||
-RpiUser -[#3366FF]> IoT : APDU Command:
-RpiUser <-[#3366FF]- IoT : APDU Response:
-|||
 RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_BLOB 0x74
 RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9F25
-|||
-RpiUser -[#3366FF]> IoT : APDU Command:
-RpiUser <-[#3366FF]- IoT : APDU Response:
 |||
 RpiUser -[#3366FF]> IoT : APDU Command: INS_SET_CREDENTIAL 0x52
 RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
@@ -173,7 +176,12 @@ RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
 |||
 RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_ISSUER 0x44
 RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
-|||
+
+
+== Third issuance protocol step (second step for the user) ==
+
+
+
 RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
 RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
 |||
@@ -233,7 +241,10 @@ RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
 |||
 RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
 RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
-|||
+
+== Create presentation UI return ==
+
+
 RpiUser -[#3366FF]> IoT : APDU Command: INS_PUT_DATA 0x1A
 RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
 |||
@@ -293,7 +304,10 @@ RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
 |||
 RpiUser -[#3366FF]> IoT : APDU Command: INS_STORE_BLOB 0x70
 RpiUser <-[#3366FF]- IoT : APDU Response: SW = 9000
-|||
+
+
+== Create presentation token ==
+
 RpiUser -[#3366FF]> IoT : APDU Command: INS_READ_CREDENTIAL 0x56
 RpiUser <-[#3366FF]- IoT : APDU Response: payload + SW = 9000
 |||

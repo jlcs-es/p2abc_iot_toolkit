@@ -1,7 +1,8 @@
 @startuml
   skinparam SequenceMessageAlign center
 
-  box "Raspberry Pi" #FFFF99
+
+  box "Raspberry Pi" #FFFFA9
   participant "Identity delegation\nservice" as RpiId
   participant "User delegation\nservice" as RpiUser
   end box
@@ -9,10 +10,12 @@
   participant Issuer
 
   note over IoT, Issuer #AAFFAA: Init issuance protocol
+  activate Issuer
   IoT -> Issuer : /initIssuanceProtocol + issuancePolicyAndAttributes.xml
   IoT <-- Issuer : issuanceMessageAndBoolean.xml
   RpiUser <<- IoT : /extractIssuanceMessage + issuanceMessageAndBoolean.xml
   RpiUser -->> IoT : firstIssuanceMessage.xml
+  deactivate Issuer
 
   note over RpiUser, IoT #FFAAAA : First issuance protocol step for the user
   RpiUser <<- IoT : /issuanceProtocolStep + firstIssuanceMessage.xml
@@ -25,6 +28,7 @@
 
   note over RpiUser, IoT #FFAAAA : Second issuance protocol step (first step for the user)
   RpiUser <<- IoT : /issuanceProtocolStepUi + uiIssuanceReturn.xml
+  RpiUser o<-[#3366FF]->o IoT : APDU's
   RpiUser -->> IoT : secondIssuanceMessage.xml
 
   note over IoT, Issuer #AAFFAA : Second issuance protocol step (second step for the issuer)
