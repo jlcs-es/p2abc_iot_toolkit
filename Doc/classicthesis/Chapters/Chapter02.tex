@@ -6,6 +6,37 @@ In this chapter we present the two dimensions of this project: the \ac{IoT} deve
 
 \section{Internet of Things}
 
+The development for Internet of Things depends heavily on each target device. We can differentiate two big groups: those with enough processing power to act like an usual computer, and those constrained devices that can't perform arbitrary tasks, sometimes called \textit{embedded}.
+
+
+We can consider in the first category powerful ARM devices like Raspberry Pi 3, with a 64-bit architecture, 4 CPU cores, 1GB of RAM, which can even compile its own binaries, run the \textit{Java Virtual Machine}, etc., working in practice like any other computer. These kind of devices do not present any major difficulty in terms of research.
+
+What we will consider to be a more \textit{pure} \ac{IoT} device will be the constrained ones, where it's not trivial to develop any algorithm and run it successfully.
+
+Very known devices fall into this category, like Arduino, powered by Atmel's AVR ATmega328 8-bit microprocessors, with 32KB of program flash memory, 2KB of SRAM, 16MHz of CPU \citep{ATmega328}. It seems clear that memory and computation power are a very big issue to deal with when developing to this devices.
+
+A step above in power we can find ESP8266, the most famous Espressif's microcontroller, with built-in WiFi antenna, a Tensilica 16bit RISC microcontroller at 80MHz, 50Kb of RAM, and 1MB flash memory \citep{ESP8266}. The possibility of direct WiFi connectivity is its best selling point, putting the \textit{Internet} in \acl{IoT}.
+
+In another level of power we have microcontrollers usually found in routers, but used in many other applications, like the On-Board Units (OBU) used in Vehicular ad hoc networks (VANET). Characteristics in this range vary around a single core 32-bit CPU, at some hundreds MHz, with tens or hundreds MB of RAM and flash memory, which places them near the first \ac{IoT} mentioned category. 
+
+Although one can code in assembly language for these microcontrollers, there exist C compilers, and many frameworks to build firmware binaries: Arduino Core, Contiki, propietary SDKs, Mongoose OS, ThreadX OS (Real-Time OS), OpenWrt, LEDE, etc. Each firmware targets specific ranges of devices, depending on processing power and memory limitations. For example, Arduino and Contiki aim for microcontrollers like Atmel's ATmega and TI's MSP430, but can also be used in ESP8266, a more powerful microcontroller.
+
+In particular OpenWrt and LEDE (a fork of OpenWrt) are based on Linux, with optimized library binaries, providing many packages through \textit{opkg} \citep{opkg}. To compile C/C++ code, build the firmware or packages, a complete build system and cross-compiler toolchain can be installed in a x86 host, and using Makefiles select the target hardware \citep{openwrtbuildsystem}.
+
+Devices running OpenWRT and other Linux distros are in the limit between \ac{IoT} categories, but the need of a cross-compiler marks that they belong to the second category.
+
+%%%
+Starting a big project development for \ac{IoT} aiming the most constrained devices may not be a good idea. The lack of usual operative system tools (like POSIX), I/O, or even threads can make debugging a tedious task. With good programming practices one can start from the top and slowly end at the bottom with reliable code.
+
+For this reason the current \ac{PoC} is developed on LEDE, Linux Embedded Development Environment \citep{ledeproject}, using the Onion Omega2 development board, a Mediatek MT688 microcontroller \citep{MT7688} with a 32-bit MIPS 24KEc CPU at 580MHz, 64MB of RAM and 16MB of flash and built-in WiFi. This development board uses LEDE as its firmware, but its CPU is also listed as compatible with ThreadX OS \citep{THREADX}, a Real-Time Operative System for embedded devices.
+
+The \ac{PoC} will take advantage of the Linux system using files and sockets like in any other Linux desktop distribution, so we can focus on the project itself rather than the specific platform APIs for storage and connectivity.
+
+%%%
+
 
 
 \section{Idemix}
+
+
+
