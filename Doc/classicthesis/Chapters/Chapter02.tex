@@ -38,5 +38,31 @@ The \ac{PoC} will take advantage of the Linux system using files and sockets lik
 
 \section{Idemix}
 
+\paragraph{TODO: Move to motivation}
+
+%%%%
+The problem of Internet privacy has been approached by securing the transmission channel (e.g. SSL/TLS) and the data stored in both ends (strict access policies, local encryption, etc.). In the end, the data exists in two entities, the owner of the data and the service provider. The owner is the most interested in securing his data, and can apply as many measures as he wants, but only on his side of the table. The service provider that stores the user data needs it to provide the service, and a successful attack would reveal many users data, aside from how many measures each one used to protect it. The case of PlayStation Network outage in 2011 \citep{PSN2011} affected 77 million accounts, with suspected credit card fraud, is an example of this kind of attacks.
+
+\hfil
+
+%%%%
+
+Other solutions are based on minimal disclosure. Standards like OAuth offer secure delegated access to the user information and when registering to a new service, the user can give a key to access only the data they want from another trusted service. This lets the service provider to work with the OAuth server, offering the same service as before without knowing as much data.
+
+But this is only minimizes how many services have our data. Our OAuth provider could be attacked, revealing all our data, or our service provider, revealing now less data.
+
+%%%%
+\hfill
+
+IBM proposes a step forward using \aclp{ZKP}:
+
+%%%%
+
+\begin{center}
+	\textit{If your personal data is never collected, it cannot be stolen}.
+\end{center}
+
+\paragraph{TODO: Poner descripción + formal de Idemix, luego P2ABCE, y meter que en P2ABCE había una implementación de sc basada en C}
+
 
 
