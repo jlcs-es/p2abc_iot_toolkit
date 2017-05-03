@@ -3,6 +3,9 @@
 %************************************************
 
 
+% TODO
+% From Idemix To P2ABCE: reasons
+
 \section{Smart card APDU}
 
 To communicate the smart cards and the reader an standardized protocol is specified in ISO/IEC 7816-4 \citep{APDUISO}.
@@ -192,44 +195,41 @@ Nevertheless, the C-API documentation \citep{MultosTechLib} provides rich descri
 
 \section{ABC4Trust Card Lite}
 
-The code from the P2ABCE project for a MULTOS smart card has some good and bad points to have in count:
+P2ABCE provides a smart card reference implementation, ABC4Trust Card Lite \citep{ABC4TCardLite}. It supports device-bound U-Prove and Idemix, and virtually any discrete logarithm based pABC system.
 
-The best asset of this code is that it's written in C aiming to a very constrained device, similar in computational power to typical IoT devices, and very limited memory.
+Version 1.2 is based on MULTOS ML3 cards, with approximately 64KB of EEPROM (non-volatile memory), 1KB of RAM and an Infineon SLE 78 microcontroller, a 16-bit based CPU aimed for chip cards.
+
+The card stores the user's private key $x$ and any \ac{BLOB} that the P2ABCE may need (like user's credentials). Then P2ABCE delegates the cryptographic operations on the smart card, that operates with $x$.
+
+\begin{figure}[bth]
+	\begin{center}
+		\includegraphics[width=\linewidth]{gfx/ABC4TCardLite}
+	\end{center}
+	\caption{ABC4Trust Card Lite}
+	\label{fig:ABC4TCardLite}
+\end{figure}
+
+The cryptographic operations performed by the smartcard are the modular exponentiation and addition that discrete logarithm ZKPs are based on.
+
+\hfil
+
+The code is available from the P2ABCE project and has some good and bad points to have in count:
+
+The best asset of this code is that it's written in C aiming to a very constrained device, similar in computational power to many IoT devices, and very limited memory.
 	
-Some \textit{tricks} include using \textit{union} for data types that will be stored on the same data location, but at different moments (e.g. depending on APDU Command INS byte) or strong use of pointers and \textit{memcpy} calls to copy \textit{structs} with multiple variables as arrays of bytes.
+Some \textit{tricks} in the code include using \textit{union} data types for variables that will be stored on the same data location, but at different moments (e.g. depending on APDU Command INS byte), minimizing this way the use of RAM and making code readability better; or strong use of pointers and \textit{memcpy} calls to copy structures with multiple variables as arrays of bytes.
 
 
-Among the many drawbacks we could mention the awful coding, the dependency on MULTOS framework and bugs. 
+Among the many drawbacks, we could highlight the awful coding, the strong dependency on MULTOS framework and some bugs found. 
 
 The code is structured in two files, \textit{main.h} and \textit{main.c}, with 557 and 5157 lines of code respectively.
 
-The file \textit{main.h} is mostly a reimplementation in assembly MEL of some MULTOS' C-API functions available in \textit{multos.h}.
+The file \textit{main.h} is mostly a reimplementation in assembly MEL of some MULTOS functionality already offered with latest \textit{multos.h}.
 
-The \textit{main.c} consists on near 600 lines of variables and data structures declarations, followed by the \textit{main()} function, a 2635 lines long \textit{switch-case} with practically no comments, to conclude with the implementation of thirty functions called \textit{Subroutines} at the end of the file.
-
-
-This gives an idea of the problematic to maintain or even understand the code. But once one studies MULTOS framework and applies many refactoring techniques to ABC4T Card's code, this becomes the best starting point for the IoT version.
+The \textit{main.c} consists on near 600 lines of variables and data structures declarations, followed by the \textit{main()} function, a 2635 lines long \textit{switch-case} with practically no comments, and to conclude, the implementation of thirty functions called \textit{Subroutines} at the end of the file.
 
 
-
-
-
-\section{IoT smart card code}
-
-After many design decisions in the process to adapt the original ABC4T Card Lite code to pure C over an standard architecture machine, in this section we present the current PoC code, most important decisions, workflow, and future work.
-
-
-
-
-
-
-
-
-
-
-
-
-
+This gives an idea of the problematic to maintain or even understand the code. But once one studies MULTOS framework in deep and applies many refactoring techniques to ABC4T Card's code, this becomes the best starting point for the IoT version.
 
 
 
@@ -246,8 +246,123 @@ Our main goal is to make an IoT device capable to act as an User or Verifier in 
 
 The communication is already solved by the \textit{Internet} capabilities of IoT devices.
 
-Our concern are the XML files exchanged and the cryptographic operations involving secret keys that must remain private to the IoT device.
+Our concern are the data artifacts exchanged as XML and the cryptographic operations involving secret keys that must remain private to the IoT device.
 
 Here is where we look at the P2ABCE architecture more closely, and the concept of smart cards shows a solution for the second issue. Even in the case we were to implement all P2ABCE inside an IoT device, we would have to implement support for software smart cards, to keep the secret inside the IoT device. We will start building the house from the ground, implementing the smart card operations inside the IoT device.
 
-Now that in our design we have the smart card, we need to address the first point, XML data. %TODO
+Now that in our design we have the smart card, we need to address the first point, XML squemas. We understand with \textit{XML squemas} both managing the XML syntax and the whole process to generate a proper answer, that is, basically, the crypto engine that relies on Idemix and the smart card to hold the secret information.
+
+Taking in consideration Idemix is currently provided in Java as a considerably big project, and version 3.0.36 still hasn't got official documentation, the task to port the Idemix crypto engine to IoT could be done in the future, if the chosen devices have enough storage and capacity. And even in that case, we would need to implement P2ABCE User and Verifier's architecture to completely free ourselves from an external P2ABCE machine.
+
+The final port would be so big, many IoT devices would fall out of the requisites to run it, failing in our initial objective.
+
+\hfil
+
+After this analysis of the P2ABCE, we conclude that the mandatory requisite for any IoT device that wants to work with this system and keep its private keys in it, is to implement the smart card functionality, and delegate the rest of the operations on a machine capable of running P2ABCE, until that functionality is implemented for the IoT device. 
+
+
+\hfil
+
+This architecture is not really such an original idea. For example, IPv6 involves managing 128 bits per address and large headers, and many use cases only need IoT devices to communicate inside a private network. That's why many of them use 6LoWPAN to compress packets or use smaller address sizes. To communicate a 6LoWPAN with the Internet, a proxy is needed to transform 6LoWPAN packets to IPv6.
+
+\hfil
+
+
+Therefore, the IoT device now has a \textbf{duality} in its functions, because it is the User that starts any interaction with other systems, and it's also the smart card that P2ABCE delegates for crypto operations. It can also be seen as a \textbf{double delegation}. The IoT device delegates on the external P2ABCE server to manage the protocol, and the P2ABCE server delegates on the IoT, acting now as a smart card, for the cryptography.
+
+
+
+
+\hfil
+
+We find here two challenges: how to delegate from the IoT device to the P2ABCE delegation server, and how to transmit them and the APDUs to the IoT device.
+
+Currently P2ABCE offers various REST web services to run different roles in P2ABCE system: User Service, Issuer Service, Verification Service, etc. An application that integrates P2ABCE can make use of this services in the same machine or implement the functionality using the core components written in Java, the same ones the REST services use. Our PoC machine, the Omega2, can make REST calls easily, but other devices may use \ac{CoAP}, and in that case, the P2ABCE REST services should be rewritten to offer CoAP support. The commands needed to delegate to the P2ABCE delegation server will be the same to operate with the REST services. This way, the first issue is solved.
+
+The transmission of the messages will depend on the specific use case, capabilities and resources available. If the delegation server is connected, for example, through RS-232 serial with the IoT device, and physically inaccessible, in the same way an IoT device on its own would be protected, the communication is simple, and not far away from the Arduino Yun idea of combining two devices, one more powerful but to use only when needed. But if the IoT device and the delegation server are apart, or more than one IoT device delegates to it, then the transmission must be secured. They could use 6LoWPAN to talk to each other (the delegation service could be deployed in the proxy) and then secure communications with existing solutions, like with pre-shared symmetric keys, certificates for authentication and authorization, etc., it depends on each particular deployment.
+
+At the end of the day, this is all about usual security in IoT. Many other studies focus on this matter, so we will assume it can be done, and will focus on what's new, P2ABCE in IoT.
+
+
+\hfil
+
+
+% TODO: imagen con servicios desplegados/actores en cada máquina
+
+
+To sum up, our IoT device will act as User (Prover or Verifier) keeping its secrets in a software smart card. When it starts an interaction with other actor of the P2ABCE system (Issuer, Verifier, etc.), the IoT device will delegate with a remote call (using REST in our PoC) to a P2ABCE delegation server, attaching the XML file and the necessary information for the server to send the APDUs to the software smart card (in our PoC using TCP sockets, giving the IP and listening port).
+
+
+
+\begin{figure}[bth]
+	\begin{center}
+		\includegraphics[width=\linewidth]{gfx/DelegationProving}
+	\end{center}
+	\caption{IoT Delegation in P2ABCE for Proving.}
+	\label{fig:DelegationProving}
+\end{figure}
+
+
+\hfil
+
+
+This simple design keeps the benefit of a 100\% compatible P2ABCE deployment, and the integration of IoT devices to the P2ABCE ecosystem.
+
+In the future, more functionality currently delegated in the P2ABCE server can be implemented in the IoT device, if its resources allow it. For example, in a M2M environment, where an IoT device can act as User and Verifier, the verification consists on sending a Presentation Policy, and verifying the Presentation Token, which implies less logic than generating it as the User. Therefore, the implementation of the Verifier functionality would reduce significantly the need of a delegation server, but as we said, managing complex XML squemas is not something many IoT devices could do.
+
+
+
+
+\section{IoT Smart Card}
+
+After many design decisions in the process to adapt the original ABC4T Card Lite code to pure C, working over a more usual architecture machine, in this section, we present the current \ac{PoC} code, most important decisions, workflow execution, and future work.
+
+First, let's define what a \textit{more usual architecture} is. If we remember the MULTOS section, the framework gives an application a very specific memory layout and entry and output points of execution, that could be seen as a single process execution machine. Many IoT devices work like a computer, with multiple processes or threads, without pre-loaded data on startup (like the APDU MULTOS loads for the application), a non-volatile memory for data and code, maybe a basic file system in this memory, and RAM with the program's stack, heap, data and code.
+
+Our PoC is tested on a Linux system, and we will give instructions on how to adapt each part to work with other typical IoT systems.
+For example, other IoT devices may work like MULTOS and let access variables in non-volatile memory during execution, and in that case, the port should be changed according to these particularities.
+
+
+\hfil
+
+
+\paragraph{Project structure}
+
+% CMake for managing the cross-compilation, libraries, tests, etc.
+
+\hfil
+
+\paragraph{Core smart card}
+
+% TODO: diagrama con los ficheros de common/core
+
+After refactoring the original ABC4Trust Card's code, most of it fell in what we will call the core of the smart card.
+
+All types and variable definitions and the APDU handling is done in this code.
+
+However, the ABC4Trust's code depended on the MULTOS C-API for the input/output of data, modular arithmetic, and even AES128 and SHA256 cryptography.
+
+A characteristic of MULTOS C-API is that every function name starts with \textit{multos}, but as we said, the \textit{main.h} file implemented equivalent functions to some available in \textit{multos.h}. Our first step was to replace the \textit{main.h} functions for the standard ones in the C-API. Then, we implemented, following the C-API documentation, the functions from \textit{multos.h} (only the used ones) changing their names from \textit{multosFoo()} to \textit{mFoo()} for readability and emphasize that they were no longer from MULTOS.
+
+Future changes in the code may refactor it so there's no longer need for the MULTOS framework functions.
+
+
+\paragraph{Interfaces}
+
+To implement MULTOS functions, we needed to use some libraries, so we defined a facade to isolate the implementation of the core smart card from our different options, that could vary depending on the hardware or the system used by the IoT device.
+
+The use of a facade lets us, for example, change the implementation of modular arithmetic with a hardware optimized version, or a future more lightweight library, or our very own software implementation using the same data types that the core uses, minimizing the data transformations needed.
+
+Taking a step forward, we make the core smart card totally independent of any library, only on our interfaces. This means that typical standard C libraries, like \textit{stdlib}, or  
+
+% TODO : diagrama con cada interfaz definida, y otro con cada implementación utilizada (indicar third party src)
+
+
+
+
+\paragraph{External libraries}
+
+
+
+
+% TODO : en el workflow se explican cómo se pasa del main al core, etc
