@@ -325,21 +325,63 @@ For example, other IoT devices may work like MULTOS and let access variables in 
 
 \hfil
 
+\begin{figure}[bth]
+	\begin{center}
+		\includegraphics[width=\linewidth]{gfx/P2ABCE-IoT-bw}
+	\end{center}
+	\caption{P2ABCE-IoT.}
+	\label{fig:P2ABCE-IoT}
+\end{figure}
 
-\paragraph{Project structure}
+\begin{figure}[bth]
+	\begin{center}
+		\includegraphics[width=\linewidth]{gfx/P2ABCE-IoT-color}
+	\end{center}
+	\caption{P2ABCE-IoT-color.}
+	\label{fig:P2ABCE-IoT-color}
+\end{figure}
 
-% CMake for managing the cross-compilation, libraries, tests, etc.
+
+
+\subsection{Code structure}
+
+
+We divide the project in three different sections with the objective of enhancing maintainability, improving future changes, ports, fixes, etc.
+
+The first section is what could be called as the core of the smart card, the second one the interface for the tools the core need and may depend on the platform, and finally third party libraries, that in may be empty if the interfaces implementation doesn't need any.
+
+
+In our PoC we used CMake to manage the project, due to the cross-compilation tools, integration with multiple IDEs and tests.
+
+
+\begin{figure}[bth]
+	\begin{center}
+		\includegraphics[width=\linewidth]{gfx/IoTCScomponents-color}
+	\end{center}
+	\caption{IoT Smart Card Code Structure.}
+	\label{fig:IoTCScomponents-color}
+\end{figure}
+
+\begin{figure}[bth]
+	\begin{center}
+		\includegraphics[width=\linewidth]{gfx/IoTCScomponents-bw}
+	\end{center}
+	\caption{IoT Smart Card Code Structure.}
+	\label{fig:IoTCScomponents-bw}
+\end{figure}
+
 
 \hfil
 
 \paragraph{Core smart card}
 
-% TODO: diagrama con los ficheros de common/core
+The smart card logic lies in this section, the concepts of APDU Commands, what instructions are defined in P2ABCE smart cards and how to process them and generate proper APDU Responses.
+
+Changes in the APDU protocol for P2ABCE must be done here, independently of the target platform.
 
 After refactoring the original ABC4Trust Card's code, most of it fell in what we will call the core of the smart card.
 
 All types and variable definitions and the APDU handling is done in this code.
-
 However, the ABC4Trust's code depended on the MULTOS C-API for the input/output of data, modular arithmetic, and even AES128 and SHA256 cryptography.
 
 A characteristic of MULTOS C-API is that every function name starts with \textit{multos}, but as we said, the \textit{main.h} file implemented equivalent functions to some available in \textit{multos.h}. Our first step was to replace the \textit{main.h} functions for the standard ones in the C-API. Then, we implemented, following the C-API documentation, the functions from \textit{multos.h} (only the used ones) changing their names from \textit{multosFoo()} to \textit{mFoo()} for readability and emphasize that they were no longer from MULTOS.
@@ -353,16 +395,29 @@ To implement MULTOS functions, we needed to use some libraries, so we defined a 
 
 The use of a facade lets us, for example, change the implementation of modular arithmetic with a hardware optimized version, or a future more lightweight library, or our very own software implementation using the same data types that the core uses, minimizing the data transformations needed.
 
-Taking a step forward, we make the core smart card totally independent of any library, only on our interfaces. This means that typical standard C libraries, like \textit{stdlib}, or  
-
-% TODO : diagrama con cada interfaz definida, y otro con cada implementación utilizada (indicar third party src)
+Taking a step forward, we make the core smart card totally independent of any library, only on our interfaces. This means that typical C libraries, like the standard \textit{stdlib.h}, or  \textit{string.h} are also behind the facade, in case some IoT system doesn't support them. The main goal we go after with this decision is that future developers adapting the code to a specific platform need to make no change to the \textit{core smart card}'s code, only to the interfaces implementation.
 
 
 
+\paragraph{External utilities}
 
-\paragraph{External libraries}
+If the IoT system offers well tested libraries that could aid in the interfaces implementation, or we simply found a pure C implementation for the task, these third party libraries belong to this section.
+
+In our PoC, we use two ANSI C libraries, for base64 and JSON, and two shared libraries available in as packages in LEDE, GMPLib and OpenSSL. The last two libraries offer more functionality than we need, hence, it's desired in a production code to implement \textit{Modular Arithmetic} and \textit{Cryptography} interfaces with more lightweight alternatives.
+
+For example, Atmel's ATAES132A \citep{ATAES132A}
+\marginpar{\includegraphics[width=\linewidth]{gfx/atmel} \\ Atmel's cryptography chips.}
+offers a serial chip for secure key storage, AES128 execution and random number generation. Another serial chip like ESP8266 offers WiFi connectivity, typically used with Arduino, and can also perform AES encryption. For random number generation, a technique used with Contiki devices is to read from sensors aleatory data and use it as seed. All these alternatives depend on the target device, but are all valid. The \textit{interfaces} and \textit{external utilities} sections allow for a clean and fast port of the code.
 
 
+\subsection{PoC Workflow}
 
+% PoC BIOSC : TCP sockets, JSON serialization
 
-% TODO : en el workflow se explican cómo se pasa del main al core, etc
+% PoC IoT javax.smartcardio : protocolo de 2 bytes + APDU
+
+% 1. Boot: deserialize sc status
+% 2. Listening: open tcp socket
+% 3. The IoT device delegates on the P2ABCE for some task and sends the IP and Port of the IoT Smart Card.
+% 4. An APDU Command arrives : read in 2 bytes the length of the apdu and 
+
