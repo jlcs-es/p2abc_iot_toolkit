@@ -58,6 +58,9 @@ This way, minimal number of bytes are needed to transmit commands to the smart c
 
 The transmission protocol varies between different types of readers and smart cards (e.g. chip, contact-less), but what is common between every smart card interaction, is the \textit{APDU Command-Response Dialogue}. As long as the smart card has a power supply, it can maintain the dynamic memory in RAM between APDU Commands, what allows to do in two or more commmands complex operations, transmit more bytes than a single APDU can admit, etc.
 
+\hfil
+
+
 
 
 \begin{figure}[bth]
@@ -67,6 +70,13 @@ The transmission protocol varies between different types of readers and smart ca
 	\caption{APDU Command-Response Dialogue}
 	\label{fig:APDUdialog}
 \end{figure}
+
+Originally, the Lc and Le bytes had only 1 byte if present, restricting the payload data to be at most 256 bytes long. An extension to the protocol changed the meaning of a Lc or Le 0x00 byte (256 bytes long payload), so when the byte corresponding to Lc or Le started with 0x00, the next two bytes where the real length.  With this, an Extended APDU lets up to 65536 bytes of data.
+
+The problem here is that not all readers or smart cards support extended APDUs. Originally, to send more than 256 bytes of data, a new APDU Command instruction was defined so the smart card stored the payload in a buffer, until other APDU Command made use of it. To send more data in an APDU Response, the status bytes were set to: SW1=0x61 and SW2 to the remaining bytes to send. Because a smart card can't send APDU Commands, the card terminal then sends a GET RESPONSE, a special APDU Command, with Le set to the number of bytes specified in SW2. Iterating this process, the smart card could send as many bytes as it wanted.
+
+
+
 
 
 
@@ -329,7 +339,7 @@ For example, other IoT devices may work like MULTOS and let access variables in 
 	\begin{center}
 		\includegraphics[width=\linewidth]{gfx/P2ABCE-IoT-bw}
 	\end{center}
-	\caption{P2ABCE-IoT.}
+	\caption{IoT in P2ABCE deployment diagram.}
 	\label{fig:P2ABCE-IoT}
 \end{figure}
 
@@ -337,7 +347,7 @@ For example, other IoT devices may work like MULTOS and let access variables in 
 	\begin{center}
 		\includegraphics[width=\linewidth]{gfx/P2ABCE-IoT-color}
 	\end{center}
-	\caption{P2ABCE-IoT-color.}
+	\caption{IoT in P2ABCE deployment diagram.}
 	\label{fig:P2ABCE-IoT-color}
 \end{figure}
 
@@ -420,4 +430,80 @@ offers a serial chip for secure key storage, AES128 execution and random number 
 % 2. Listening: open tcp socket
 % 3. The IoT device delegates on the P2ABCE for some task and sends the IP and Port of the IoT Smart Card.
 % 4. An APDU Command arrives : read in 2 bytes the length of the apdu and 
+
+
+In a real deployment, we would offer a full library with an API to other processes to delegate on the P2ABC Engine, that automatizes the listening and security, that we presented in the deployment diagram \textbf{TODO:ref-img} as the \textit{P2ABCE IoT Toolkit}.
+
+But to test the IoT smart card, we use the \textit{curl} command for REST delegation calls and the BIOSC (Basic Input Output Smart Card) for APDU communication.
+
+To transmit the APDU messages in our PoC we use a simple protocol, consisting in one first byte for the instruction: receive an APDU Command or close the connection. In the first case, then we read two header bytes with the length of the APDU Command or Response to receive, followed by those APDU bytes. The message is sent over TCP for a reliable transmission (concept of session, packet retransmission, reordering, etc.).
+
+We lack of any security (authentication and authorization) that a real system should implement. It is vital to authenticate the delegation service, to authorize it to make APDU Commands, and the same with the IoT device, to prevent attacks. This belongs to \textit{usual} security, as we already said, and for that reason it's not in the PoC.
+
+\paragraph{P2ABCE REST Delegation}
+
+
+The only P2ABCE Service that needed to be modified was the User Service. We added the REST call
+
+\begin{center}
+	\textit{/initIoTsmartcard/{issuerParametersUid}?host=\&port=}
+\end{center}
+
+where we communicate the P2ABCE server that a IoT Smart Card is accessible via \textit{host} and \textit{port}. Then a new \textit{HardwareSmartcard} object is stored in the P2ABC Engine, but instead of the \textit{javax.smartcardio} Oracle's \textit{CardTerminal} implementation, we use our \textit{IoTsmartcardio} implementation for the \textit{HardwareSmartcard} constructor.
+
+The rest of P2ABCE code is unchanged and will work as if a real smart card was in use. \textit{IoTsmartcardio} implementation will transmit the APDUs through the TCP socket with the format mentioned.
+
+
+\hfil
+
+Our test consists on the tutorial available in P2ABCE's repository. From the Omega2's terminal we run \textit{curl} commands to send REST petitions. For example:
+
+\begin{verbatim}
+$ curl -X POST --header 'Content-Type: text/xml'
+  'http://localhost:9200/user/initIoTsmartcard/http%3A%2F%2
+  Fticketcompany%2FMyFavoriteSoccerTeam%2Fissuance%3Aidemix
+  ?host=192.168.3.1&port=8888'
+\end{verbatim}
+
+The IoT device will only manage XML as data files to exchange between the third party actor and the P2ABCE delegation service, without parsing them.
+
+After a REST call to the User Service, the P2ABC Engine will talk to the IoT smart card process.
+
+\paragraph{APDU transmission with BIOSC}
+
+% TODO : diagrama del software
+
+Before sending the REST message, the Omega2 must be listening in the specified port. At start up, BIOSC reads from a JSON file the status of the smart card (credentials in the BLOB, private keys, PIN and PUK codes, etc.), then opens the TCP socket and listens in a loop.
+
+When the delegation server sends an APDU Command following the simple protocol, BIOSC stores in a byte array the APDU Command bytes and calls the \textit{handle\_APDU} function in \textit{Core Smart Card}.
+
+
+The \textit{APDU\_handler} will parse the APDU bytes and check both CLA and INS bytes. For each possible INS the is a function that must always finish calling either \textit{mExit()} or \textit{output\_large\_data()}.
+
+The \textit{mExit} function is the reimplementation of MULTOS C-API exit functionality, that finishes the application execution returning to the MULTOS OS, that will send the APDU Response bytes to the terminal. This led in the original ABC4Trust Card's code to some tricky situations. Imagine a function that ends with an if-else expression. Many times we save a line writing something like
+
+\begin{verbatim}
+if(condition)
+    return a;
+return b;
+\end{verbatim}
+
+instead of the complete
+
+\begin{verbatim}
+if(condition)
+    return a;
+else
+    return b;
+\end{verbatim}
+
+This is a swift example of what the \textit{multosExit} function led to, because it is called in both the \textit{switch-case} processing the APDU instruction, and the \textit{Subroutines}. For example, the PIN code check was programmed in a way every reason to fail finished the application execution, with different error codes. Another example, checking if a credential is stored, if not, fail and exit inside the \textit{readBlob} subroutine.
+
+In our standard architecture machine, if we call a subroutine, it must end, and return the control to the handling function, and so the \textit{APDU\_handler} must return to the listening loop of BIOSC.
+
+Having all that in count, the \textit{mExit} function is not implemented as the documentation specifies, but only saves the smart card status serializing it in the JSON file again, and once it's saved, parses the APDU Response and sends it to the socket.
+
+The \textit{output\_large\_data} function is a tool used in MULTOS smart cards that don't support Extended APDUs. The APDU Command handler saves in a buffer the data to send, and its size. Then, \textit{output\_large\_data} will manage the buffer expecting future GET RESPONSE commands from the P2ABCE server.
+
+A future change to the project may include support for Extended APDUs, avoiding the use of multiple GET RESPONSE. To do this, the \textit{output\_large\_data} function and the \textit{IoTsmartcardio} implementation of \textit{javax.smartcardio} must support the feature.
 

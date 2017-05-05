@@ -19,6 +19,10 @@ extern "C" {
 /** CODE AND THE SERIALIZATION METHOD.                              */
 /********************************************************************/
 
+
+void save_status();
+
+
 /**
  * Current implementation:
  * Allocates memory and returns the pointer to the
@@ -35,11 +39,10 @@ char* serialize_smartcard_status();
  */
 void deserialize_smartcard_status(unsigned char * ascii);
 
-void serialize_APDU_response(unsigned char* ap_r, int * buf_len);
-
-void deserialize_APDU_command(unsigned char * apdu_bytes, int length);
-
-
+// Using Json Files
+char * json_file;
+void init_smartcard_from_json_file(char * smartcard_status_file);
+void save_smartcard_to_json_file(char * json_file);
 
 
 #ifdef __cplusplus

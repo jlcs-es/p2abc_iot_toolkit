@@ -4,8 +4,7 @@
 #include <smartcard_common/APDU_handler.h>
 #include <smartcard_common/defs_ins.h>
 #include <smartcard_common/subroutines.h>
-#include <smartcard_utils_interface/sc_status_io_util.h>
-
+#include <smartcard_utils_interface/serialize_util.h>
 
 TEST(test_INS_PIN_TRIALS_LEFT, test1) {
     BYTE pin1[] = {0x12, 0x34, 0x56, 0x78};

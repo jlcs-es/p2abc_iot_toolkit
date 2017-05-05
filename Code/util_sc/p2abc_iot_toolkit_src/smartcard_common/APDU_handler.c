@@ -6,9 +6,12 @@
 #include <smartcard_common/subroutines.h>
 #include <smartcard_common/defs_ins.h>
 #include <macrologger.h>
-#include <smartcard_common/abc4T_types.h>
+#include <smartcard_utils_interface/APDU_IO_util.h>
 
-void handle_APDU() {
+void handle_APDU(BYTE *apdu_bytes, int length) {
+
+    // Interpret the bytes
+    parse_APDU_command(apdu_bytes, length);
 
     /* Check class in APDU. */
     if (CLA != ABC_CLA && INS != INS_GET_RESPONSE){

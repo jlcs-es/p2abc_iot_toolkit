@@ -11,9 +11,8 @@ set(UTIL_SC_SRC_FILES
         p2abc_iot_toolkit_src/smartcard_utils_interface/system_funcs.c
         p2abc_iot_toolkit_src/smartcard_utils_interface/crypto_util.c
         p2abc_iot_toolkit_src/smartcard_utils_interface/arithmetic_util.c
-        p2abc_iot_toolkit_src/smartcard_utils_interface/sc_status_io_util.c
         p2abc_iot_toolkit_src/smartcard_utils_interface/serialize_util.c
-        p2abc_iot_toolkit_src/smartcard_utils_interface/mExit_util.c
+        p2abc_iot_toolkit_src/smartcard_utils_interface/APDU_IO_util.c
 
         #p2abc_iot_toolkit_src/smartcard_external_utilities/arithmetic_implementation_v1.c
         #p2abc_iot_toolkit_src/smartcard_external_utilities/mini-gmp.c
@@ -38,14 +37,13 @@ set(UTIL_SC_INCLUDE_FILES
         p2abc_iot_toolkit_include/smartcard_common/global_vars.h
         p2abc_iot_toolkit_include/smartcard_common/subroutines.h
         p2abc_iot_toolkit_include/smartcard_common/APDU_handler.h
-        p2abc_iot_toolkit_include/smartcard_utils_interface/mExit_util.h
+        p2abc_iot_toolkit_include/smartcard_utils_interface/APDU_IO_util.h
 
         p2abc_iot_toolkit_include/smartcard_utils_interface/system_funcs.h
         p2abc_iot_toolkit_include/smartcard_utils_interface/crypto_util.h
         p2abc_iot_toolkit_include/smartcard_utils_interface/arithmetic_util.h
         p2abc_iot_toolkit_include/smartcard_utils_interface/serialize_util.h
-        p2abc_iot_toolkit_include/smartcard_utils_interface/sc_status_io_util.h
-        p2abc_iot_toolkit_include/smartcard_utils_interface/error_codes.h
+        p2abc_iot_toolkit_include/error_codes.h
 
         #p2abc_iot_toolkit_include/smartcard_external_utilities/arithmetic_implementation_v1.h
         #p2abc_iot_toolkit_include/smartcard_external_utilities/mini-gmp.h

@@ -4,7 +4,8 @@
 #include <smartcard_utils_interface/crypto_util.h>
 #include <smartcard_utils_interface/arithmetic_util.h>
 #include <smartcard_common/global_vars.h>
-#include <smartcard_utils_interface/mExit_util.h>
+#include <smartcard_utils_interface/APDU_IO_util.h>
+#include <smartcard_utils_interface/serialize_util.h>
 
 
 void mAESECBDecipher (BYTE *cipherText, BYTE *plainText, BYTE keyLength, BYTE *key){

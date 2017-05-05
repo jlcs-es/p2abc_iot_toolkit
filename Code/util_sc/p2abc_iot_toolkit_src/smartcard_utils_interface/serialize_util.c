@@ -7,10 +7,55 @@
 #include <smartcard_external_utilities/base64.h>
 #include <smartcard_external_utilities/cJSON.h>
 #include <smartcard_utils_interface/system_funcs.h>
-#include <smartcard_utils_interface/error_codes.h>
+#include <error_codes.h>
 #include <string.h>
-#include <macrologger.h>
-#include <smartcard_common/APDU_types.h>
+
+
+void save_status(){
+    save_smartcard_to_json_file(json_file);
+}
+
+
+// USE JSON FILES
+
+void init_smartcard_from_json_file(char * json_file){
+    // 1. Open smartcard file
+    FILE * f = fopen(json_file, "rb");
+    if(f==NULL) exit(ERROR_CANT_OPEN_FILE);
+    // 2. Save to array of char
+    fseek(f, 0, SEEK_END);
+    long fsize = ftell(f);
+    fseek(f, 0, SEEK_SET);  //same as rewind(f);
+    char * string = (char*)malloc(fsize + 1);
+    if(string==NULL) exit(ERROR_CANT_MALLOC);
+    if(fread(string, 1, fsize, f) < fsize) exit(ERROR_CANT_READ_FILE);
+    string[fsize] = 0;
+    // 3. Close smartcard file
+    fclose(f);
+    // 4. Call serialize_util.h deserialize_smartcart_status
+    deserialize_smartcard_status(string);
+    // 5. Free allocated string
+    free(string);
+}
+
+void save_smartcard_to_json_file(char * json_file){
+    //TODO secure write : simulate atomic writing
+    // 1. Open smartcard file
+    FILE * f = fopen(json_file, "w+");
+    if(f==NULL) exit(ERROR_CANT_OPEN_FILE);
+    // 2. Save to array of char
+    char * json_string = serialize_smartcard_status();
+    if(json_string==NULL) exit(ERROR_CANT_MALLOC);
+    fputs(json_string, f);
+    // 3. Close smartcard file
+    fclose(f);
+    // 4. Free allocated string
+    free(json_string);
+}
+
+
+
+// AUX FUNCTIONS FOR JSON SERIALIZATION
 
 void serialize_BYTE(cJSON * object, char * name, BYTE value){
     char temp_hex_string[3];
@@ -58,6 +103,12 @@ void deserialize_BYTE_ARRAY(cJSON * object, char * name, BYTE * val, WORD exp_le
         free(temp_unbase64);
     }
 }
+
+
+
+
+
+// INTERFACE IMPLEMENTATION
 
 
 char* serialize_smartcard_status(){
@@ -524,138 +575,3 @@ void deserialize_smartcard_status(unsigned char * ascii) {
 
 
 
-// TODO dont use
-void serialize_APDU_response(unsigned char* ap_r, int * buf_len){
-    *buf_len = 2 + La; // APDU Response Length
-    mem_cpy(ap_r, apdu_data.dataout, La);
-    unsigned char * p = ap_r;
-    p += La;
-    *p++ = SW1;
-    *p = SW2;
-}
-
-void deserialize_APDU_command(BYTE * apdu_bytes, int length) {
-
-    // FIXME en vez de exit, deberían enviar una APDUResponse de APDUCommand mal formada (?) ~ OpenSC no lo hace ~
-
-    LOG_BYTES(apdu_bytes, length, "The %d APDU bytes to interpret", length);
-
-    if (length < 4) {
-        LOG_ERROR("APDU too short. length = %d", length);
-        exit(ERROR_APDU_TOO_SHORT);
-    }
-
-    Le = 0;
-    La = 0;
-    Lc = 0;
-    SW1 = 0x90;
-    SW2 = 0x00;
-
-    BYTE *ab = apdu_bytes;
-    CLA = *ab++;
-    INS = *ab++;
-    P1 = *ab++;
-    P2 = *ab++;
-    length -= 4;
-
-    if (!length) {
-        // Case 1
-        APDU_Case = 1;
-        return;
-    }
-
-    if (*ab == 0 && length >= 3) {
-
-        // EXTENDED APDU
-        LOG_DEBUG("Extended APDU");
-
-        ab++;
-        if (length == 3) {
-            Le = (*ab++)<<8;
-            Le += *ab++;
-//            if (Le == 0)
-//                Le = 0xffff+1;
-// Convert Le to DWORD or like now, we use short responses and GET RESPONSE trick.
-            length -= 3;
-            APDU_Case = 2;
-        }
-        else {
-            Lc = (*ab++)<<8;
-            Lc += *ab++;
-            length -= 3;
-            if (length < Lc) {
-                LOG_ERROR("APDU too short. length = %d", length);
-                exit(ERROR_APDU_TOO_SHORT);
-            }
-            // Copy Lc bytes of data
-            mem_cpy(apdu_data.buffer, ab, Lc);
-
-            length -= Lc;
-            ab += Lc;
-
-            if (!length) {
-                // Case 3
-                APDU_Case = 3;
-            } else {
-                // Case 4
-                APDU_Case = 4;
-
-                /* at this point the apdu has a Lc, so Le is on 2 bytes */
-                if (length < 2) {
-                    LOG_ERROR("APDU too short (need 2 more bytes). length = %d", length);
-                    exit(ERROR_APDU_TOO_LONG);
-                }
-                Le = (*ab++)<<8;
-                Le += *ab++;
-//                if (Le == 0)
-//                    Le = 0xffff+1;
-                length -= 2;
-            }
-        }
-    } else {
-
-        // SHORT APDU
-        LOG_DEBUG("Short APDU");
-
-        if (length == 1) {
-            // Case 2
-            APDU_Case = 2;
-            Le = *ab++;
-//            if (Le == 0)
-//                Le = 0xff+1;
-            length--;
-        } else {
-            Lc = *ab++;
-            length--;
-            if (length < Lc) {
-                LOG_ERROR("APDU too short. length = %d", length);
-                exit(ERROR_APDU_TOO_SHORT);
-            }
-            // Copy Lc bytes of data
-            mem_cpy(apdu_data.buffer, ab, Lc);
-
-            length -= Lc;
-            ab += Lc;
-
-            if (!length) {
-                // Case 3
-                APDU_Case = 3;
-            } else {
-                // Case 4
-                APDU_Case = 4;
-                Le = *ab++;
-//                if (Le == 0)
-//                    Le = 0xff+1;
-                length--;
-            }
-
-        }
-
-    }
-
-    if(length) {
-        LOG_ERROR("APDU too long. length = %d", length);
-        exit(ERROR_APDU_TOO_LONG);
-    }
-
-}

@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 
-void handle_APDU();
+void handle_APDU(BYTE *apdu_bytes, int length);
 
 #ifdef TEST_PATRAS_MODE       //TODO: remove if not necessary
 void handle_INS_GET_KX_AND_DEVICE_KEY(void);

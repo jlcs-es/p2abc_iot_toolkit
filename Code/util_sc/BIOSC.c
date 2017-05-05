@@ -11,18 +11,17 @@
 /********************************************************************/
 
 
-#include <smartcard_utils_interface/sc_status_io_util.h>
 #include <smartcard_common/APDU_handler.h>
 #include <smartcard_common/global_vars.h>
 #include <smartcard_utils_interface/serialize_util.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/socket.h>
-#include <p2abc_iot_toolkit_include/smartcard_utils_interface/error_codes.h>
+#include <p2abc_iot_toolkit_include/error_codes.h>
 #include <netinet/in.h>
 #include <unistd.h>
 #include <macrologger.h>
-#include <p2abc_iot_toolkit_include/smartcard_common/abc4T_types.h>
+#include <smartcard_utils_interface/APDU_IO_util.h>
 #include <p2abc_iot_toolkit_include/smartcard_utils_interface/crypto_util.h>
 #include <p2abc_iot_toolkit_include/smartcard_common/subroutines.h>
 
@@ -49,10 +48,9 @@ void receive_commands(){
             // Read APDU
             if(read(connfd, apdu_bytes, apdu_len)<=0)
                 return;
-            // Interpret the bytes
-            deserialize_APDU_command(apdu_bytes, apdu_len);
+
             // Handle the APDU Command
-            handle_APDU();
+            handle_APDU(apdu_bytes, apdu_len);
         }
     }
     LOG_DEBUG("Finish connection with FF command");
