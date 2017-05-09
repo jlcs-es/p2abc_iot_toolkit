@@ -1,0 +1,251 @@
+2017-05-09 13:31:15.434:INFO::Logging to STDERR via org.mortbay.log.StdErrLog
+2017-05-09 13:31:15.699:INFO::jetty-6.1.x
+2017-05-09 13:31:16.076:INFO::Extract file:/home/pi/tutorial/tmp/user/selfcontained-user-service.war to /tmp/Jetty_0_0_0_0_9200_selfcontained.user.service.war____.j9pqf1/webapp
+May 09, 2017 1:31:24 PM com.sun.jersey.api.core.PackagesResourceConfig init
+INFO: Scanning for root resource and provider classes in the packages:
+  eu.abc4trust.services
+May 09, 2017 1:31:25 PM com.sun.jersey.api.core.ScanningResourceConfig logClasses
+INFO: Root resource classes found:
+  class eu.abc4trust.services.UserService
+May 09, 2017 1:31:25 PM com.sun.jersey.api.core.ScanningResourceConfig init
+INFO: No provider classes found.
+May 09, 2017 1:31:25 PM com.sun.jersey.server.impl.application.WebApplicationImpl _initiate
+INFO: Initiating Jersey application, version 'Jersey: 1.10 11/02/2011 03:53 PM'
+2017-05-09 13:31:33.655:INFO::Started SocketConnector@0.0.0.0:9200
+May 09, 2017 1:32:38 PM eu.abc4trust.services.UserService storeCredentialSpecification
+INFO: UserService - storeCredentialSpecification 
+May 09, 2017 1:32:39 PM eu.abc4trust.services.UserService storeCredentialSpecification
+INFO: Time for /storeCredentialSpecification/ : 1314350139 ns 
+May 09, 2017 1:32:53 PM eu.abc4trust.services.UserService storeSystemParameters
+INFO: UserService - storeSystemParameters 
+May 09, 2017 1:32:53 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserService loading...
+May 09, 2017 1:32:53 PM eu.abc4trust.services.UserService initializeHelper
+INFO: Initializing UserHelper...
+May 09, 2017 1:32:53 PM eu.abc4trust.ri.servicehelper.user.UserHelper initialializeInstanceField
+INFO: UserHelper.initInstance
+May 09, 2017 1:32:53 PM eu.abc4trust.ri.servicehelper.user.UserHelper <init>
+INFO: UserHelper : : create instance IDEMIX : abce-services/target/user_storage/
+*** Using mock identity selection *** DO NOT USE IN PRODUCTION ***
+May 09, 2017 1:32:55 PM eu.abc4trust.ri.servicehelper.user.UserHelper initInstanceForService
+INFO: UserHelper.initInstance : DONE
+May 09, 2017 1:32:55 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserHelper is initialized
+May 09, 2017 1:32:55 PM eu.abc4trust.services.UserService storeSystemParameters
+INFO: Time for /storeSystemParameters/ : 2210434426 ns 
+May 09, 2017 1:33:52 PM eu.abc4trust.services.UserService storeRevocationAuthorityParameters
+INFO: UserService - storeRevocationAuthorityParameters: "eu.abc4trust.xml.RevocationAuthorityParameters@1bb5d5b"
+May 09, 2017 1:33:52 PM eu.abc4trust.services.UserService storeRevocationAuthorityParameters
+INFO: Time for /storeRevocationAuthorityParameters/ : 35910640 ns 
+May 09, 2017 1:37:53 PM eu.abc4trust.services.UserService storeInspectorPublicKey
+INFO: UserService - storeInspectorPublicKey 
+May 09, 2017 1:37:53 PM eu.abc4trust.services.UserService storeInspectorPublicKey
+INFO: UserService - storeInspectorPublicKey - inspectorPublicKeyUid: http://ticketcompany/inspection, http://ticketcompany/inspection
+May 09, 2017 1:37:53 PM eu.abc4trust.services.UserService storeInspectorPublicKey
+INFO: UserService - storeInspectorPublicKey - done 
+May 09, 2017 1:37:53 PM eu.abc4trust.services.UserService storeInspectorPublicKey
+INFO: Time for /storeInspectorPublicKey/ : 33627742 ns 
+May 09, 2017 1:38:08 PM eu.abc4trust.services.UserService storeIssuerParameters
+INFO: UserService - storeIssuerParameters 
+May 09, 2017 1:38:08 PM eu.abc4trust.services.UserService storeIssuerParameters
+INFO: UserService - storeIssuerParameters - issuerParametersUid: http://ticketcompany/MyFavoriteSoccerTeam/issuance:idemix, http://ticketcompany/MyFavoriteSoccerTeam/issuance:idemix
+May 09, 2017 1:38:08 PM eu.abc4trust.services.UserService storeIssuerParameters
+INFO: UserService - storeIssuerParameters - done 
+May 09, 2017 1:38:08 PM eu.abc4trust.services.UserService storeIssuerParameters
+INFO: Time for /storeIssuerParameters/ : 31775987 ns 
+May 09, 2017 1:38:12 PM eu.abc4trust.services.UserService createSmartcard
+INFO: UserService - getCredentialDescription 
+May 09, 2017 1:38:12 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserService loading...
+May 09, 2017 1:38:12 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserHelper is initialized
+SoftwareSmartcard is now init'ed eu.abc4trust.smartcard.SoftwareSmartcard@7c8fc8
+May 09, 2017 1:38:15 PM eu.abc4trust.services.UserService createSmartcard
+INFO: Time for /createSmartcard/ : 2337570489 ns 
+May 09, 2017 1:38:18 PM eu.abc4trust.services.UserService extractIssuanceMessage
+INFO: Time for /extractIssuanceMessage/ : 124270 ns 
+May 09, 2017 1:38:19 PM eu.abc4trust.services.UserService issuanceProtocolStep
+INFO: UserService - issuanceProtocolStep - IssuanceMessage
+May 09, 2017 1:38:19 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserService loading...
+May 09, 2017 1:38:19 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserHelper is initialized
+Smartcards: secret://software-smartcard-9792750
+May 09, 2017 1:38:21 PM eu.abc4trust.services.UserService issuanceProtocolStep
+INFO: Time for /issuanceProtocolStep/ : 2396584271 ns 
+May 09, 2017 1:38:28 PM eu.abc4trust.services.UserService issuanceProtocolStep
+INFO: UserService - issuanceProtocolStep - UiIssuanceReturn
+May 09, 2017 1:38:28 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserService loading...
+May 09, 2017 1:38:28 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserHelper is initialized
+Smartcards: secret://software-smartcard-9792750
+Pseudonym 2017.05.09 13:38:29
+Ψευδώνυμο 2017.05.09 13:38:29
+Pseudonym 2017.05.09 13:38:29
+sc uri: secret://software-smartcard-9792750
+ credUri: device-cred-907b2d80-e1fb-4e19-a6e0-f2625495154f
+May 09, 2017 1:38:33 PM eu.abc4trust.smartcard.SoftwareSmartcard credentialExists
+INFO: Trying to fetch device-cred-907b2d80-e1fb-4e19-a6e0-f2625495154f
+May 09, 2017 1:38:34 PM eu.abc4trust.services.UserService issuanceProtocolStep
+INFO: Time for /issuanceProtocolStepUi/ : 6473794110 ns 
+May 09, 2017 1:38:49 PM eu.abc4trust.services.UserService extractIssuanceMessage
+INFO: Time for /extractIssuanceMessage/ : 12343 ns 
+May 09, 2017 1:38:49 PM eu.abc4trust.services.UserService issuanceProtocolStep
+INFO: UserService - issuanceProtocolStep - IssuanceMessage
+May 09, 2017 1:38:49 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserService loading...
+May 09, 2017 1:38:49 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserHelper is initialized
+Smartcards: secret://software-smartcard-9792750
+May 09, 2017 1:38:51 PM eu.abc4trust.abce.internal.user.credentialManager.ImageCacheImpl storeImage
+WARNING: storeImage - failed : http://MyFavoriteSoccerTeam/tickets/vip/img - exception : java.net.UnknownHostException: MyFavoriteSoccerTeam
+May 09, 2017 1:38:51 PM eu.abc4trust.services.UserService issuanceProtocolStep
+INFO: Time for /issuanceProtocolStep/ : 1742535314 ns 
+May 09, 2017 1:38:57 PM eu.abc4trust.services.UserService createPresentationToken
+INFO: UserService - createPresentationToken 
+May 09, 2017 1:38:57 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserService loading...
+May 09, 2017 1:38:57 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserHelper is initialized
+Smartcards: secret://software-smartcard-9792750
+May 09, 2017 1:38:57 PM eu.abc4trust.smartcard.SoftwareSmartcard getCredential
+INFO: getting this uri: device-cred-907b2d80-e1fb-4e19-a6e0-f2625495154f_1
+May 09, 2017 1:38:57 PM eu.abc4trust.smartcard.SoftwareSmartcard getCredential
+INFO: getting this uri: device-cred-907b2d80-e1fb-4e19-a6e0-f2625495154f_2
+May 09, 2017 1:38:57 PM eu.abc4trust.smartcard.SoftwareSmartcard getCredential
+INFO: getting this uri: device-cred-907b2d80-e1fb-4e19-a6e0-f2625495154f_3
+May 09, 2017 1:38:57 PM eu.abc4trust.smartcard.SoftwareSmartcard getCredential
+INFO: getting this uri: device-cred-907b2d80-e1fb-4e19-a6e0-f2625495154f_4
+May 09, 2017 1:38:57 PM eu.abc4trust.smartcard.SoftwareSmartcard getCredential
+INFO: getting this uri: device-cred-907b2d80-e1fb-4e19-a6e0-f2625495154f_5
+May 09, 2017 1:38:57 PM eu.abc4trust.smartcard.SoftwareSmartcard getCredential
+INFO: getting this uri: device-cred-907b2d80-e1fb-4e19-a6e0-f2625495154f_1
+May 09, 2017 1:38:57 PM eu.abc4trust.smartcard.SoftwareSmartcard getCredential
+INFO: getting this uri: device-cred-907b2d80-e1fb-4e19-a6e0-f2625495154f_2
+May 09, 2017 1:38:57 PM eu.abc4trust.smartcard.SoftwareSmartcard getCredential
+INFO: getting this uri: device-cred-907b2d80-e1fb-4e19-a6e0-f2625495154f_3
+May 09, 2017 1:38:57 PM eu.abc4trust.smartcard.SoftwareSmartcard getCredential
+INFO: getting this uri: device-cred-907b2d80-e1fb-4e19-a6e0-f2625495154f_4
+May 09, 2017 1:38:57 PM eu.abc4trust.smartcard.SoftwareSmartcard getCredential
+INFO: getting this uri: device-cred-907b2d80-e1fb-4e19-a6e0-f2625495154f_5
+May 09, 2017 1:38:59 PM eu.abc4trust.services.UserService createPresentationToken
+INFO: Time for /createPresentationToken/ : 2245429380 ns 
+May 09, 2017 1:39:03 PM eu.abc4trust.services.UserService createPresentationTokenFromUi
+INFO: UserService - createPresentationTokenUi 
+May 09, 2017 1:39:03 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserService loading...
+May 09, 2017 1:39:03 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserHelper is initialized
+Smartcards: secret://software-smartcard-9792750
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<abc:IssuerParameters xmlns:abc="http://abc4trust.eu/wp2/abcschemav1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:idmx="http://zurich.ibm.com" xmlns:xs="http://www.w3.org/2001/XMLSchema" Version="3.0.0">
+    <abc:ParametersUID>http://ticketcompany/MyFavoriteSoccerTeam/issuance:idemix</abc:ParametersUID>
+    <abc:FriendlyIssuerDescription lang="en">Issuer parameters for MyFavoriteSoccerTeam</abc:FriendlyIssuerDescription>
+    <abc:FriendlyIssuerDescription lang="da">Issuer parameters for MyFavoriteSoccerTeam</abc:FriendlyIssuerDescription>
+    <abc:AlgorithmID>urn:idmx:3.0.0:block:sig:cl</abc:AlgorithmID>
+    <abc:SystemParametersUID>cafc24cd-ebdf-43ea-83a8-3410b702bdcf</abc:SystemParametersUID>
+    <abc:MaximalNumberOfAttributes>20</abc:MaximalNumberOfAttributes>
+    <abc:HashAlgorithm>sha-256</abc:HashAlgorithm>
+    <abc:CryptoParams>
+        <abc:PublicKey Version="3.0.0" Technology="urn:idmx:3.0.0:block:sig:cl" SystemParametersId="cafc24cd-ebdf-43ea-83a8-3410b702bdcf" PublicKeyId="http://ticketcompany/MyFavoriteSoccerTeam/issuance:idemix:2db5120f-cc60-4646-886c-c7cf136f6a5e">
+            <abc:Parameter xsi:type="abc:IntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:maxAtts">
+                <abc:Value>20</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:UriParameter" Name="urn:idmx:3.0.0:issuer:publicKey:revauth">
+                <abc:Value>http://ticketcompany/revocation</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:0">
+                <abc:Value>44064477771223490871417485019402494209395972757488014832112238446293693393154083235698298881888773862743733421219082010822743010335521361918645390328125347487329415916320407256154636264803177128522760036927035948814168729406184105251747327982221005787126299846257497760768508136054284071427137500217942005811</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:1">
+                <abc:Value>2562139781940482889641519855577912605141016899825691175037415194129564401946761022752189545452799362590031390541540958111137239500318559936263293275556469151450959050750121643828178045975888963597050958329123224676232538070867094119502878097773911281398927250860775529569683004831069316626982164229203587298</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:2">
+                <abc:Value>13959876835843299600048915227101173963744864886790705203176217283972755373989071054728316465699658676874766156578632215370492284017064783554218842877516065643771273240299008989863152487061657612760917619012550585733721365978217769303156045304916665841998866063252999315660680285922963356654596957961503405896</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:3">
+                <abc:Value>27125872735330696425589613205948667206202355441405306305073766553130087201224775745996696752387156693479824408446314011113673083285355301924487013896121533552147522775587760270468435084141675631440468094191074385609812419168304598743898727760250300468213436345789787488314870239788318991347708615170729503641</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:4">
+                <abc:Value>29799565330485083520144119088641344432282115627817092361334943493036858114924987239037285787215432604850768566567601472491809063495503802052041459603145123140745262407256244015335575600684184573730981820411250823207508263506470322897813111547204968744522538521102767348051238645520371921885420089392598926591</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:5">
+                <abc:Value>8862763915540614452767804661682800994517920033867783513179159441907349592422266602485426737318008436545661795940497123544385469700840294969698290308571416540867089503647834867091750085940577430242171060674695689223685968428680472200440928888226106544759580356693923137974491352486266666396004012830731057592</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:6">
+                <abc:Value>44916032151303084703897188044470387745771436613973006025598630525315245909409946598632156104443789353668022732281371960368267090555236938987778658433085015575051107651021656527227728748176705144390837728849124725480338920707053987344376836476298462059876723863677436026257104869188111401224605997835288956334</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:7">
+                <abc:Value>21487041615324015479722909070927179939915746665850456913184462377305485769435499112967644329606787962903548526770404931088882212081556935087371581601262115882490920252527317155683336522044033978229586111645852689851460515717038572015030820621352036021072233998680636663369358539765744635287817600945829272213</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:8">
+                <abc:Value>4562254313942352465330445924497633317208167104367959507552294226995425831048611644408746632036438189569431700695968503523871024467646257692987186001115861777640024552512674419164339852372578743082878092331126971445568734032888963262854540080757918693067372501838723972590786918885602952500044859491897965086</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:9">
+                <abc:Value>5817742645657040817836231029024508810352195075367130284443394421457653125393575875925057879760718918402420674404508026092874048224335350992917109345795030845444774273227038450080949758344434928918512529460223498123059099510450288625652570838923938431352783013515719259141881947244553377731733721315669636870</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:10">
+                <abc:Value>51770880039262381934457914150121724142985783543499850215368269502857010587930515747512276571311634943290383999723173026767258242477407284054408002936083628675312070668159396218051053990304901480033859137253844703981626061107823245840739365580719056664282435129409412127019598432796783464306479028444589890514</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:11">
+                <abc:Value>4599957061646265588740248398299233793025502210068363502151696566880943096504026166187032511812628363957265603529254802622055768930599335561887622182404500984612559693687828350283254405100381221848923605381366770894332436667130996758466777834371911234269503884822117007070612807063116884689456063198166179202</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:12">
+                <abc:Value>52196579742582110814623908049923263385603938931525839627004863555272701567568615259986004264439421496784162171262054088395789726097168748328902185091011846968971480504791481641709594861415415040760580672361495256331893845238372424257850147444471459849803837031138166782965645716622492339774367416783819564136</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:13">
+                <abc:Value>21235311052695334185768419435948149889379214168235895164601752930881283502946936909699946021600782166097974923848688984373221819475095854161022703682727940783800540893424944165844667354929131356945793779813470156547592624781372844551079263974496906780588823234441351294978640422849565379903089451759124648017</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:14">
+                <abc:Value>43504123741326755343291869727767220600297371380058453180612961699514057631390397047057148373881110850692521515749646894108452581664370279378827892073137373214151916063879938661470265021313552106026877622994492997751795437857708105291279004194824779110170795832564169205452022815402383382867540943142325701540</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:15">
+                <abc:Value>20625306843643076248050988199108218054258648442218074326670515507227690371415042869865436110437442531562586446044811385813401617840909641306759009157198178829762605867881132439084688023733731393443601040847056474864896308370881718457554890619726423120759871015002957867847511765755288198520544077293810790302</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:16">
+                <abc:Value>30967634321402725324623463511367213394270101356446647981136019570423591133825802880326211370155879603758098709933161712389538332685201925515152696185018461246236440081463769976582595873119865418993187918311032436607687864343469834083734009470849513223261424811976685056824275389624404686274057678397102207949</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:17">
+                <abc:Value>14647446375545026950024075110822503409222749030095566906960053220883449713197216932668908035343454238284091487049295840476615019739166295448158915490490319415784962203447009135341232100764160172859477266551937736872688081823493931272755064130576251369025023157483517745574279127386478913501580062778712376923</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:18">
+                <abc:Value>300987131211476180643647111906506771270193578701821397317491735732849118923277296810365389021309800826937746453478229144301262914234723098153843196344576145414321789208886595839952395721957784344574252156870456582022214674743047941599162738823359849960894718783319424713885944363140391488384571643387776837</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:19">
+                <abc:Value>47768709746253326845784602935906262876467391968446108048674545757398359458396828985645753721408674409527375663860022191199950092371707484484576963622638131627624755296525295833333863116864987854572650055392592554026863905560790631944849012101144925135938969005428212298105343270700297983918373509022487016666</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:t">
+                <abc:Value>8423036515083219038004401381963559336555635962320167121944904295154052549303995118812238398335230497400290303191694974216075480926032953609797592313945598895735781674432542427301848843962855727392491746517222256671114206733313709880343695818844567132361102014508722143024059025341564282732284109637007116859</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:d">
+                <abc:Value>2991774923566913215409828634148678354196521686278739960675361674406615842419123078940712606509035075456710788868290947671008740085796816042795700496348277122570816305899674152348594604239020034571896751738718618354838163107836012512232377219192031372928354200620288771075400137753825157936125931734382659983</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:rsaModulus">
+                <abc:Value>116182840012761719362052917071077642007353748137435538610493533645898353528879292379847828352951994411473629468505192304968421409018792356934503468053791494507469183892146080754200417148986974316045832928539450291327996658338742463575573143963856773534193799608399903172164424883633848858612786857786243196517</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:Z">
+                <abc:Value>45413387717688925763436717284355114902627343793001090594459343320010833311788341363062734258723734965044319086292834603754933668246441443733372844565191255416181303500808087615212647040777363031825899269868201846689852127462384161179809657510166849358576777753195075668753389111087555157929175388798721917026</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:S">
+                <abc:Value>54857421521932867875041243084599130551658660912330211322522082706332515347005180478539731890940539089670052391661094067041641396700937918937277209138947360015293190785994014404944403505775948146973503396504186659935931754700890008967817135471563348904372437528818847072067861768113014081154875811151364351058</abc:Value>
+            </abc:Parameter>
+        </abc:PublicKey>
+    </abc:CryptoParams>
+    <abc:RevocationParametersUID>http://ticketcompany/revocation</abc:RevocationParametersUID>
+</abc:IssuerParameters>
+
+May 09, 2017 1:39:03 PM eu.abc4trust.smartcard.SoftwareSmartcard getCredential
+INFO: getting this uri: device-cred-907b2d80-e1fb-4e19-a6e0-f2625495154f_1
+May 09, 2017 1:39:03 PM eu.abc4trust.smartcard.SoftwareSmartcard getCredential
+INFO: getting this uri: device-cred-907b2d80-e1fb-4e19-a6e0-f2625495154f_2
+May 09, 2017 1:39:03 PM eu.abc4trust.smartcard.SoftwareSmartcard getCredential
+INFO: getting this uri: device-cred-907b2d80-e1fb-4e19-a6e0-f2625495154f_3
+May 09, 2017 1:39:03 PM eu.abc4trust.smartcard.SoftwareSmartcard getCredential
+INFO: getting this uri: device-cred-907b2d80-e1fb-4e19-a6e0-f2625495154f_4
+May 09, 2017 1:39:03 PM eu.abc4trust.smartcard.SoftwareSmartcard getCredential
+INFO: getting this uri: device-cred-907b2d80-e1fb-4e19-a6e0-f2625495154f_5
+AssociateIssuer called.. What to do now?
+May 09, 2017 1:39:16 PM eu.abc4trust.services.UserService createPresentationTokenFromUi
+INFO: Time for /createPresentationTokenUi/ : 13162554802 ns 
+

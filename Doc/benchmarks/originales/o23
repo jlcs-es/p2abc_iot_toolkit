@@ -1,0 +1,629 @@
+2017-05-09 15:53:45.662:INFO::Logging to STDERR via org.mortbay.log.StdErrLog
+2017-05-09 15:53:45.926:INFO::jetty-6.1.x
+2017-05-09 15:53:46.365:INFO::Extract file:/home/pi/tutorial/tmp/user/selfcontained-user-service.war to /tmp/Jetty_0_0_0_0_9200_selfcontained.user.service.war____.j9pqf1/webapp
+May 09, 2017 3:54:23 PM com.sun.jersey.api.core.PackagesResourceConfig init
+INFO: Scanning for root resource and provider classes in the packages:
+  eu.abc4trust.services
+May 09, 2017 3:54:23 PM com.sun.jersey.api.core.ScanningResourceConfig logClasses
+INFO: Root resource classes found:
+  class eu.abc4trust.services.UserService
+May 09, 2017 3:54:23 PM com.sun.jersey.api.core.ScanningResourceConfig init
+INFO: No provider classes found.
+May 09, 2017 3:54:24 PM com.sun.jersey.server.impl.application.WebApplicationImpl _initiate
+INFO: Initiating Jersey application, version 'Jersey: 1.10 11/02/2011 03:53 PM'
+2017-05-09 15:54:33.991:INFO::Started SocketConnector@0.0.0.0:9200
+May 09, 2017 3:55:16 PM eu.abc4trust.services.UserService storeCredentialSpecification
+INFO: UserService - storeCredentialSpecification 
+May 09, 2017 3:55:18 PM eu.abc4trust.services.UserService storeCredentialSpecification
+INFO: Time for /storeCredentialSpecification/ : 1493499695 ns 
+May 09, 2017 3:55:31 PM eu.abc4trust.services.UserService storeSystemParameters
+INFO: UserService - storeSystemParameters 
+May 09, 2017 3:55:31 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserService loading...
+May 09, 2017 3:55:31 PM eu.abc4trust.services.UserService initializeHelper
+INFO: Initializing UserHelper...
+May 09, 2017 3:55:31 PM eu.abc4trust.ri.servicehelper.user.UserHelper initialializeInstanceField
+INFO: UserHelper.initInstance
+May 09, 2017 3:55:31 PM eu.abc4trust.ri.servicehelper.user.UserHelper <init>
+INFO: UserHelper : : create instance IDEMIX : abce-services/target/user_storage/
+*** Using mock identity selection *** DO NOT USE IN PRODUCTION ***
+May 09, 2017 3:55:33 PM eu.abc4trust.ri.servicehelper.user.UserHelper initInstanceForService
+INFO: UserHelper.initInstance : DONE
+May 09, 2017 3:55:33 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserHelper is initialized
+May 09, 2017 3:55:33 PM eu.abc4trust.services.UserService storeSystemParameters
+INFO: Time for /storeSystemParameters/ : 2202809826 ns 
+May 09, 2017 3:55:52 PM eu.abc4trust.services.UserService storeRevocationAuthorityParameters
+INFO: UserService - storeRevocationAuthorityParameters: "eu.abc4trust.xml.RevocationAuthorityParameters@1bb5d5b"
+May 09, 2017 3:55:52 PM eu.abc4trust.services.UserService storeRevocationAuthorityParameters
+INFO: Time for /storeRevocationAuthorityParameters/ : 34378050 ns 
+May 09, 2017 3:57:59 PM eu.abc4trust.services.UserService storeInspectorPublicKey
+INFO: UserService - storeInspectorPublicKey 
+May 09, 2017 3:57:59 PM eu.abc4trust.services.UserService storeInspectorPublicKey
+INFO: UserService - storeInspectorPublicKey - inspectorPublicKeyUid: http://ticketcompany/inspection, http://ticketcompany/inspection
+May 09, 2017 3:57:59 PM eu.abc4trust.services.UserService storeInspectorPublicKey
+INFO: UserService - storeInspectorPublicKey - done 
+May 09, 2017 3:57:59 PM eu.abc4trust.services.UserService storeInspectorPublicKey
+INFO: Time for /storeInspectorPublicKey/ : 34337738 ns 
+May 09, 2017 3:58:24 PM eu.abc4trust.services.UserService storeIssuerParameters
+INFO: UserService - storeIssuerParameters 
+May 09, 2017 3:58:24 PM eu.abc4trust.services.UserService storeIssuerParameters
+INFO: UserService - storeIssuerParameters - issuerParametersUid: http://ticketcompany/MyFavoriteSoccerTeam/issuance:idemix, http://ticketcompany/MyFavoriteSoccerTeam/issuance:idemix
+May 09, 2017 3:58:24 PM eu.abc4trust.services.UserService storeIssuerParameters
+INFO: UserService - storeIssuerParameters - done 
+May 09, 2017 3:58:24 PM eu.abc4trust.services.UserService storeIssuerParameters
+INFO: Time for /storeIssuerParameters/ : 55355585 ns 
+May 09, 2017 4:03:47 PM eu.abc4trust.services.UserService initIoTsmartcard
+INFO: UserService - initIoTsmartcard 
+May 09, 2017 4:03:47 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserService loading...
+May 09, 2017 4:03:47 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserHelper is initialized
+Input to isAndroid: [-68, -114, 0, 0, 0]
+Reponse from isAndroid: ResponseAPDU: 2 bytes, SW=6d00
+Running with an Android phone or IoT SmartCard, so we limit the max blob size to 255 bytes
+Input to GetMode: [-68, 2, 0, 0, 1]
+Reponse from getMode: ResponseAPDU: 3 bytes, SW=9000
+Input to GetMode: [-68, 2, 0, 0, 1]
+Reponse from getMode: ResponseAPDU: 3 bytes, SW=9000
+Input to PutData: [-68, 26, 0, 0, 0, 1, 0, 30, 116, -107, 69, 75, -25, 11, -65, -30, 7, 4, -1, -88, -71, 85, -117, -59, -97, 24, -113, -89, -109, -6, -33, -72, 10, -104, 73, 62, -77, 9, -40, 10, 94, 69, -76, 35, -1, 11, -30, -21, 39, -128, -31, -6, -5, -15, -100, 40, 120, 6, 23, 87, 98, -119, 92, -68, 18, 0, -26, -16, 2, -87, -6, 0, -74, -103, 121, 30, -43, -73, 121, 50, 3, -47, -14, -18, -114, 57, 60, -20, 33, 60, -128, 19, -33, -93, 18, 87, -117, 15, 49, -22, 13, -112, 48, 40, 25, 10, -83, 61, 90, 1, -82, 49, 94, 94, 110, 74, 102, 95, -121, -91, -108, -33, 19, 66, 57, 29, -14, -23, 78, -76, -122, -4, 118, -117, -61, 69, -56, 109, -127, 59, 19, 39, -102, 84, -47, 55, 86, -121, -119, 109, -52, 98, -89, 126, 42, 87, 114, -108, -95, -79, -36, -106, 97, 60, -44, -93, 52, -89, -19, 82, 29, 96, 93, 8, -113, 91, -34, 117, -95, 69, -26, 80, -11, -80, 80, -100, 119, -37, -128, 96, -19, 32, -51, 116, 95, -116, -86, -2, 61, -39, -43, -96, -89, 74, 98, 41, -110, 40, 103, 8, 72, -61, 108, -98, 111, -121, 32, -36, 112, -1, -89, 5, -86, -114, 72, 47, 101, 103, 31, -43, -31, -90, -114, -31, 100, -73, 16, 33, 4, -123, -87, -1, -11, -5, -19, 81, -102, 23, 75, -19, 98, 95, 0, 27, 4, 84, -108, -110, 14, -44, -128, 106, -63]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for setAuthKey: [-68, 32, 0, 0, 1, 0]
+response from setAuthKey: ResponseAPDU: 2 bytes, SW=9000
+Input to initialize device: [-68, 18, 0, 0, 0, 0, 4, -128, 31, 0, 32, 0, 0]
+Input for changePin: [-68, 14, 0, 0, 8, 50, 53, 53, 56, 49, 50, 51, 52]
+Response from changePin: ResponseAPDU: 2 bytes, SW=9000
+Now initializing group stuff
+Input to GetMode: [-68, 2, 0, 0, 1]
+Reponse from getMode: ResponseAPDU: 3 bytes, SW=9000
+Input to PutData: [-68, 26, 0, 0, 0, 0, -128, -119, -102, 48, -61, -115, -45, 87, -98, 126, 102, -49, 10, 44, 119, 93, -74, 100, 51, 107, 15, 33, -68, -18, 31, 42, -20, 63, 33, -20, 42, -90, -105, 0, 69, 42, 95, 6, 102, -35, 30, 11, 91, -35, -125, -32, 12, -93, -120, -7, 25, -121, -115, -77, -88, -19, 127, -55, 96, 58, 91, 100, -16, 110, 48, -3, 94, 83, 120, -62, 21, 56, -48, -91, 63, -45, 115, 127, -47, -72, -80, -54, 56, -126, 96, -82, -71, -119, 51, -87, -37, -115, 44, 42, -113, -102, 124, 71, 108, 80, -12, 109, -44, -98, 109, -47, 58, 84, 61, 85, 90, 16, 127, 102, -126, 73, 56, -44, -58, -57, 82, -8, -58, 40, 34, -83, -55, -4, -15]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for set Group Component: [-68, 40, 0, 0, 2, 0, 0]
+Response from setGroupComponent: ResponseAPDU: 2 bytes, SW=9000
+Input to PutData: [-68, 26, 0, 0, 0, 0, 33, -51, -66, -110, 37, 56, -6, 85, -96, -4, -102, 104, -12, -94, 44, -43, -81, 108, -75, -14, 97, -77, -49, 60, -118, 36, 70, 38, 86, 64, -100, 124, -112, -15]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for set Group Component: [-68, 40, 0, 0, 2, 0, 1]
+Response from setGroupComponent: ResponseAPDU: 2 bytes, SW=9000
+Input to PutData: [-68, 26, 0, 0, 0, 0, 95, -85, 54, -99, -13, -36, -71, 32, 99, 95, 125, -28, 30, -69, -76, 66, 103, -68, -1, 118, 87, 120, 69, -87, -107, -107, -127, 117, 79, 61, 92, 3, -109, 29, -3, -10, 50, 27, 123, -27, 87, -101, 110, 13, -62, -46, 125, -93, -17, -41, 69, -53, 13, 5, 124, 75, 87, -92, -30, 66, 38, -99, -49, 79, 112, 81, 109, -42, -32, -53, 114, -124, -127, -123, -60, -12, 7, 20, 120, 120, 66, -44, 127, -114, 121, -60, -65, 127, -47, 54, -95, -13, 115, 67, -53, -16]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for set Group Component: [-68, 40, 0, 0, 2, 0, 2]
+Response from setGroupComponent: ResponseAPDU: 2 bytes, SW=9000
+Input to PutData: [-68, 26, 0, 0, 0, 0, -128, 28, -76, -13, -61, 24, -34, 109, -9, 94, -70, -102, 81, -78, -72, -96, -44, -41, 93, 98, 18, 23, 97, -78, -28, -94, -62, 17, 79, 46, 62, -112, 2, 36, 97, -23, -41, -81, 101, 43, -50, -103, -86, 46, -47, 80, 15, -14, 28, -114, 7, 106, -56, 48, 13, -51, 14, 67, -48, -34, 33, -38, -30, 41, 70, -91, 91, 48, 50, 33, 17, -57, 57, -90, -56, -38, -57, -82, -89, 79, 21, -4, 75, -9, -69, -46, -66, 110, 118, -99, 93, 86, 55, -68, -86, -46, -40, -98, 124, 71, -40, -116, -101, 116, -56, -102, -97, -17, -23, 34, -107, -38, -47, -82, 40, 44, -87, 74, -57, -89, -56, -45, 8, 2, 119, 126, -2, 67, 101]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for set Generator: [-68, 42, 0, 0, 2, 0, 1]
+Response from setGenerator: ResponseAPDU: 2 bytes, SW=9000
+Input to prover: [-68, 72, 0, 0, 9, 1, 0, 74, 0, 32, 0, 1, 2, 3]
+Response from setProver: ResponseAPDU: 2 bytes, SW=9000
+Input to PutData: [-68, 26, 0, 0, 0, 0, 30, 115, 101, 99, 114, 101, 116, 58, 47, 47, 105, 111, 116, 45, 115, 109, 97, 114, 116, 99, 97, 114, 100, 45, 51, 51, 54, 50, 52, 54, 57]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 14, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 78, 97, 109, 101]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+SoftwareSmartcard is now init'ed eu.abc4trust.smartcard.HardwareSmartcard@1e4c367
+Le: 16
+Input for getChallenge: [-68, 28, 0, 0, 1, 16, 0]
+Response from getChallenge: ResponseAPDU: 18 bytes, SW=9000
+Input to GetMode: [-68, 2, 0, 0, 1]
+Reponse from getMode: ResponseAPDU: 3 bytes, SW=9000
+Input to PutData: [-68, 26, 0, 0, 0, 0, -128, -44, -33, 104, 112, -112, 72, 90, 68, 14, 36, 4, 66, 11, 77, -71, 104, 116, -6, -16, 10, -24, -84, 0, -48, 124, -5, 120, -78, 98, 0, 7, -7, -77, 85, -69, 24, -103, 74, 98, -116, 86, -125, 106, 114, -23, 92, 117, -67, 105, 12, -63, 0, -121, -18, -23, -11, 8, -76, -108, -59, 96, 100, -117, 125, 78, 104, -103, -122, 120, 117, 31, -111, 54, -53, -127, -74, -51, -55, -36, -62, 115, -104, -104, -71, -118, -100, 104, 13, -105, 54, -37, 13, -80, -117, -57, -74, 45, -61, -109, -101, -112, -104, 106, 120, -99, -32, 108, -12, 34, -83, 87, -108, -127, 26, -101, -83, -94, 58, -14, 31, 119, 115, -66, 69, -35, -71, -102, -47]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for set Group Component: [-68, 40, 0, 0, 2, 1, 0]
+Response from setGroupComponent: ResponseAPDU: 2 bytes, SW=9000
+Input to PutData: [-68, 26, 0, 0, 0, 0, -128, 79, -83, -87, -80, -77, 72, -89, -99, -81, 18, -126, 82, 127, -29, 95, 86, -72, 104, -102, -51, -5, -39, -28, 67, 85, -82, 16, -25, 20, -70, -118, -118, 59, -23, 44, 78, -66, -94, 27, -44, -49, -116, 6, -121, -85, -14, -62, -29, -122, 21, -73, -94, 19, 63, 81, -87, -66, 58, 86, -126, -112, -75, 74, -49, -125, -30, -93, -9, -20, -12, -120, 52, -68, -80, 110, -48, 40, -4, -13, -51, -110, 67, -18, 21, -73, 15, 34, -121, -125, 81, 99, 96, 127, 105, 125, -33, 94, -91, 104, -12, 114, -34, -34, 57, 113, -72, -85, -118, 124, -33, -24, 64, -18, 8, -13, 77, 48, -102, -105, 102, -37, 53, -122, -91, -109, 0, 125, 3]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for set Generator: [-68, 42, 0, 0, 2, 1, 1]
+Response from setGenerator: ResponseAPDU: 2 bytes, SW=9000
+Input to PutData: [-68, 26, 0, 0, 0, 0, -128, 84, 48, 7, -42, 49, -32, 37, -125, -83, -68, -122, -65, 91, 123, 58, -35, 122, -27, -24, 63, -53, -23, 23, -101, 127, -118, 55, 34, 122, 101, -98, -93, -82, -105, -73, -82, -4, -13, 87, 21, 7, 86, -112, -125, -56, -72, 55, -112, -109, -35, 16, 12, -122, -108, -38, -33, -52, -45, -32, 43, 105, -92, 4, -54, 33, 104, 40, 2, -59, 100, 22, -46, 48, -61, -57, 116, -26, -123, -8, 88, -44, -128, -81, 119, 85, 48, 65, 6, -45, -114, 70, -99, -69, -58, -103, 110, 86, -3, 66, 45, 48, -58, 116, -28, 44, 51, -60, 80, 7, -116, -21, 56, 113, -97, -7, 59, 101, 71, -83, -47, -10, 78, 14, -52, -73, 63, -112, 116]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for set Generator: [-68, 42, 0, 0, 2, 1, 2]
+Response from setGenerator: ResponseAPDU: 2 bytes, SW=9000
+Input for set Issuer: [-68, 64, 0, 0, 6, 1, 1, 1, 2, 0, 0]
+Response from setIssuer: ResponseAPDU: 2 bytes, SW=9000
+Input for setWorkingMode: [-68, 6, 0, 0]
+response from setWorkingMode: ResponseAPDU: 2 bytes, SW=9000
+Cached readBlob: deviceName : 30
+May 09, 2017 4:04:06 PM eu.abc4trust.services.UserService initIoTsmartcard
+INFO: Time for /initIoTsmartcard/ : 18632591630 ns 
+May 09, 2017 4:04:09 PM eu.abc4trust.services.UserService extractIssuanceMessage
+INFO: Time for /extractIssuanceMessage/ : 119374 ns 
+May 09, 2017 4:04:09 PM eu.abc4trust.services.UserService issuanceProtocolStep
+INFO: UserService - issuanceProtocolStep - IssuanceMessage
+May 09, 2017 4:04:09 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserService loading...
+May 09, 2017 4:04:09 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserHelper is initialized
+Smartcards: secret://iot-smartcard-3362469
+Cached readBlob: deviceName : 30
+Input for listBlobs: [-68, 114, 0, 0, 0, 0, 5, 49, 50, 51, 52, 0, 0, 0]
+Response from listBlobs: ResponseAPDU: 15 bytes, SW=9000
+data: [10, 100, 101, 118, 105, 99, 101, 78, 97, 109, 101, 1, 0]
+s: deviceName
+nread: 1
+unread: 0
+Cached readBlob: deviceName : 30
+May 09, 2017 4:04:12 PM eu.abc4trust.services.UserService issuanceProtocolStep
+INFO: Time for /issuanceProtocolStep/ : 3032621151 ns 
+May 09, 2017 4:04:19 PM eu.abc4trust.services.UserService issuanceProtocolStep
+INFO: UserService - issuanceProtocolStep - UiIssuanceReturn
+May 09, 2017 4:04:19 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserService loading...
+May 09, 2017 4:04:19 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserHelper is initialized
+Smartcards: secret://iot-smartcard-3362469
+Input for getScopeExclusivePseudonym: [-68, 106, 0, 0, 0, 0, 40, 49, 50, 51, 52, 104, 116, 116, 112, 58, 47, 47, 116, 105, 99, 107, 101, 116, 99, 111, 109, 112, 97, 110, 121, 46, 99, 111, 109, 47, 116, 105, 99, 107, 101, 116, 115, 47, 118, 105, 112, 0, 0]
+Response from getScopeExclusivePseudonym: ResponseAPDU: 130 bytes, SW=9000
+Pseudonym 2017.05.09 16:04:20
+Ψευδώνυμο 2017.05.09 16:04:20
+Pseudonym 2017.05.09 16:04:20
+Accumulated this many bytes: 0
+getting this uri: pseudonym_abc4t_//dnym/3xfekqmoyovi4g3s_1
+Input for readBlob: [-68, 116, 0, 0, 0, 0, 45, 49, 50, 51, 52, 112, 115, 101, 117, 100, 111, 110, 121, 109, 95, 97, 98, 99, 52, 116, 95, 47, 47, 100, 110, 121, 109, 47, 51, 120, 102, 101, 107, 113, 109, 111, 121, 111, 118, 105, 52, 103, 51, 115, 95, 49, 0, 0]
+Response from readBlob: ResponseAPDU: 2 bytes, SW=9f25
+sc uri: secret://iot-smartcard-3362469
+ credUri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d
+Input for readBlob: [-68, 116, 0, 0, 0, 0, 52, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 0, 0]
+Response from readBlob: ResponseAPDU: 2 bytes, SW=9f25
+Returning the cached blob uris: [deviceName]
+Cached readBlob: deviceName : 30
+Input for setCredential: [-68, 82, 0, 0, 6, 49, 50, 51, 52, 1, 1]
+Response from setCredential: ResponseAPDU: 2 bytes, SW=9000
+Input to PutData: [-68, 26, 0, 0, 0, 0, 1, 1]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 52, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+Input for readGroupComponent: 0 : 0 : [-68, 48, 0, 0, 0, 0, 6, 49, 50, 51, 52, 0, 0, 0, 0]
+Response from readGroupComponent: ResponseAPDU: 130 bytes, SW=9000
+GroupComponent - is : 0 : 0 : 96627625732865027298200217604367642249667629673519668393082336653758048796559090566008185939299527025864920617165019417402317155473637099464026105615614083742530574520478556940616336329432178040772432976291470582031913226738089576814422354657098822830339588530741651681859226371524607560885840235376971218161
+Input for readGroupComponent: 0 : 1 : [-68, 48, 0, 0, 0, 0, 6, 49, 50, 51, 52, 0, 1, 0, 0]
+Response from readGroupComponent: ResponseAPDU: 35 bytes, SW=9000
+GroupComponent - is : 0 : 1 : 23823575951452833462931083855060314499817134575462862269554252058678011553943793
+Input for readGenerator: 0 : 1 : [-68, 50, 0, 0, 0, 0, 6, 49, 50, 51, 52, 0, 1, 0, 0]
+Response from readGenerator: ResponseAPDU: 130 bytes, SW=9000
+Generator - is : 0 : 1 : 20158631760611484208818032232451204743572468431991970772290499497014125189871961143121692314453335151837013471956750077657261781340299792272335310170417828361614562296494560282239215510467596638536637445007586953570233246360123097239305980449091255750364042446636886962410290470287517381017468461056507396965
+Fetched System Parameters p, q and g: 
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d : 1
+Input for readCredential: [-68, 86, 0, 0, 5, 49, 50, 51, 52, 1, 7]
+Reading the on-board credential with ID=1
+Response from readCredential: ResponseAPDU: 9 bytes, SW=9000
+With the data: [1, 0, 32, 0, 0, 0, 0]
+Input for readGenerator: 1 : 1 : [-68, 50, 0, 0, 0, 0, 6, 49, 50, 51, 52, 1, 1, 0, 0]
+Response from readGenerator: ResponseAPDU: 130 bytes, SW=9000
+Generator - is : 1 : 1 : 55952054561073019192739163611483557227303499777002386629867381385376929347968679944828803740207898320884869223111867092888851676779537952584895586856425534351198055531976511388096539638268610813282451224366998935787271499622118351091299665300286839953389624748790139325924211376772121596744184494014188256515
+Input for readGenerator: 1 : 2 : [-68, 50, 0, 0, 0, 0, 6, 49, 50, 51, 52, 1, 2, 0, 0]
+Response from readGenerator: ResponseAPDU: 130 bytes, SW=9000
+Generator - is : 1 : 2 : 59118556936220173581130584450030151893930549418342945503067522920760813071305028768495825831336504070723201792777909725264761072415343813440579121652731257897789946993923099075677978126638247691732629445472783436538997823614908374913251346642064708947852441973221298693234722353996302484274150698831132463220
+Input for readGroupComponent: 1 : 0 : [-68, 48, 0, 0, 0, 0, 6, 49, 50, 51, 52, 1, 0, 0, 0]
+Response from readGroupComponent: ResponseAPDU: 130 bytes, SW=9000
+GroupComponent - is : 1 : 0 : 149484284644847762205555728049269150661643974773512300001637146085873895619468919814302778064007571485775228764657366277160538153243021621742705422264749314801670444927329995480578582481138056780402955170911078056014128042196716827577893973800148915677461453763574723652475351923094822675944133140652058319569
+Input for readGroupComponent: 1 : 1 : [-68, 48, 0, 0, 0, 0, 6, 49, 50, 51, 52, 1, 1, 0, 0]
+Response from readGroupComponent: ResponseAPDU: 2 bytes, SW=9000
+GroupComponent - is : 1 : 1 : 0
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d : 1
+Input for getCredentialPublicKey: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d : [-68, 90, 0, 0, 0, 0, 5, 49, 50, 51, 52, 1, 0, 0]
+Response from getCredentialPublicKey (fragment): ResponseAPDU: 130 bytes, SW=9000
+And this is the output: [-54, 63, -3, 76, -79, 80, -18, -113, 85, 37, -101, 26, 80, 60, 112, 113, -111, -7, 56, 108, -96, 54, 81, -35, -18, 30, -69, -110, -104, 83, -100, -117, -23, 28, -7, 31, 125, -92, -85, -114, 41, -65, 5, -8, -47, -104, -49, 9, 24, 115, -31, 115, 30, -89, 85, 115, -96, 80, -53, 122, 52, 86, -31, -94, -100, 68, -60, -107, 29, 108, -82, 77, -5, -126, -6, -70, 65, 36, 66, 114, 28, -14, -40, 2, -77, 2, 50, 45, -26, 90, 8, 68, -106, 56, -119, -65, 125, -17, -14, 127, 21, -25, -63, 11, 122, 91, 49, 101, 30, -110, -42, 110, 3, -61, -80, -68, 57, 74, 32, 6, 101, -121, -106, -24, 67, 47, 63, -12]
+which gives this BigInteger:  142024750957705028453382489883330907679222023558386435673950195127415580795096821916710687228342163468858062091533750786524946290444298520131526861670795418100247868530298772154429890925270902094836912418969987189966727751467382060586418843985913286824009907723109469307320087199257590181509709080556313985012
+Input for startCommitments: [-68, 78, 0, 0, 5, 49, 50, 51, 52, 1]
+Response from startCommitments: ResponseAPDU: 2 bytes, SW=9000
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d : 1
+Input for readCredential: [-68, 86, 0, 0, 5, 49, 50, 51, 52, 1, 7]
+Reading the on-board credential with ID=1
+Response from readCredential: ResponseAPDU: 9 bytes, SW=9000
+With the data: [1, 0, 32, 0, 0, 0, 0]
+Input for getIssuanceCommitment: [-68, 92, 0, 0, 0, 0, 5, 49, 50, 51, 52, 1, 0, 0]
+Response from getIssuanceCommitment: ResponseAPDU: 130 bytes, SW=9000
+Input for getScopeExclusiveCommitment: [-68, 108, 0, 0, 0, 0, 40, 49, 50, 51, 52, 104, 116, 116, 112, 58, 47, 47, 116, 105, 99, 107, 101, 116, 99, 111, 109, 112, 97, 110, 121, 46, 99, 111, 109, 47, 116, 105, 99, 107, 101, 116, 115, 47, 118, 105, 112, 0, 0]
+Response from getScopeExclusiveCommitment: ResponseAPDU: 130 bytes, SW=9000
+Cached from getScopeExclusivePseudonym: http://ticketcompany.com/tickets/vip : 52206085782800869654720412769856174556048251482511969002611080955145943625492610676425581123385585675311680768634801640464276459951025380737059381360360943161429852209824179521411511098441039061689448316637350988546857413248352739206435217934561574589435405354707146574871685633512083161774669092069004576558
+Cached getCredentialPublicKey: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d - 142024750957705028453382489883330907679222023558386435673950195127415580795096821916710687228342163468858062091533750786524946290444298520131526861670795418100247868530298772154429890925270902094836912418969987189966727751467382060586418843985913286824009907723109469307320087199257590181509709080556313985012
+Challenge comming in: 22922294294378966934595235009317499105559372474827425668052786006902624526571
+Challenge going out: 22922294294378966934595235009317499105559372474827425668052786006902624526571
+The same? true
+Challenge bytes length after removing sign bit: 32
+data length: 37
+Input for startResponses: [-68, 80, 0, 0, 0, 0, 37, 49, 50, 51, 52, 1, 50, -83, -113, 13, -40, -124, -49, 2, -101, 13, 119, -115, 50, 39, -14, 37, -80, -30, 72, -94, 72, -119, 94, -44, 63, 113, -91, -32, 56, -64, -96, -21]
+Response from startResponses: ResponseAPDU: 2 bytes, SW=9000
+And this is the output: []
+Input for getDeviceResponse: [-68, 104, 0, 0, 0, 0, 4, 49, 50, 51, 52, 0, 0]
+Response from getDeviceResponse: ResponseAPDU: 35 bytes, SW=9000
+And this is the output: [49, 85, -72, -2, 56, 65, 117, -66, -81, -99, -6, -35, -127, 77, -122, -61, -24, -112, 89, -90, -70, -86, 112, 66, 109, -59, -98, -127, -56, -94, -14, 64, 38]
+which gives this BigInteger: 5712585819178213276034344714940645228080902042577724862543811038443941515116582
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d : 1
+Input for readCredential: [-68, 86, 0, 0, 5, 49, 50, 51, 52, 1, 7]
+Reading the on-board credential with ID=1
+Response from readCredential: ResponseAPDU: 9 bytes, SW=9000
+With the data: [1, 0, 32, 74, 0, 1, 0]
+Input for getIssuanceResponse: [-68, 94, 0, 0, 0, 0, 5, 49, 50, 51, 52, 1, 0, 0]
+Response from getIssuanceResponse: ResponseAPDU: 150 bytes, SW=9000
+data returned: size: 148 value: [-33, 64, -31, -38, 71, 101, -23, 50, 28, -4, 116, 80, -90, -78, 44, 57, 31, -103, -120, 118, 35, -2, -39, 94, -55, -96, -115, -46, -25, 17, -84, -66, 100, 115, -37, 26, -125, 77, 100, -103, -111, -41, -62, -72, -2, 56, 65, 117, -66, -81, -99, -6, -35, -127, 77, -122, -61, -24, -112, 89, -90, -70, -86, 112, 66, 109, -59, -98, -127, -56, -94, -14, 64, 38, -123, 30, -20, 0, 50, 123, -89, 26, 23, -32, 88, -124, 57, 102, -123, -128, 16, -48, 15, 10, -93, -110, 108, 66, -70, -29, -119, -69, -9, -76, 29, -92, -13, 64, -128, -25, 26, 73, -5, 109, 15, 29, -107, -25, -95, 79, -74, -22, 78, 50, -76, 52, -105, -46, 48, 73, -25, -107, 109, 2, 1, -47, 93, -62, -8, 4, 83, -45, -62, 84, -78, 90, -73, 39]
+zx: [-33, 64, -31, -38, 71, 101, -23, 50, 28, -4, 116, 80, -90, -78, 44, 57, 31, -103, -120, 118, 35, -2, -39, 94, -55, -96, -115, -46, -25, 17, -84, -66, 100, 115, -37, 26, -125, 77, 100, -103, -111, -41, -62, -72, -2, 56, 65, 117, -66, -81, -99, -6, -35, -127, 77, -122, -61, -24, -112, 89, -90, -70, -86, 112, 66, 109, -59, -98, -127, -56, -94, -14, 64, 38]
+zv: [-123, 30, -20, 0, 50, 123, -89, 26, 23, -32, 88, -124, 57, 102, -123, -128, 16, -48, 15, 10, -93, -110, 108, 66, -70, -29, -119, -69, -9, -76, 29, -92, -13, 64, -128, -25, 26, 73, -5, 109, 15, 29, -107, -25, -95, 79, -74, -22, 78, 50, -76, 52, -105, -46, 48, 73, -25, -107, 109, 2, 1, -47, 93, -62, -8, 4, 83, -45, -62, 84, -78, 90, -73, 39]
+Input for readIssuer: [-68, 68, 0, 0, 5, 49, 50, 51, 52, 1, 5]
+Response from readIssuer: ResponseAPDU: 7 bytes, SW=9000
+With the data: [1, 1, 2, 0, 0]
+Info: this is an IDEMIX ISSUER. We thus set zv: 8428753429858537044790412247471473257180679928354456320345207372377045649449219574592712304161681126991940711849497655484700924656878219235423358065732377850774137127429591447335
+May 09, 2017 4:04:38 PM eu.abc4trust.services.UserService issuanceProtocolStep
+INFO: Time for /issuanceProtocolStepUi/ : 18821857359 ns 
+May 09, 2017 4:04:57 PM eu.abc4trust.services.UserService extractIssuanceMessage
+INFO: Time for /extractIssuanceMessage/ : 11094 ns 
+May 09, 2017 4:04:57 PM eu.abc4trust.services.UserService issuanceProtocolStep
+INFO: UserService - issuanceProtocolStep - IssuanceMessage
+May 09, 2017 4:04:57 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserService loading...
+May 09, 2017 4:04:57 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserHelper is initialized
+Smartcards: secret://iot-smartcard-3362469
+May 09, 2017 4:04:59 PM eu.abc4trust.abce.internal.user.credentialManager.ImageCacheImpl storeImage
+WARNING: storeImage - failed : http://MyFavoriteSoccerTeam/tickets/vip/img - exception : java.net.UnknownHostException: MyFavoriteSoccerTeam
+CredBytes length: 2464
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_1
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, 2, 31, -117, 8, 0, 0, 0, 0, 0, 0, 0, -43, -104, -37, 114, 27, -57, 17, -122, -17, -3, 20, 40, -36, -125, -104, -13, -127, 101, -47, 101, 71, 82, 69, -119, -27, 114, 73, -78, 43, -27, -101, -44, 18, 24, -110, 27, -29, -64, -38, 93, 80, 100, -98, 44, -9, 121, -79, 124, -67, 32, 65, 2, -96, 40, -22, 96, -55, 81, 73, -44, 114, 118, -90, -69, -73, -5, -17, -18, -65, -25, -37, -17, 46, -25, -77, -63, 69, 105, -38, 122, -71, 120, 50, -44, 7, 106, 56, 40, -117, -55, 114, 90, 47, 78, -97, 12, 127, 121, -13, 124, -108, -122, -125, -74, -85, 22, -45, 106, -74, 92, -108, 39, -61, -85, -46, 14, -65, 59, -6, -26, -37, -22, 120, 114, -8, -105, -90, 76, -53, -94, -85, -85, -39, 0, 41, -117, -10, -112, -59, 39, -61, -77, -82, 59, 63, 28, -113, 121, 118, 93, -77, 106, -69, -125, -78, 26, -65, 61, 55, -78, -48, 78, -50, -54, -68, -70, -24, -75, -84, 79, 92, -74, -11, -26, -60, -37, -73, 111, 15, -34, -38, -125, 101, 115, 58, 54, 74, -23, -15, 63, 94, -2, -8, -70, 63, 48, -86, 23, 98, -62, -92, -36, -100, -86, -89, -13, -53, -51, -79, 127, -81, -102, 122, 114, 118, 80, 31, -49, 15, 38, -53, -7, -83, -32, -9, -53, 29, 30, 125, 51, -32, -49, -50, -73, 60, 45, -19, -92, -87, -49, 59, 28]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 49]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_2
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, 50, 120, 85, 46, -106, -65, -105, -23, 15, 87, 47, -38, 118, 85, -102, 39, -61, -109, 106, -42, -106, -21, 115, -9, -100, -3, -27, -59, -45, -93, 105, -71, -88, 39, 101, 52, 97, 113, 20, 74, -27, -54, -12, -8, 120, 84, -36, 68, -115, -100, 59, 118, -93, -54, 36, 61, -46, 33, -100, -60, 80, -110, 59, -42, -45, 111, -57, -5, 50, -74, -27, 63, 111, -22, -78, -104, -50, -82, 110, -9, -4, 84, -51, -53, 96, 86, 73, -116, -54, 98, 120, -12, -21, -117, -97, 7, 93, 61, -7, -67, 116, -125, 110, 57, 104, -105, -109, 73, 105, 6, -13, -86, -101, -100, -83, -123, -33, 47, -32, 67, -76, 76, -85, -75, -106, -29, 122, 54, 19, 45, -11, 108, 112, -78, -100, 30, 47, 103, -45, -33, -85, -7, -7, 7, 104, 121, 49, -81, 78, -53, -85, 114, 82, 26, 96, 86, -114, 78, -22, 89, 57, 28, -97, 45, -25, 101, 124, 94, -113, -69, 85, -73, 108, 56, 55, -18, -26, -25, -29, 85, 91, 26, -111, 91, 70, 60, -120, 75, -37, 113, 87, 53, -89, -91, -21, -33, -4, -77, 101, 43, -94, -58, -75, 8, 108, -57, -45, 114, 82, -83, 102, -35, -63, -65, -50, 79, -41, -42, -20, 40, 122, 87, -60, 94, -97, -105, 73, 125, 82, 79, 42, -119, -73, -72, -2, 26, 52, 47, -81, -98, 87, 23, 24, -45, -107, -41, -67, 59, -33, -108, 106, 62, 94]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 50]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_3
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, -5, -72, 29, 95, -44, -25, -69, 81, -37, -109, -77, -13, -39, 61, 126, 126, -82, 26, 60, -46, -111, 109, 119, 52, -83, -123, 2, -35, -13, 106, 113, 117, -65, -34, -102, -45, -126, 127, -128, 95, -26, -11, -27, -11, 7, -34, 35, 114, 91, -23, -21, 2, 8, -69, 91, 31, -76, -3, -17, -88, -84, -105, -35, -88, -99, 87, 77, 55, -87, -102, -23, -56, -38, 96, 92, -56, 107, -87, -69, 103, -74, 37, 126, -33, 117, 77, 125, -68, -22, -18, -84, -17, -65, 19, 67, 70, 90, -71, -84, 98, -56, -58, -83, -27, 110, -67, 125, -32, -16, -35, -20, 123, 115, 117, 94, 30, 89, 79, -58, 13, -103, -70, 118, -2, 25, -59, 106, 70, -87, 120, 90, 117, -43, 90, -62, 37, 21, 99, -47, -107, -45, -46, 12, 7, -49, 54, -59, 109, -43, 44, 14, 55, 66, 15, -111, 113, 120, 83, -8, 110, 118, 31, -82, 22, 109, 125, -70, 40, -45, -31, -8, 33, -109, 127, -83, 102, -85, 50, -96, -110, 29, 118, -69, -22, -114, -110, 53, -34, -24, -108, 124, 118, -39, -69, 20, 82, -54, -42, -90, -92, 83, 80, 6, -65, 107, -83, -68, -10, -63, 120, -21, -107, 79, 62, -6, 108, -78, -117, 74, -25, 100, -110, -9, 49, 123, 19, 19, 47, -75, 54, -55, -23, -72, -29, -55, 94, -17, -99, 0, -115, -33, 17, -95, 15, -116, -100, 87, 38, 26, -19, -83, -45, 58]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 51]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_4
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, -21, 100, 109, 14, -10, 83, 67, -8, -68, 110, -38, 78, -118, -63, 78, 84, 90, 78, 44, 78, 31, 25, -108, -11, -26, -61, -10, -84, 26, 25, 31, -122, -37, 22, -20, 85, -79, -115, 53, 59, -91, 82, 126, -35, 46, 87, 91, 59, 63, 66, -86, -108, -58, -25, -53, 102, 81, 93, 44, 30, 45, 120, -57, -95, 119, 60, -10, -127, 64, -69, -10, -32, -47, -33, -106, 103, -117, 47, 3, 15, 19, -75, -49, -34, 90, -85, -110, -55, 49, 36, -25, 63, 25, 30, 63, 86, 127, 22, 116, -120, 37, -117, 63, 4, 33, -49, 78, -88, -47, 95, 23, 35, 79, -105, 111, -65, 16, 68, -116, -43, -47, -71, -92, -93, 87, -50, 81, -3, 116, -8, 84, -120, -4, 80, 55, -35, -39, -76, -70, -38, -127, -56, -76, -22, -54, 35, 1, 34, 91, 41, -24, -11, -27, -31, 117, 77, -1, 72, -120, -36, 88, -14, 7, 20, -111, -1, -2, 103, -38, -106, 89, -117, -91, -53, -81, -121, 18, 122, -113, 31, 41, -7, -5, -37, 87, 66, -117, -7, 100, -76, -68, 20, -22, -5, -89, 64, -53, -115, 37, -97, 31, 45, 127, -121, 119, 15, -90, -43, -23, -41, 67, -118, 81, -38, -114, 84, 26, -87, -8, -123, -112, -94, -9, -22, -54, 46, 37, -6, 112, -92, -108, -7, 113, 105, 126, 90, -55, -49, -49, 75, 25, 63, 18, 48, 50, 100, -51, 123, -93, 6, -11, -12, -13]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 52]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_5
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, -93, 102, 45, 30, 126, 60, 111, 7, -117, -43, 124, 94, -102, 47, -113, -97, 13, 57, 54, 54, 38, 23, 108, -118, 123, 25, -1, 24, 0, -19, 78, 96, 123, 6, 93, 79, 122, 87, -25, -35, -78, -97, -110, -38, -35, -15, -120, 64, 85, -35, -86, -71, 15, 120, -109, 106, -15, -86, 48, 103, -66, 97, -4, 95, 28, 17, -17, 107, 74, -80, -67, -66, 127, 110, 35, -13, -98, 13, -101, 77, -101, -103, -19, -114, 95, 100, -3, -121, -6, -12, -59, -38, 55, -101, 29, -61, -127, 4, -30, -55, -16, -5, 123, -16, -76, -111, -73, -10, -106, -13, 90, -87, -108, 66, 20, 98, -106, -125, 99, -128, -56, -39, -53, -68, 1, -101, -113, 81, -71, -64, 40, -95, -110, 103, 16, -55, -38, -8, -104, -94, -53, 26, -106, 31, 76, 86, -63, 27, -59, -113, 68, 98, 49, -79, -91, -100, -99, -116, 44, -52, 30, -116, 35, 78, -77, 33, -77, 49, 42, -27, 67, 100, -98, -55, 73, 57, 89, 83, -52, 6, 1, -111, -47, 114, 60, 89, 111, 77, -120, -42, -95, -101, 119, 28, -53, -114, -119, -121, 68, 53, -47, -79, -109, 64, 43, 116, 68, 103, -126, 119, -50, 39, -89, 116, -48, 40, 16, -7, 66, 40, -107, -78, -127, 101, -56, 37, 13, 32, 105, -52, -10, -111, 94, 100, 19, 38, 5, 109, -80, -50, 59, 76, -54, -119, -15, -56, -94, -59, -60, -52, -4, 100, 81]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 53]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_6
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, 21, 67, 96, -48, -60, 26, 99, -23, 93, 60, 89, -103, -94, -84, -74, 73, 97, 23, -66, 48, -100, 73, -127, -119, 84, -101, 94, 39, -94, 49, 23, 35, -82, 103, -34, 29, -76, 109, -93, 110, 19, -118, -49, 23, -52, -14, -2, 96, -30, 18, 12, -116, -58, 42, -17, 85, 48, -118, 80, -86, -88, 12, -63, -45, -8, 52, -28, 40, -50, -79, -55, -60, -56, 68, -55, 8, -87, 61, 91, 25, -29, 115, 100, 112, 76, -106, -79, -110, -56, 36, -91, 34, -66, -62, -23, 68, -100, -72, -64, -61, 50, -14, 50, 39, 113, -93, -58, 69, -8, 40, -95, -62, -32, 77, 47, 50, 36, 44, 22, -49, 5, -107, 19, -127, -46, 81, 3, 3, -27, 29, 65, -25, 31, -106, -8, 64, -28, -115, 83, -60, 73, 17, -121, -112, 34, 10, 65, -122, -77, 89, 127, 29, 103, 94, 60, -62, -103, -106, -81, -46, 0, 24, -48, -5, 12, -112, 98, -94, -107, 0, 57, -99, -63, -127, 101, -72, 78, -128, -113, 57, 61, -30, -110, 32, 46, 102, 18, 15, 90, 66, -128, 71, 60, -40, -123, -93, 100, 112, 5, 100, 93, -60, -97, -63, -39, 16, 112, 114, 114, 12, 64, -124, -63, -78, -104, 123, 39, -38, 126, -116, 39, 12, 54, -118, -105, -56, -96, 20, -100, 18, -89, 49, 40, 9, 42, 45, -13, 19, 126, 53, 0, 90, -82, 1, -68, 64, 63, 24, 50, 54, -40, 28, 35]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 54]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_7
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, 79, 26, -55, -63, 48, -61, -112, -87, 56, -103, -100, -62, 116, 14, -58, -104, -63, 67, -106, -12, 68, -85, 55, -94, 82, -57, -108, 41, -94, 110, 45, 87, 34, 100, 18, 105, 25, -6, -108, 101, -121, 22, 59, 89, 55, -110, -52, 4, -43, -78, 65, 57, -119, -95, -25, 41, 102, 73, 104, -106, -7, 106, -118, 3, 105, 38, -33, 24, -93, 101, -113, -42, 58, -15, 59, -14, 48, -56, 42, -69, -122, -108, -36, 102, -112, -123, 46, -94, -60, 3, 19, 42, 9, 21, 67, -21, 0, 10, -127, -88, -28, 91, 18, 27, 50, -128, -64, -101, 65, -119, -63, 33, -117, 123, 64, 47, -74, 4, 47, 71, -75, 113, 20, 30, -32, 29, -84, 11, -64, -114, -126, -59, -89, 2, 49, -117, 70, 42, 21, -54, 62, 30, 75, -41, -41, 88, -17, -88, -61, 59, 111, 119, 58, -62, 79, -53, -59, -85, -51, 61, -46, -77, -117, 122, -70, 125, 5, -10, -16, 62, -31, 30, -117, 6, -42, 120, -45, -73, -33, -71, 107, 95, -32, -19, -66, -17, 87, -35, -103, 92, -1, 93, 61, -30, -82, -16, -10, -50, -21, -16, 100, 98, -13, 100, 26, -44, 72, 17, -13, 17, -91, 109, 50, -86, -108, -31, -119, 98, 49, 85, -72, 23, 76, -81, -83, 122, -81, -86, 125, -21, -74, -17, -90, -9, 73, 80, -73, 60, 46, 109, -23, -114, -81, -28, 98, -10, -63, -21, -20, -69, 34, 97, -40]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 55]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_8
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, 83, -31, -112, 113, -92, -62, 72, -27, 55, 74, 29, -10, 127, 127, -37, 72, -24, 119, -20, -97, 125, 118, 121, 94, 55, -91, 125, -32, -20, -51, -114, 123, -50, -98, 47, 39, 103, 71, -22, 122, 91, -1, -53, 3, -28, -27, 29, 85, 106, -101, -107, 58, -14, -100, 12, 84, -26, 125, 92, 116, -1, -4, -1, -59, 101, -25, -66, -39, 127, -110, 11, -49, -37, 124, 126, 104, -124, -72, -97, 0, 110, 109, -71, -89, -69, 92, 55, -105, -59, 125, 41, -36, -101, -15, -2, -82, 99, -91, 6, -62, 105, -84, 17, -126, -92, 109, 95, 47, 41, -108, 84, 88, 74, 95, -124, -125, 105, 106, 99, 12, -108, 64, -59, 18, 52, -121, 118, 64, -43, -20, 107, 102, -94, 86, 6, 35, 55, -80, -44, -9, 44, -91, 93, -77, 74, -69, -113, -46, 16, -24, 12, 65, 92, -119, 51, 61, 5, 84, -122, 33, 24, -112, -128, 80, 65, -11, 104, 85, 41, -62, -52, -126, -91, -51, 43, 20, -48, 17, -92, 21, 80, -28, 93, -96, 110, 103, 75, 19, -124, 115, -85, 44, 17, -78, 82, 123, 49, -111, 56, -96, 77, 83, -95, -75, -48, 40, -30, -46, -65, -94, -55, 65, 37, 48, -105, -50, 102, 49, 5, -122, 70, 87, -76, 72, 77, -96, 30, 66, -94, 77, -128, 80, 8, 7, -128, -13, -47, 13, 77, -26, -125, -87, -28, 14, 54, 2, 115, 32, -4, -76, 22, 90, 10]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 56]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_9
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, 12, 44, 8, 71, -13, 66, -9, 57, 98, -32, -108, 108, 1, 24, 52, 14, 58, 31, 54, -123, -57, -108, -3, 123, -126, -11, -63, 97, -83, 38, -109, -43, 124, 53, -85, -70, 101, -13, -56, 96, 98, 114, -120, -8, 2, -106, 43, -99, 12, 15, -48, -77, 3, -12, -121, 117, -38, 29, -97, 45, -19, -98, 98, 11, 119, -115, -62, -124, 35, -3, -104, 111, -29, -39, -11, -99, -110, -58, -18, 114, 10, -62, -123, 113, 36, -34, -109, -1, -24, -64, 90, -68, 67, -121, 14, -62, -48, 12, -78, -67, -93, -35, -118, 7, -99, -112, 19, -70, -94, 21, 12, -63, -114, -55, 40, -94, -20, -120, 54, 74, 60, 41, 70, 99, 21, 44, -63, -13, -68, -16, -101, 36, 47, 45, 44, -61, -6, 117, 64, 24, -82, 32, 52, 108, -56, 90, 122, 47, -79, 35, -110, -96, 14, 12, 26, -119, 26, -116, -124, -122, 76, 68, 69, 121, 20, 6, 39, -21, 49, 122, 73, 64, -24, 36, 90, 9, 10, -79, -74, 88, 75, -101, 55, 12, 0, -82, 39, -93, -90, 39, -112, -103, -98, 13, 73, 39, -77, -103, -30, 32, -22, -128, 45, 48, -47, 65, 32, -99, -56, -8, 66, -79, -100, 47, -89, -85, -39, -86, 125, 127, 8, -87, 41, 80, 34, -24, 28, 9, 0, -37, -61, 75, -54, -119, -75, 12, 34, -62, -80, 112, 30, 76, -115, 84, -128, 78, -45, 45, -109, 120, 79, 72, -79]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 57]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 187 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_10
+Input to PutData: [-68, 26, 0, 0, 0, 0, -69, -127, 57, -39, 62, 81, 121, -56, 65, 62, 94, 39, 9, 34, -45, 12, 73, 17, -59, -7, 48, 69, 88, 93, 34, -49, 96, -51, -118, 66, 23, 100, -122, 113, 32, -122, -39, -122, -104, -80, 2, 64, -68, 79, 73, 46, -52, 33, -106, 78, -24, -113, -106, -7, -58, -72, 30, 4, -106, 52, 83, 73, 25, -43, 87, 7, -68, -22, -92, 80, 10, 79, 77, 82, 40, -75, -16, 123, -76, -78, 36, 20, 42, 66, -23, -31, -79, 64, -122, -124, 6, 73, 18, 83, -56, 22, 99, 19, -75, 34, -119, 93, -40, 67, 95, 34, -61, 48, 89, 84, 56, -47, 12, -30, 18, -108, 43, 102, -93, 93, 100, 102, 96, -96, -80, 125, 85, -26, 81, 70, 1, 106, 9, 0, -49, 94, -11, -70, -88, 53, -26, 75, 37, -28, 109, 67, -5, 107, -33, -48, 30, -103, -107, 127, 64, -77, -7, -76, 79, -67, -95, 46, -9, -34, 57, -68, -101, 20, 110, 95, 104, -36, 61, -68, -53, -90, -114, -66, -7, 31, 64, -38, 107, -25, -78, 33, 0, 0]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 55, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 49, 48]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+May 09, 2017 4:05:11 PM eu.abc4trust.services.UserService issuanceProtocolStep
+INFO: Time for /issuanceProtocolStep/ : 13335677411 ns 
+May 09, 2017 4:05:16 PM eu.abc4trust.services.UserService createPresentationToken
+INFO: UserService - createPresentationToken 
+May 09, 2017 4:05:16 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserService loading...
+May 09, 2017 4:05:16 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserHelper is initialized
+Smartcards: secret://iot-smartcard-3362469
+Cached readBlob: deviceName : 30
+Returning the cached blob uris: [device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_2, device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_3, device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_4, device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_5, device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_6, device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_7, device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_8, device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_9, deviceName, device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_10, device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d, device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_1]
+Comparing: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_2 to device-cred-
+Comparing: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_3 to device-cred-
+Comparing: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_4 to device-cred-
+Comparing: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_5 to device-cred-
+Comparing: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_6 to device-cred-
+Comparing: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_7 to device-cred-
+Comparing: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_8 to device-cred-
+Comparing: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_9 to device-cred-
+Comparing: deviceName to device-cred-
+Comparing: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_10 to device-cred-
+Comparing: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d to device-cred-
+Comparing: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_1 to device-cred-
+listCredentialUris - added a cred uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d
+Accumulated this many bytes: 0
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_1
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_1 : 253
+Accumulated this many bytes: 253
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_2
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_2 : 253
+Accumulated this many bytes: 506
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_3
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_3 : 253
+Accumulated this many bytes: 759
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_4
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_4 : 253
+Accumulated this many bytes: 1012
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_5
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_5 : 253
+Accumulated this many bytes: 1265
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_6
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_6 : 253
+Accumulated this many bytes: 1518
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_7
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_7 : 253
+Accumulated this many bytes: 1771
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_8
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_8 : 253
+Accumulated this many bytes: 2024
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_9
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_9 : 253
+Accumulated this many bytes: 2277
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_10
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_10 : 187
+Cached readBlob: deviceName : 30
+Accumulated this many bytes: 0
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_1
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_1 : 253
+Accumulated this many bytes: 253
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_2
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_2 : 253
+Accumulated this many bytes: 506
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_3
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_3 : 253
+Accumulated this many bytes: 759
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_4
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_4 : 253
+Accumulated this many bytes: 1012
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_5
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_5 : 253
+Accumulated this many bytes: 1265
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_6
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_6 : 253
+Accumulated this many bytes: 1518
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_7
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_7 : 253
+Accumulated this many bytes: 1771
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_8
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_8 : 253
+Accumulated this many bytes: 2024
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_9
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_9 : 253
+Accumulated this many bytes: 2277
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_10
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_10 : 187
+Cached readBlob: deviceName : 30
+CredBytes length: 2483
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_1
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, 2, 31, -117, 8, 0, 0, 0, 0, 0, 0, 0, -43, -104, -37, 114, 27, -57, 17, -122, -17, -3, 20, 40, -36, -125, -104, -13, -127, 101, -47, 101, 71, 82, 69, -119, -19, 114, 73, -78, 43, -27, -101, -44, 2, 24, -110, 27, -31, -64, -38, 93, 80, 100, -98, 44, -9, 121, -79, 124, -67, -32, 9, 0, 69, 81, 7, 75, 14, -117, -94, -128, -39, -103, -18, -34, -18, -65, -69, -1, -98, 111, -65, -69, 88, -52, 7, -25, -91, 105, -21, -43, -14, -55, 80, 31, -88, -31, -96, 44, -89, -85, 89, -67, 60, 121, 50, -4, -11, -11, -13, 81, 26, 14, -38, -82, 90, -50, -86, -7, 106, 89, -98, 12, 47, 75, 59, -4, -18, -24, -101, 111, -85, -55, -12, -16, 47, 77, -103, -107, 101, 87, 87, -13, 1, 82, -106, -19, 33, -117, 79, -122, -89, 93, 119, 118, 56, 30, -13, -39, 117, -51, -70, -19, 14, -54, 122, -4, -10, -52, -56, 66, 59, 61, 45, -117, -22, -68, -41, -78, 57, 113, -47, -42, 55, 39, -34, -66, 125, 123, -16, -42, 30, -84, -102, -109, -79, 81, 74, -113, -1, -15, -45, -113, -81, -6, 3, -93, 122, 41, 38, 76, -53, -11, -87, 122, -74, -72, -72, 57, -10, -17, 117, 83, 79, 79, 15, -22, -55, -30, 96, -70, 90, -36, 10, 126, -65, -36, -31, -47, 55, 3, 126, 118, -34, -27, 105, 105, -89, 77, 125, -42, -31, -112]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 49]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_2
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, -63, -53, 114, -66, 122, 83, 102, 63, 92, -66, 104, -37, 117, 105, -98, 12, -113, -85, 121, 91, -82, -50, -35, 115, -10, -41, 23, 79, -113, 102, -27, -68, -98, -106, -47, -108, -59, 81, 40, -107, 43, -77, -55, 100, 84, -36, 84, -115, -100, -101, -72, 81, 101, -110, 30, -23, 16, -114, 99, 40, -55, 77, -12, -20, -37, -15, -66, -116, 109, -7, -49, -101, -70, 44, 103, -13, -53, -37, 61, 63, 87, -117, 50, -104, 87, 18, -93, -78, 28, 30, -3, -10, -30, -105, 65, 87, 79, -33, -108, 110, -48, -83, 6, -19, 106, 58, 45, -51, 96, 81, 117, -45, -45, -115, -16, -5, 5, 124, -120, -106, 89, -75, -47, 50, -87, -25, 115, -47, 82, -49, 7, -57, -85, -39, 100, 53, -97, -67, -87, 22, 103, 31, -96, -27, -59, -94, 58, 41, 47, -53, 113, 105, -128, 89, 57, 58, -82, -25, -123, 16, -15, 115, -70, 90, -108, -15, 89, 61, -18, -42, -35, -86, -31, -20, -72, 91, -100, -115, -41, 109, 105, 68, 118, 25, -15, 65, -36, -38, -114, -69, -86, 57, 41, 93, -1, -28, -97, 45, 91, 17, 55, -82, 69, 104, 59, -98, 5, 123, 60, -119, -38, -116, -76, 13, 102, -28, 116, -91, 70, 19, 22, 70, -38, -56, 66, -30, -5, 113, 58, -8, -41, -39, -55, -58, -36, 29, 75, -34, 21, -46, 87, 103, 101, 90, 31, -41, -45, 74, 0, 33, -79, -71, 66]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 50]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_3
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, -43, 79, -105, -49, -85, 115, 44, -19, -54, -85, -34, -33, -81, 75, -75, 24, 111, -126, -48, -114, -49, -21, -77, -35, -80, -18, -55, -39, -15, 75, 15, -80, 95, -86, 6, -105, 117, -92, -29, 29, 77, 27, -95, 96, -5, -84, 90, 94, -34, -81, -73, -26, -76, 36, 8, -103, 81, 22, -11, -59, -43, 11, -34, 35, 114, 91, -23, -85, 2, 74, -69, 91, 31, -76, -3, 119, 84, -42, -85, 110, -44, 46, -86, -90, -101, 86, -51, 108, 100, -15, -98, 11, 121, 35, 117, -9, -52, -74, -60, -17, -69, -82, -87, 39, -21, -18, -50, -6, -2, 51, 49, 100, -92, -107, -53, 42, -122, 108, -36, 70, -18, -42, -45, 7, 14, -33, 77, -49, -41, -105, 103, -27, -111, 5, 103, -36, -112, -54, 27, -25, -97, 82, -51, -26, -44, -110, -89, 85, 87, 109, 36, 92, 80, 82, -106, 93, 57, 41, -51, 112, -16, -20, -90, -6, -83, -101, -27, -31, -115, -48, 67, 100, 28, 94, 87, -58, -21, -35, -121, -21, 101, 91, -97, 44, -53, 108, 56, 126, -56, -28, -33, -86, -7, -70, 12, 40, 117, -121, -35, -82, -70, -93, 100, -115, 55, 58, 37, -97, 93, -10, 46, -123, -108, -78, -75, 41, -23, 20, -108, -63, -17, 90, 43, -81, 125, 48, -34, 122, -27, -109, -113, 62, -101, -20, -94, -46, 57, -103, -28, 125, -52, -34, -60, -60, 67, -83, 77, 114, 58, -18, 120, -78, -41]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 51]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_4
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, 123, 39, 64, -29, 119, 68, -24, 3, 35, -25, -107, -119, 70, 123, -21, -76, -50, 58, 89, -101, -125, -3, -44, 16, 62, -81, -101, -74, -109, 106, -79, 19, -107, -106, 19, -53, -109, 71, 6, 101, -77, -7, -80, 61, -83, 70, -58, -121, -31, -74, 5, 123, 101, -18, -58, -102, -99, 90, 42, 95, -73, -21, -39, -42, -50, -113, -112, 42, -75, -13, -7, -86, 89, 86, -25, -53, 71, 11, -34, 113, -24, 29, -113, 125, 32, -48, -82, 60, 120, -12, -73, -43, -23, -14, -53, -64, -61, 68, -19, -77, -73, -42, -86, 100, 114, 12, -55, -7, 79, -122, -57, -113, -43, -97, 5, 29, 98, -55, -14, 15, 65, -56, -77, 99, 106, -12, -41, -59, -56, -45, -43, -37, 47, 4, 17, 99, 117, 116, 46, -23, -24, -107, 115, 84, 63, 29, 62, 21, 34, 63, -44, 77, 119, 58, -85, 46, 119, 32, 50, -85, -70, -14, 72, -128, -56, 86, 10, 122, 125, 113, 120, 85, -45, 63, 18, 34, -41, -106, -4, 1, 69, -28, -65, -1, -103, -75, 101, -34, 98, -23, -22, -21, -95, -124, -34, -29, 71, 74, 126, 127, -1, 74, 104, 49, -97, -116, -106, -97, -124, 27, -1, 41, -48, 114, 109, -55, -25, 71, -53, -33, 33, -26, -125, 89, 117, -14, -11, -112, 98, -108, -74, 35, -107, 70, 42, 126, 33, -92, -24, -67, -70, -78, 75, -119, 62, 28, 41, 101, 49, 41, -51, -49, 107]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 52]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_5
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, -7, -5, 121, 41, -29, 71, 2, 70, -90, -80, 69, 111, -44, -96, -98, 125, 126, -44, 108, -60, -61, -113, 23, -19, 96, -71, 94, 44, 74, -13, -27, -15, 115, 67, -114, -115, -115, -55, 5, -101, -30, 94, -58, 63, 6, 64, -69, 19, -40, -98, 65, 87, -109, -34, -27, 89, -73, -22, -89, -92, 118, 119, 60, 34, 80, 85, -73, 110, -18, 3, -34, -76, 90, -66, 44, 12, -95, -81, 87, 111, -54, -14, -120, 120, 95, 81, -126, -19, -11, -3, 115, 55, 50, -17, -39, 112, -77, -23, 102, 102, -69, -29, 23, 89, -1, -95, 62, 121, -79, -15, -51, -51, -114, -31, 64, 2, -15, 100, -8, -3, 61, 120, -70, -111, -73, -15, -106, -13, 90, -87, -108, 66, 20, 98, -106, -125, 99, -128, -56, -39, -53, -68, 1, -101, -113, 81, -71, -64, 40, -95, -110, 103, 16, -55, -38, -8, -104, -94, -53, 26, -106, 31, 76, 86, -63, 27, -59, -97, 68, 98, 49, -79, -91, -100, -99, -116, 44, -52, 30, -116, 35, 78, -77, 33, -77, 49, 42, -27, 67, 100, -98, -55, 73, 57, 89, 83, -52, 6, 1, -111, -47, 114, 60, 89, 111, 77, -120, -42, -95, -101, 103, 28, -53, -114, -119, -121, 68, 53, -47, -79, -109, 64, 43, 116, 68, 103, -126, 119, -50, 39, -89, 116, -48, 40, 16, -7, 66, 40, -107, -78, -127, 101, -56, 37, 13, 32, 105, -52, -10, -111, 94, 100, 19]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 53]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_6
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, 38, 5, 109, -80, -50, 59, 76, -54, -119, -15, -56, -94, -59, -60, -52, -4, 100, 81, 21, 67, 96, -48, -60, 26, 99, -23, 93, 124, -78, 50, 69, 89, 109, -109, -62, 46, 124, 97, 56, -109, 2, 19, -87, 54, -67, 78, 68, 99, 46, 70, 92, -51, -68, 59, 104, -37, 70, -35, 77, 40, 62, 95, 48, -53, -5, -125, -119, 75, 48, 48, 26, -85, -68, 87, -63, 40, 66, -87, -94, 50, 4, 79, -29, -45, -112, -93, 56, -57, 38, 19, 35, 19, 37, 35, -92, -10, 108, 101, -116, -49, -111, -63, 49, 89, -58, 74, 34, -109, -108, -118, -8, 10, -89, 19, 113, -30, 2, 15, -53, -56, -53, -100, -60, -115, 26, 23, -31, -93, -124, 10, -125, 55, -67, -56, -112, -80, 88, 60, 23, 84, 78, 4, 74, 71, 13, 12, -108, 119, 4, -99, 127, 88, -30, 3, -111, 55, 78, 17, 39, 69, 28, 66, -118, 40, 4, 25, -50, 102, -3, 117, -100, 121, -2, 8, 103, 90, -34, 74, 3, 96, 64, -17, 51, 64, -118, -119, 86, 2, -28, 116, 6, 7, -106, -31, 58, 1, 62, -26, -12, -120, 75, -126, -72, -104, 73, 60, 104, 9, 1, 30, -15, 96, 23, -114, -110, -63, 21, -112, 117, 17, 127, 6, 103, 67, -64, -55, -55, 49, 0, 17, 6, -53, 98, -18, -99, 104, -5, 49, -98, 48, -40, 40, 94, 34, -125, 82, 112, 74, -100, -58, -96, 36, -88]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 54]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_7
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, -76, -52, 79, -8, -43, 0, 104, -71, 6, -16, 2, -3, 96, -56, -40, 96, 115, -116, 114, -115, -123, -28, 96, -104, 97, -56, 84, -100, 76, 78, 97, 58, 7, 99, -52, -32, 33, 75, 122, -94, -43, 27, 81, -87, 99, -54, 20, 81, -73, -111, 43, 17, 50, -119, -76, 12, 125, -54, -78, 67, -117, -99, -84, 27, 73, 102, -126, 106, -39, -96, -100, -60, -48, -13, 41, 102, 73, 104, -106, 121, 107, -118, 3, 105, 38, -17, 24, -93, 101, -113, -42, 58, -15, 29, 121, 24, 100, -107, -35, 64, 74, 110, 51, -56, 66, 23, 81, -30, -127, 9, -107, -124, -118, -95, 117, 0, -123, 64, 84, -14, 45, -119, 13, 25, 64, -32, -51, -96, -60, -32, -112, -59, 61, -96, 23, 91, -126, -105, -93, -38, 56, 10, 15, -16, 14, -42, 5, 96, 71, -63, -30, 85, -127, -104, 69, 35, -107, 10, 101, 31, -113, -91, -85, 107, -84, 119, -44, -31, -99, -89, 59, 29, -31, -25, -43, -14, -27, -51, 61, -46, -77, -13, 122, -74, 125, 5, -10, -16, 62, -31, 30, -53, 6, -42, 120, -35, -73, -33, -71, 107, 95, -32, -19, -66, -17, -41, -35, -87, 92, -1, 93, 62, -30, -82, -16, -10, -50, -21, -16, 120, 106, -13, 116, 22, -44, 72, 17, -13, 17, -91, 109, 58, -86, -108, -31, 19, -59, 98, -90, 112, 47, -104, -34, 88, -11, 94, 85, -5, -42, 109, 95, 94, -17]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 55]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_8
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, -109, -96, 110, 53, 41, 109, -23, 38, -105, 114, 107, -5, -32, 125, -9, 93, -111, 48, -20, -103, 112, -56, 56, 82, 97, -92, -14, 107, -91, 14, -5, -33, -33, 111, 36, -12, 59, -10, -49, 62, -69, 56, -85, -101, -46, 62, 112, -10, 122, -57, 61, 103, -49, 86, -45, -45, 35, 117, -75, -83, -1, -14, 0, 121, 121, 71, -107, -38, 102, -91, -114, 60, 39, 3, -107, 121, 31, 23, -35, 63, -1, 127, 113, -39, -71, 111, -10, -97, -28, -62, -13, 54, -97, 31, 26, 33, -18, 39, -128, 91, 91, -18, -23, 46, 87, -51, 101, 121, 95, 10, -9, 102, -68, -65, -21, 88, -87, -127, 112, 26, 107, -124, 32, 105, -37, -41, 75, 10, 37, 21, -106, -46, 23, -31, 96, -102, -38, 24, 3, 37, 80, -79, 4, -51, -95, 29, 80, 53, -5, -102, -103, -88, -107, -63, -56, 13, 44, -11, 61, 75, 105, -41, -84, -46, -18, -93, 52, 4, 58, 67, 16, 87, -30, 76, 79, 1, -107, 97, 8, 6, 36, 32, 84, 80, 61, 90, 85, -118, 48, -77, 96, 105, -13, 10, 5, 116, 4, 105, 5, 20, 121, 23, -88, -37, -39, -46, 4, -31, -36, 42, 75, -124, -84, -44, 94, 76, 36, 14, 104, -45, 84, 104, 45, 52, -118, -72, -12, -113, 104, 114, 80, 9, -52, -91, -77, 89, 76, -127, -95, -47, 21, 45, 82, 19, -88, -121, -112, 104, 19, 32, 20, -62, 1]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 56]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 253 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_9
+Input to PutData: [-68, 26, 0, 0, 0, 0, -3, -32, 124, 116, 67, -109, 121, 97, 42, -71, -125, -115, -64, 28, 8, 63, -83, -123, -106, 2, 3, 11, -62, -47, -68, -48, 125, -114, 24, 56, 37, 91, 0, 6, -115, -125, -50, -121, 77, -31, 49, 101, -1, -98, 96, 125, 112, 88, -85, -23, 116, -67, 88, -49, -85, 110, -43, 60, 50, -104, -104, 28, 34, -66, -128, -27, 74, 39, -61, 3, -12, -20, 0, -3, 97, -99, 118, -57, 107, 75, -69, -89, -40, -62, 93, -93, 48, -31, 72, 63, -26, -35, -8, -20, -6, 78, 73, 99, 119, 57, 5, -31, -62, 56, 18, -17, -55, 127, 116, 96, 45, -34, -95, 67, 7, 97, 104, 6, -39, -34, -47, 110, -59, -125, 78, -56, 9, 93, -47, 10, -122, 96, -57, 100, 20, 81, 118, 68, 27, 37, -98, 20, -93, -79, 10, -106, -32, 121, 94, -8, 77, -110, -121, 22, -106, 97, -3, 38, 32, 12, 87, 16, 26, 54, 100, 45, -67, -105, -40, 17, 73, 80, 7, 6, -115, 68, 13, 70, 66, 67, 38, -94, -94, 60, 10, -125, -109, -11, 24, -67, 36, 32, 116, 18, -83, 4, -123, 88, 91, -84, -91, -51, 27, 6, 0, -41, -109, 81, -45, 19, -56, 76, -49, -122, -92, -109, -39, 76, 113, 16, 117, -64, 22, -104, -24, 32, -112, 78, 100, 124, -95, 88, 46, 86, -77, -11, 124, -35, -66, 63, -124, -44, 20, 40, 17, 116, -114, 4, -128, -19, -31, 37, -27, -60]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 54, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 57]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+storing a blob of size: 206 with uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_10
+Input to PutData: [-68, 26, 0, 0, 0, 0, -50, 90, 6, 17, 97, 88, 56, 15, -90, 70, 42, 64, -89, -23, -106, 73, -68, 39, -92, -40, -64, -100, 108, -97, -88, 124, -56, 65, 94, 94, 39, 9, 34, -45, 12, 73, 17, -59, -7, 48, 69, 88, 93, 34, -49, 96, -51, -118, 66, 23, 100, -122, 113, 32, -122, -39, -122, -104, -80, 2, 64, -68, 79, 73, 46, -52, 33, -106, 78, -24, -113, -106, -7, -58, -72, 30, 4, -106, 52, 83, 73, 25, -43, 87, 7, -68, -22, -92, 80, 10, 79, 77, 82, 40, -75, -16, 123, -76, -78, 36, 20, 42, 66, -23, -31, -79, 64, -122, -124, 6, 73, 18, 83, -56, 22, 99, 19, -75, 34, -119, 93, -40, 67, 95, 34, -61, 48, 89, 84, 56, -47, 12, -30, 18, -108, 43, 102, -93, 93, 100, 102, 96, -96, -80, 125, 85, -26, -93, -116, 2, -44, 18, 0, -98, -67, -22, 117, 81, 107, -52, -105, 74, -56, -37, -122, -10, -41, -66, -95, 61, 50, 43, -1, -128, 102, -13, 105, -81, 122, 77, 93, -18, -67, 115, 120, 55, 41, -36, -66, -48, -72, 123, 120, -105, 77, 29, 125, -13, 63, -24, -94, 30, 109, -45, 33, 0, 0]
+Response from putData: ResponseAPDU: 2 bytes, SW=9000
+Input for storeBlob: [-68, 112, 0, 0, 55, 49, 50, 51, 52, 100, 101, 118, 105, 99, 101, 45, 99, 114, 101, 100, 45, 54, 101, 97, 52, 101, 100, 98, 98, 45, 101, 52, 99, 48, 45, 52, 52, 98, 52, 45, 97, 50, 56, 49, 45, 49, 54, 54, 102, 55, 54, 101, 56, 52, 98, 49, 100, 95, 49, 48]
+Response from storeBlob: ResponseAPDU: 2 bytes, SW=9000
+May 09, 2017 4:05:32 PM eu.abc4trust.services.UserService createPresentationToken
+INFO: Time for /createPresentationToken/ : 15514459521 ns 
+May 09, 2017 4:05:36 PM eu.abc4trust.services.UserService createPresentationTokenFromUi
+INFO: UserService - createPresentationTokenUi 
+May 09, 2017 4:05:36 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserService loading...
+May 09, 2017 4:05:36 PM eu.abc4trust.services.UserService initializeHelper
+INFO: UserHelper is initialized
+Smartcards: secret://iot-smartcard-3362469
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<abc:IssuerParameters xmlns:abc="http://abc4trust.eu/wp2/abcschemav1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:idmx="http://zurich.ibm.com" xmlns:xs="http://www.w3.org/2001/XMLSchema" Version="3.0.0">
+    <abc:ParametersUID>http://ticketcompany/MyFavoriteSoccerTeam/issuance:idemix</abc:ParametersUID>
+    <abc:FriendlyIssuerDescription lang="en">Issuer parameters for MyFavoriteSoccerTeam</abc:FriendlyIssuerDescription>
+    <abc:FriendlyIssuerDescription lang="da">Issuer parameters for MyFavoriteSoccerTeam</abc:FriendlyIssuerDescription>
+    <abc:AlgorithmID>urn:idmx:3.0.0:block:sig:cl</abc:AlgorithmID>
+    <abc:SystemParametersUID>e095ea87-03e9-4552-bbe5-065fce97dd96</abc:SystemParametersUID>
+    <abc:MaximalNumberOfAttributes>20</abc:MaximalNumberOfAttributes>
+    <abc:HashAlgorithm>sha-256</abc:HashAlgorithm>
+    <abc:CryptoParams>
+        <abc:PublicKey Version="3.0.0" Technology="urn:idmx:3.0.0:block:sig:cl" SystemParametersId="e095ea87-03e9-4552-bbe5-065fce97dd96" PublicKeyId="http://ticketcompany/MyFavoriteSoccerTeam/issuance:idemix:61d2619e-6a90-46a6-ada1-4e87679924f9">
+            <abc:Parameter xsi:type="abc:IntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:maxAtts">
+                <abc:Value>20</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:UriParameter" Name="urn:idmx:3.0.0:issuer:publicKey:revauth">
+                <abc:Value>http://ticketcompany/revocation</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:0">
+                <abc:Value>7955359904955538704419777482875240452751793107809187606814480504474254782666122798624586931968648816026364504420721506478391483263391831054991455381748334056957596820303271154641205878835691747580559698769150748215873751614312609161896611796329480374019371754524738301319713563118238512741600821406658787955</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:1">
+                <abc:Value>56903761705010051428784688654959422401815475904701796035473086644526371321894686269495935840911769342751417135224122341542598629339719223078716474271250206576434522813657617352955060806045896921129935962569442209603202880700650603222421172419752962268186637960506983766833516866876892894315651651241673039526</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:2">
+                <abc:Value>63659688717256640073198031577464167871573238509418554126736190026240084360304678242174559241654558340357753035868123079532500229037945780014897773181292676394727178441127905679264137897384846461984178909336649109760670901725588685801000149452895893079149751718464259810183318918810632116919757133489685873184</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:3">
+                <abc:Value>14083939845093293422665748764919589872991785198756320998130630968198133627109475906463127644598289747738032559117967029807846624625983423057742144707241770884351435029974088437144579592877020088759832332265067308589038597933255702580367533420654277864664477269125511406411820351557151810177500956616559248358</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:4">
+                <abc:Value>20155751851725003868892488090394318718312279531884941689993608443931002288478792917062203001884235496208130509342020858207831709582679547111942338670083014898807045683993349650995350320838419197556118207571561293270462513925262047059915047871689827841889432228776600751221123444581895811260437369107164401553</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:5">
+                <abc:Value>20369657421646115168049313363314709470103871191831044028597445809056473943072619232322861368754577261805584940318587346594379184772222824295789351907860527473199285123026060667263352082472911857072974670663643144235783890727768028689925418262068758315327581203951285656564029684119155788260506835877255800599</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:6">
+                <abc:Value>64524214188483931212522378311254972455336415361176191439691168583988521778971663794372414239649534661883057474323234354667840108904902323281470035634903620656996388038394608812533074145306589173190755390949704292127431626085577460246440048551380306305490010055475334808249922172671884768392778991892313453460</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:7">
+                <abc:Value>52713633007528931704075183439625638655182268079221911045626702783411216600240246025002850019062540640466293828021518923903130289985826992506775724303490986329361882984226220853125690615845674252433744512777013368884567880672672414474924578241938047094819655259212114906380050080958585393128035696860437425984</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:8">
+                <abc:Value>6738037503586497352334976118323350703897726893589358776336070195524656253522601361338465041327220564203447705143402752880866352125675776121798635953485483198195801170417959638275058393257259280920649190566878973216032324433741165505958551839619633970071494037083264300638553482237880525521680235010457073390</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:9">
+                <abc:Value>38763631240991847444226083325481190300003536098828208202481290657640041471020178866680449969443515516336041135114027040622903053518747933079060242284047486951526706791396194194615208612050621644000935442861847826386267790358974930106392239244507556120922319625385233662173862962572216669404422652855404582116</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:10">
+                <abc:Value>36171097407936812713890355216067392457891592382112828274467768425653111970301447181200360900670486089643271652233125972386773163166559042952835142679084999168534769609139037119533541532502819850439935227723325664807405043776462292412273048157171084772395105143723099918329736786691430924113521789965976491058</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:11">
+                <abc:Value>34924637505511856335948989465844195230863609610396902984857828013834808329122663906538895689011012906909866920451540500039458163216376320102686326141158883977267341623170933599435787708762440740426164981638621445603846563200238155244036378515928690419112906326297602046728493561647646207534845913274814369256</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:12">
+                <abc:Value>59017209303911578691982439072555638535284609127183029576825097462828530754450473784412984086302120408610011865762335706098742253625103018040878830881868836416725690155107583668244413689410953173215740206465598191893562316543626435875156734438476190288307867237836562304716442021684628152187937287893589605741</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:13">
+                <abc:Value>63925788244421147922467538082753550210860630691557857401166269607147798877730430745613119606151083380936217050906079092944648594130970422860054153646290691099460010936851584103209166106044380493632747008232035117315659468481041845541868288573979549049525542223884607508232903658205862349557774380438542342120</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:14">
+                <abc:Value>31081613754861158919255362728783604798165553333405860928908687876145040528321001186278979431319659253832981394425114135029656254009678435077860411581233337792726174697913269651730936400704815775231404349396414908132824209427727329737278479349924347853016271495364890783534431312388495231700789812849193181000</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:15">
+                <abc:Value>50368303259380379007773342631744742839853138371014015338633597035501765087825005407191584022226390776897464460517219380328347780748646365504933613197705934987673035684843509400526413922165282371613649622463966214320592375101902516811078374571575991298989313631683231945967273301391360356257342521399198553501</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:16">
+                <abc:Value>67241945313771435915601450343288543606546857151972482815420175907160822762100222435739029186374762333235845747128158336998913569011602212418303739471745034671627270204085773217967657977516739616128077856579539575056742414940665911433713053919266832922394958258006307837347414633517224137548924542687984115676</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:17">
+                <abc:Value>16589763346362837470013323185061925202257523827588005603257015771259881626997626275657332620391050651254205209221863490236625912187234085035625327849179472575434505702034109799306316157099826183380368065861915592630521127211421362805725065890549308155128045079653255228687426774013343330144226601988633400063</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:18">
+                <abc:Value>39871150318773275671044482279659705951722512602379305508130809017933045118543899911050695547038583872870246954218412391795514351384792671721061303593986356521459125769025112650755174825217420376328632047896172227893586898637004033896382745607662781423504018859879537998097956455345671324709985913095375235780</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:19">
+                <abc:Value>28668883465318743619451650428368290849332366609233634572420437087685338106516984201537843156697949101726625260653979395006064013397035991501651300880750574256045148808528542963426561561774401526465682461301680039027556327114650306035771427609844503306074750319423183567199973224784907830200241821538941679465</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:t">
+                <abc:Value>41905930192316678638502730081428007646508452541487932590071797243227247829707614485526252315259690610300411846904923252725265296562106399602941725317936781424358194439948857066831635821332118096331395469198013434569308088039470442408281215966496651265709372726602740790832703276984198757943967178901797710909</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:d">
+                <abc:Value>55952054561073019192739163611483557227303499777002386629867381385376929347968679944828803740207898320884869223111867092888851676779537952584895586856425534351198055531976511388096539638268610813282451224366998935787271499622118351091299665300286839953389624748790139325924211376772121596744184494014188256515</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:rsaModulus">
+                <abc:Value>149484284644847762205555728049269150661643974773512300001637146085873895619468919814302778064007571485775228764657366277160538153243021621742705422264749314801670444927329995480578582481138056780402955170911078056014128042196716827577893973800148915677461453763574723652475351923094822675944133140652058319569</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:Z">
+                <abc:Value>13784211359848192806070036934414496405205158465356547611951439664610756889095465450655949231602430745227490507463522362118087881062502475437613693836075133002929138926379471626446023159870057190136279089919679417703027937870721846872240311667898925421027084176595642200750711976294520664694671360795881193724</abc:Value>
+            </abc:Parameter>
+            <abc:Parameter xsi:type="abc:BigIntegerParameter" Name="urn:idmx:3.0.0:issuer:publicKey:base:S">
+                <abc:Value>59118556936220173581130584450030151893930549418342945503067522920760813071305028768495825831336504070723201792777909725264761072415343813440579121652731257897789946993923099075677978126638247691732629445472783436538997823614908374913251346642064708947852441973221298693234722353996302484274150698831132463220</abc:Value>
+            </abc:Parameter>
+        </abc:PublicKey>
+    </abc:CryptoParams>
+    <abc:RevocationParametersUID>http://ticketcompany/revocation</abc:RevocationParametersUID>
+</abc:IssuerParameters>
+
+Accumulated this many bytes: 0
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_1
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_1 : 253
+Accumulated this many bytes: 253
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_2
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_2 : 253
+Accumulated this many bytes: 506
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_3
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_3 : 253
+Accumulated this many bytes: 759
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_4
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_4 : 253
+Accumulated this many bytes: 1012
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_5
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_5 : 253
+Accumulated this many bytes: 1265
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_6
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_6 : 253
+Accumulated this many bytes: 1518
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_7
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_7 : 253
+Accumulated this many bytes: 1771
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_8
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_8 : 253
+Accumulated this many bytes: 2024
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_9
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_9 : 253
+Accumulated this many bytes: 2277
+getting this uri: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_10
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d_10 : 206
+Cached readBlob: deviceName : 30
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d : 1
+Input for readCredential: [-68, 86, 0, 0, 5, 49, 50, 51, 52, 1, 7]
+Reading the on-board credential with ID=1
+Response from readCredential: ResponseAPDU: 9 bytes, SW=9000
+With the data: [1, 0, 32, 74, 0, 2, 0]
+Cached readGenerator: 1 : 1 : 55952054561073019192739163611483557227303499777002386629867381385376929347968679944828803740207898320884869223111867092888851676779537952584895586856425534351198055531976511388096539638268610813282451224366998935787271499622118351091299665300286839953389624748790139325924211376772121596744184494014188256515
+Cached readGenerator: 1 : 2 : 59118556936220173581130584450030151893930549418342945503067522920760813071305028768495825831336504070723201792777909725264761072415343813440579121652731257897789946993923099075677978126638247691732629445472783436538997823614908374913251346642064708947852441973221298693234722353996302484274150698831132463220
+Cached readGroupComponent: 1 : 0 : 149484284644847762205555728049269150661643974773512300001637146085873895619468919814302778064007571485775228764657366277160538153243021621742705422264749314801670444927329995480578582481138056780402955170911078056014128042196716827577893973800148915677461453763574723652475351923094822675944133140652058319569
+Cached readGroupComponent: 1 : 1 : 0
+Cached getCredentialPublicKey: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d - 142024750957705028453382489883330907679222023558386435673950195127415580795096821916710687228342163468858062091533750786524946290444298520131526861670795418100247868530298772154429890925270902094836912418969987189966727751467382060586418843985913286824009907723109469307320087199257590181509709080556313985012
+Input for startCommitments: [-68, 78, 0, 0, 5, 49, 50, 51, 52, 1]
+Response from startCommitments: ResponseAPDU: 2 bytes, SW=9000
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d : 1
+Input for readCredential: [-68, 86, 0, 0, 5, 49, 50, 51, 52, 1, 7]
+Reading the on-board credential with ID=1
+Response from readCredential: ResponseAPDU: 9 bytes, SW=9000
+With the data: [1, 0, 32, 74, 0, 2, 0]
+Input for getPresentationCommitment: [-68, 96, 0, 0, 0, 0, 5, 49, 50, 51, 52, 1, 0, 0]
+Response from getPresentationCommitment: ResponseAPDU: 130 bytes, SW=9000
+Challenge comming in: 48517711664038728236800357876609070180243808605218437899685296134082433876118
+Challenge going out: 48517711664038728236800357876609070180243808605218437899685296134082433876118
+The same? true
+Challenge bytes length after removing sign bit: 32
+data length: 37
+Input for startResponses: [-68, 80, 0, 0, 0, 0, 37, 49, 50, 51, 52, 1, 107, 68, 13, 57, 55, 30, -64, 61, 23, 53, 29, 40, -121, -92, -70, -85, 52, 77, 100, 94, -52, -18, -23, -5, -117, -64, -106, -49, 92, -49, -128, -106]
+Response from startResponses: ResponseAPDU: 2 bytes, SW=9000
+And this is the output: []
+Input for getDeviceResponse: [-68, 104, 0, 0, 0, 0, 4, 49, 50, 51, 52, 0, 0]
+Response from getDeviceResponse: ResponseAPDU: 35 bytes, SW=9000
+And this is the output: [-71, 52, 64, -125, 37, 20, 83, -28, 118, 73, 76, 103, 100, -58, 98, -73, -123, 114, -99, -22, 36, -55, 45, 64, -47, -112, -15, 28, 32, -19, -102, -118, -50]
+which gives this BigInteger: 21445170760370402035578873167747350366962496872122717885345562300274755380087502
+Cached readBlob: device-cred-6ea4edbb-e4c0-44b4-a281-166f76e84b1d : 1
+Input for readCredential: [-68, 86, 0, 0, 5, 49, 50, 51, 52, 1, 7]
+Reading the on-board credential with ID=1
+Response from readCredential: ResponseAPDU: 9 bytes, SW=9000
+With the data: [1, 0, 32, 74, 0, 3, 0]
+Presentation. Status: 3
+Input for getPresentationResponse: [-68, 98, 0, 0, 0, 0, 5, 49, 50, 51, 52, 1, 0, 0]
+Response from getPresentationResponse: ResponseAPDU: 150 bytes, SW=9000
+data returned: size: 148 value: [-102, 90, -40, 12, -125, -123, 12, -103, -36, -105, 97, 33, 69, 38, 10, 126, -31, 1, 84, -68, 118, 73, -2, -50, -79, 66, 84, -94, -115, 97, 124, -98, -31, -86, 62, 96, -33, -94, 56, 24, -121, 27, -59, 64, -125, 37, 20, 83, -28, 118, 73, 76, 103, 100, -58, 98, -73, -123, 114, -99, -22, 36, -55, 45, 64, -47, -112, -15, 28, 32, -19, -102, -118, -50, 32, -105, -23, -71, 119, 41, 70, 62, -66, -51, 123, 111, -44, -45, -54, -98, 104, 18, -10, -118, -51, 31, -127, 119, -42, 49, 46, 84, -18, -78, 118, 5, -26, -89, -92, -36, 83, -25, -1, 97, -11, 59, -96, -75, -3, 44, -76, -77, -53, 49, 92, -125, -7, -54, -15, 122, -8, -78, -31, 105, 56, 62, -3, 48, -71, -40, -90, 45, 95, 91, -110, -19, -22, -20]
+zx: [-102, 90, -40, 12, -125, -123, 12, -103, -36, -105, 97, 33, 69, 38, 10, 126, -31, 1, 84, -68, 118, 73, -2, -50, -79, 66, 84, -94, -115, 97, 124, -98, -31, -86, 62, 96, -33, -94, 56, 24, -121, 27, -59, 64, -125, 37, 20, 83, -28, 118, 73, 76, 103, 100, -58, 98, -73, -123, 114, -99, -22, 36, -55, 45, 64, -47, -112, -15, 28, 32, -19, -102, -118, -50]
+zv: [32, -105, -23, -71, 119, 41, 70, 62, -66, -51, 123, 111, -44, -45, -54, -98, 104, 18, -10, -118, -51, 31, -127, 119, -42, 49, 46, 84, -18, -78, 118, 5, -26, -89, -92, -36, 83, -25, -1, 97, -11, 59, -96, -75, -3, 44, -76, -77, -53, 49, 92, -125, -7, -54, -15, 122, -8, -78, -31, 105, 56, 62, -3, 48, -71, -40, -90, 45, 95, 91, -110, -19, -22, -20]
+ReadIssuer - use cached : [1, 1, 2, 0, 0]
+Info: this is an IDEMIX ISSUER. We thus set zv: 2063703348740555152155241809453747954684404643030806177410352020826238113943642436486097106180679812874997229755701199958970556623487507515134766757839173810867375458120559880940
+May 09, 2017 4:05:54 PM eu.abc4trust.services.UserService createPresentationTokenFromUi
+INFO: Time for /createPresentationTokenUi/ : 18148398497 ns 
+
+
