@@ -1,6 +1,8 @@
 #ifndef __APDU_HANDLER_H
 #define __APDU_HANDLER_H
 
+#include "defs_types.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
