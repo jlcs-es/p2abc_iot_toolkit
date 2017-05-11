@@ -1,0 +1,20 @@
+
+pi@raspberrypi:~ $ ./testSocket.py 
+8.86880803108
+pi@raspberrypi:~ $ ./testSocket.py 
+7.69553089142
+pi@raspberrypi:~ $ ./testSocket.py 
+8.49048113823
+pi@raspberrypi:~ $ ./testSocket.py 
+8.76996183395
+pi@raspberrypi:~ $ ./testSocket.py 
+7.99581718445
+pi@raspberrypi:~ $ ./testSocket.py 
+7.90837693214
+pi@raspberrypi:~ $ ./testSocket.py 
+9.26355600357
+pi@raspberrypi:~ $ ./testSocket.py 
+9.36829900742
+pi@raspberrypi:~ $ ./testSocket.py 
+8.24423789978
+
