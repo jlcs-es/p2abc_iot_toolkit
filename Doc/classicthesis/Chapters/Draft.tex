@@ -507,3 +507,147 @@ The \textit{output\_large\_data} function is a tool used in MULTOS smart cards t
 
 A future change to the project may include support for Extended APDUs, avoiding the use of multiple GET RESPONSE. To do this, the \textit{output\_large\_data} function and the \textit{IoTsmartcardio} implementation of \textit{javax.smartcardio} must support the feature.
 
+
+
+\section{Performance Evaluation}
+
+\subsection{Testbed description}
+
+% Hardware, network, 
+
+\subsubsection{P2ABCE setting}
+
+To test the correct execution of the IoT smart card, we will use the ABC system from the tutorial in the P2ABCE Wiki \citep{p2abcurlwiki}. It is based on a soccer club which wishes to issue VIP-tickets to a soccer match. The VIP-member number in the ticket is inspectable for a lottery, ie. after the game, a random presentation token is inspected and the winning member is notified.
+
+First the various entities are \textbf{setup}, where several artifacts are generated and distributed. Then a ticket credential containing the following attributes is issued:
+
+\begin{verbatim}
+First name: John
+Last name: Dow
+Birthday: 1985-05-05Z
+Member number: 23784638726
+Matchday: 2013-08-07Z
+\end{verbatim}
+
+During \textbf{issuance}, a \textit{scope exclusive pseudonym} is established and the newly issued credential is bound to this pseudonym. This ensures that the ticket credential can not be used without the smart card.
+
+Then \textbf{presentation} is performed. The \textit{presentation policy} specifies that the member number is inspectable and a predicate ensures that the matchday is in fact $2013-08-07Z$. This last part ensures that a ticket issued for another match can not be used.
+
+The ticket holder was lucky and his presentation token was chosen in the lottery. The presentation token is therefore inspected.
+
+
+\hfil
+
+\subsubsection{Execution environment}
+
+First we will execute the test in our development machine (laptop). After asserting that the services work as expected, we then run the test in a Raspberry Pi 3, exactly like in the laptop. Finally, we will deploy the IoT smart card in a Omega2 and the delegation services in the Raspberry Pi 3. After every test, we checked that the issuing and proving were successful, in case a cryptographic error appeared in the implementation. 
+
+Lets have a closer look at the hardware of each device:
+
+
+\paragraph{Development laptop}\marginpar{
+	\vskip0pt
+	\includegraphics[width=0.8\linewidth]{gfx/DELL}
+	
+	DELL XPS 15
+}
+Our device is a DELL XPS 15, with a Core i7-6700HQ at 3.5GHz quad core processor and 32GB of DDR4 RAM, running Ubuntu 16.10.
+
+This is a powerful machine that can simulate the performance of many servers and clients that would implement P2ABCE in a real environment, giving a reference point for performance comparisons.
+
+\paragraph{Raspberry Pi 3}\marginpar{
+	\vskip0pt
+	\includegraphics[width=0.8\linewidth]{gfx/RPi3}
+	
+	Raspberry Pi 3
+} A familiar environment, powerful enough to debug and hold the delegated P2ABCE Java services of P2ABCE with its 1GB of RAM, and with two network interfaces, perfect to work as the gateway for the IoT devices to the Internet.
+
+Only a microSD with enough space to burn the OS is needed to plug\&play with the Raspberry Pi. We use Raspbian, a stable Debian based distro, recommended by the Raspberry Pi designers, and ready to use with the P2ABCE compiled \textit{self-contained .jar} services.
+
+\begin{table}[h]
+	\myfloatalign
+	\begin{tabularx}{0.75\textwidth}{ll} \toprule
+		CPU & ARMv8 64bit quad-core @1.2GHz \\
+		RAM & 1GB \\
+		Storage & microSD \\
+		Firmware & Raspbian (Debian based distro) \\
+		Connectivity & Wifi n + Ethernet \\
+		Power & 5V 2A \\
+		\bottomrule
+	\end{tabularx}
+	\caption[Raspberry Pi 3 Specifications]{Raspberry Pi 3 Specifications.}
+	\label{tab:RPi3Specs}
+\end{table}
+
+
+\paragraph{Onion Omega2}\marginpar{
+	\vskip0pt
+	\includegraphics[width=\linewidth]{gfx/Omega2}
+	
+	Onion Omega2
+} A device that falls inside the category of IoT, powerful enough to run a Linux environment, LEDE, where we can develop and debug the first PoC without troubling ourselves with problems not related to the project itself.
+
+
+\begin{table}[h]
+	\myfloatalign
+	\begin{tabularx}{0.75\textwidth}{ll} \toprule
+		MCU & Mediatek MT688 \citep{MT7688} \\
+		CPU & MIPS32 24KEc 580MHz \\
+		RAM & 64MB \\
+		Storage & 16MB \\
+		Firmware & LEDE (OpenWRT fork distro) \\
+		Connectivity & Wifi b/g/n \\
+		Power & 3.3V 300mA \\
+		\bottomrule
+	\end{tabularx}
+	\caption[Onion Omega 2 Specifications]{Onion Omega2 Specifications.}
+	\label{tab:Omega2Specs}
+\end{table}
+
+
+
+Nonetheless, the Omega2 needs fine tunning to start operating, and basic knowledge of electronics to make it work. The two main things to begin with Omega2 are:
+\begin{itemize}
+	\item A reliable 3.3V with a maximum of 800mA power supply, e.g. a USB2.0 with a step-down circuit, with quality soldering and wires to avoid unwanted resistances. The Omega2 will usually use up to 350mA, when the WiFi module is booting up. The mean consumption is about 200mA.
+	\item A Serial to USB adapter wired to the TX and RX UART pins to use the Serial Terminal, to avoid the use of SSH over WiFi.
+\end{itemize}
+
+
+Also, we will need a cross-compiler to generate the smart card binary. Because we will use GMP and OpenSSL as shared libraries, the best option is to use the LEDE SDK. The SDK manages the available packages and generates the GCC toolchain. Also, using CMake, 
+%TODO
+
+
+\paragraph{The network} In our third scenario, the Raspberry Pi 3 and the Omega2 will talk to each other over TCP. This implies possible network delays depending on the quality of the connection. The Raspberry Pi 3 is connected over Ethernet to a switch with WiFi access point. The Omega2 is connected over WiFi n to said AP. To ensure the delay wasn't significant, we measured 6000 APDU messages, and the results show that the mean transmission time is less than half a millisecond per APDU. As we will see in the results section, this network time is negligible.
+
+
+
+\subsection{The test code}
+
+There are three pieces of software that conform the test: the P2ABCE services, the IoT smart card, and a shell script automatizing the REST calls to all the services.
+
+\paragraph{P2ABCE services} This is the common part to our three sets. The services are compiled in a self-contained Jetty web server, or in WAR format, ready to be deployed in a server like Tomcat. We use the same JAR files with the Jetty web server for the PC and Raspberry Pi.
+
+We modified the User Service code to measure the execution time for each REST method. The time stamp starts inside the method and ends before it's \textit{return} instruction. This way, we filter the time the server spends processing the HTTP protocol and deciding which Java method to call.
+
+
+\paragraph{IoT smart card} Our C implementation of the P2ABCE smart card, compiled for the Omega2, with BIOSC listening on port 8888 for the APDU messages.
+
+We tested the execution in two modes, a full logging where every step was printed in terminal, and another one with no logging. With the first mode, we can check a proper execution, every byte exchanged, and with the second one, we measure the execution without unnecessary I/O.
+
+\paragraph{Shell script} To orchestrate all the services we use a simple script that performs the REST calls using  \textit{curl}. Here we perform the mentioned steps: setup of the P2ABCE system, issuance of the credential and a prove for the presentation policy.
+
+In the setup, the system parameters are generated, indicating key sizes of 1024 bits, the ones currently supported by the ABC4Trust and IoT smart cards. Then the system parameters and public keys from the services (issuer, inspector, revocation authority) are also exchanged.
+
+In the issuance, a two step protocol is performed by the User. The Issuer and the User send each other the XML data with the cryptographic information, and finish the protocol with a credential issued inside a smart card, software (Java) or hardware (physical or IoT).
+
+Finally, a Verifier sends the User a \textit{presentation policy}. The User generates a \textit{presentation token} for the Verifier and Inspector.
+
+
+%%%%%
+There are two script versions, one where every REST call is done from the same machine, therefore avoiding the exchange of the XML files by other means (like \textit{scp}); the other one is ready to be executed on a real setup, two scripts, one for the Omega2, where the REST calls are the delegation on the Raspberry Pi 3, and other for the PC, running the Issuer and Verifier as third party entities. The XML files generated by each service can be sent with the same protocol the IoT device and the Verifier, for example, would communicate in the real world. This way it's clearer that the \textit{curl} commands are the delegation protocol for the IoT device, and then the IoT device can send the XML as it wishes, over the Internet, Bluetooth, NFC, etc.
+%%%%%
+
+
+
+\subsection{Results}
+
