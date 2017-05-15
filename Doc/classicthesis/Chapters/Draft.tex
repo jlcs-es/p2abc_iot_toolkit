@@ -619,6 +619,9 @@ Also, we will need a cross-compiler to generate the smart card binary. Because w
 
 \paragraph{The network} In our third scenario, the Raspberry Pi 3 and the Omega2 will talk to each other over TCP. This implies possible network delays depending on the quality of the connection. The Raspberry Pi 3 is connected over Ethernet to a switch with WiFi access point. The Omega2 is connected over WiFi n to said AP. To ensure the delay wasn't significant, we measured 6000 APDU messages, and the results show that the mean transmission time is less than half a millisecond per APDU. As we will see in the results section, this network time is negligible.
 
+\paragraph{Future work in tests} The lack of a physical MULTOS smart card precludes us to load and test the ABC4Trust code and measure the time P2ABCE needed using the \textit{HardwareSmartcard} class. This would be really interesting because for a single method from the \textit{Smartcard} interface, \textit{HardwareSmartcard} needs to send various APDUs, but \textit{SoftwareSmartcard} can perform the operations immediately.
+
+
 
 
 \subsection{The test code}
@@ -648,6 +651,86 @@ There are two script versions, one where every REST call is done from the same m
 %%%%%
 
 
-
 \subsection{Results}
 
+After 15 executions for each scenario (laptop, RPi3, Omega2), we take the means and compare each step.
+
+It is worth noting first that during the test, the measured use of the CPU showed that P2ABCE does not benefit of multi core processors, therefore, it only uses one of the four cores in the Raspberry Pi 3.
+
+\paragraph{The network}
+To test the network we sent six thousand APDUs to the Omega2, but instead of calling the \textit{APDU handler}, the Omega2 responded with the same bytes back. This way, the Omega2 only performed the simple BIOSC protocol, reading and writing the TCP socket.
+The APDUs had multiple sizes, taken from the most common APDUs logged in a successful execution. The test showed that our test network speed was around $0.014$ ms per byte.
+
+
+\paragraph{The setup}
+Because the Omega2 doesn't intervene until the creation of the smart card, the times measured in the second and third scenarios are practically identical.
+
+% TODO : table y gráfico
+
+As we can see, the laptop is about ten times faster than Raspberry Pi 3, but considering that the highest time is less than two and a half seconds, and that the setup is done only once, this isn't a worrisome problem.
+
+\paragraph{Creation of the smart card}
+Here we create a \textit{SoftwareSmartcard} or a \textit{HardwareSmartcard} object that the User service will use in the following REST calls.
+
+The REST method to create a \textit{SoftwareSmartcard} is $/createSmartcard$, and to create a \textit{HardwareSmartcard}, using the \textit{IoTsmartcardio} implementation, we use $/initIoTsmartcard$.
+
+% TODO: gráfico y tabla
+
+\begin{figure}[bth]
+	\myfloatalign
+	\subfloat[Times and relative speedup]
+	{\includegraphics[width=.45\linewidth]{gfx/graphics/createSCtable}} \quad
+	\subfloat[Comparison graph]
+	{\includegraphics[width=.4\linewidth]{gfx/graphics/createSC}} \\
+	\caption{Create smart card times (seconds)}
+	\label{fig:createSmartCard:graph}
+\end{figure}
+
+The RPi3 is about 16 times slower than the laptop in the creation of the \textit{SoftwareSmartcard}, but almost 9 times faster than the setup of the smart card in the Omega2 using APDUs. This gives us that the laptop is 145 times faster than the combination of RPi3 and Omega2.
+
+Again, this operation is done only once per device, and includes commands from the creation of the PIN and PUK of the smart card, to storing the system parameters of P2ABCE, equivalent to the previous setup step.
+
+
+\begin{figure}[bth]
+	\begin{center}
+		\includegraphics[width=0.8\linewidth]{gfx/APDUsInitIoTSC}
+	\end{center}
+	\caption{Init IoT Smart Card APDU Commands exchanged.}
+	\label{fig:APDUsInitIoTSC}
+\end{figure}
+
+This is the first interaction between the RPi3 and the Omega2 IoT smart card, using 30 APDU Commands, and Responses, as shown in \autoref{fig:APDUsInitIoTSC}, with a total of 1109 bytes exchanged. From our network benchmark, using TCP sockets, the delay in the transmission is only around 15 and 20 ms, negligible as we said compared to the almost 20 seconds the operation lasts.
+
+
+\paragraph{Issuing of the credential}
+%TODO
+\begin{figure}[bth]
+	\begin{center}
+		\includegraphics[width=\linewidth]{gfx/IssuanceInteraction}
+	\end{center}
+	\caption{Issuance interaction.}
+	\label{fig:IssuanceInteraction}
+\end{figure}
+
+
+\begin{figure}[bth]
+	\begin{center}
+		\includegraphics[width=0.7\linewidth]{gfx/IssuanceAPDUs}
+	\end{center}
+	\caption{Issuance APDU Commands.}
+	\label{fig:IssuanceAPDUs}
+\end{figure}
+
+\paragraph{Presentation}
+%TODO
+
+
+\begin{figure}[bth]
+	\begin{center}
+		\includegraphics[width=0.7\linewidth]{gfx/APDUsProving}
+	\end{center}
+	\caption{Proving APDU Commands.}
+	\label{fig:APDUsProving}
+\end{figure}
+
+To ensure that all the process was successful, it's enough to check if the Verifier and the Inspector returned XML files, accepting the prove, or an error code. Of course, every execution measured in the test was successful.
