@@ -1,0 +1,61 @@
+%************************************************
+\chapter{Introduction}\label{ch:introduction}
+%************************************************
+
+The \ac{IoT} is a term with a wide range of interpretations \citep{Atzori20102787}, but a breaf definition could be the set of devices, mainly resource constrained, that are interconnected between them in order to achieve a goal. This includes examples like lampposts with proximity sensors that talk to each other in order to light up part of the street when a passerby walks by, greenhouses with automated irrigation, or cars exchanging traffic data.
+
+Thanks to organizations like \href{https://wikileaks.org/}{WikiLeaks}, people are aware of the implications of their data on the Internet, demanding more security and privacy for it. This includes not only the data shared with others, where one must trust they will keep it safe, but it's also the data collected about us and that we don't have direct control over it. The attack Sony suffered in 2011 to PSN \citep{PSN2011} is an example of the trust people had in Sony to store their billing information, and because the security of that information depended on both them and Sony, people found themselves compromised unable to do anything about it. 
+
+With the proliferation of IoT devices gathering as much information as they can with their sensors, the amount of data gathered about anyone can be immense. And IoT has proved to not address neither security nor privacy, with recent events like the Mirai botnet DDoS attack on October 2016, considered the biggest DDoS in history \citep{jeyanthi:2017}, or the multiple vulnerabilities affecting house devices, like baby monitors \citep{rapid7babycam}.
+
+
+To address this problem of privacy in the Internet, a recent approach is the concept of \textit{strong anonymity}, that conceals our personal details while letting us continue to operate online as a clearly defined individuals \citep{stronganonymity}. One very promising way to achieve this is using \acp{ZKP}
+\marginpar{To read more about ZKPs, refer to my Mathematics thesis \citep{tfgmates}.}
+, cryptographic methods that allows to proof knowledge of data without disclosing it.
+
+To understand how ZKPs work, in 1990 Guillou, Quisquater and Berson published in \textit{How to Explain Zero-Knowledge Protocols to Your Children} \citep{ZKPcave:story} a story about how Ali Baba proved he knew the magic words to open the cave, but without revealing the words to anyone. Here we present a brief version highlighting the properties of ZKP.
+
+\hfil
+
+\begin{quote}
+	Imagine a cave, where the path forks in two passages, and at the end of each one, they join again, with the shape of a ring. In the point the paths meet, there is a magic door, that only opens when someones pronounces the magic work.
+	
+	\textbf{P}eggy knows the secret word and wants to \textbf{p}rove it to her friend, \textbf{V}ictor, but without revealing it.
+	\marginpar{\includegraphics[width=1.\linewidth]{gfx/graficoJL_ZKP_1}\\The cave \citep{ZKPcave:fig}
+		. Peggy takes randomly A or B. Victor awaits outside.}
+	Peggy and Victor meet at the entrance of the cave, then Victor awaits while Peggy goes inside the cave, taking one of the passages, that we will name A and B. Victor can't see which way Peggy went. 
+	
+	When Peggy arrives at the door, \textbf{V}ictor enters the cave, and when he arrive to the fork, stops and yells which path, A or B, he wants Peggy to come back, to \textbf{v}erify she knows how to open the door.
+	
+	If Peggy actually knows the secret, she always can take the requested path, opening the magic door if needed.
+	\marginpar{\includegraphics[width=1.\linewidth]{gfx/graficoJL_ZKP_2}\\The cave. Victor chooses randomly the returning path for Peggy.}
+	But if Peggy doesn't know the magic word, she had a chance of $50\%$ to guess correctly what passage Victor was going to ask. That means she had a chance to fool Victor.
+	
+	Victor then asks to repeat the experiment. With $20$ repetitions, the chances Peggy fools Victor in all of them is only  $2^{-20}$,
+	\marginpar{\includegraphics[width=1.\linewidth]{gfx/graficoJL_ZKP_3}\\The cave. Peggy returns by the requested path.}
+	
+	\textbf{E}ve, curious about what Victor and Peggy were doing in the cave, \textbf{e}avesdrop Victor during the process. The problem is that Eve doesn't know if Peggy and Victor agreed on what paths to choose, because they wanted to prank her for being busybody. Only Victor is confident he is choosing the returning passage randomly.
+	
+	Later, Victor is convinced that the door can be opened and Peggy knows the word, but he can't prove it to Eve because he can't open the door. 
+\end{quote}
+
+
+
+
+
+Based on ZKP properties, IBM has developed the Identity Mixer, Idemix for short, protocol suite for privacy-preserving authentication and transfer of certified attributes \citep{idemixurl}. It allows user authentication without divulging any personal data. Users have a personal certificate with multiple attributes, but they can choose how many to disclose, or only give a proof of them, like being older than 18 years-old, living in a country without revealing the city, etc. Thus, no personal data is collected that needs to be protected, managed, and treated.
+
+\begin{center}
+	\textit{``If your personal data is never collected, it cannot be stolen.''}
+\end{center}
+
+The goal of this project is to integrate Idemix with the IoT. It will be done using the ABC4Trust's \ac{P2ABCE}, a framework that defines a common architecture, policy language and data artifacts for an attribute based ecosystem, cryptographically based on either IBM's Idemix or Microsoft's U-Prove \citep{p2abcurl}. This gives us a standardized language to exchange Idemix's messages between IoT devices and any other P2ABCE actor.
+
+\hfil
+
+
+\section{Outline of this thesis}
+
+%TODO
+TODO: organización, basada en los objetivos
+
