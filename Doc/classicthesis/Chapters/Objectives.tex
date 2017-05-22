@@ -51,18 +51,21 @@ Finally, the PoC must be evaluated to assert we achieved our goals, and measure 
 
 \section{Analysis of P2ABCE}
 
-% TODO: explicar P2ABCE
+In the P2ABCE repository \citep{p2abcurl} there is available the project's code, divided in two solutions: a complete P2ABCE implementation in Java and a MULTOS smart card implementation as PoC for the project.
 
 
-In the \ac{P2ABCE} repository \citep{p2abcurl} is available the project's code, divided in two solutions: a complete P2ABCE implementation in Java and a Multos Smartcard implementation as companion for the project.
+\subsection{P2ABCE system}
+%TODO: actores y sus papeles
 
-The Java code is managed by a Maven project, structured using various known design patterns, but not of our interest. The structure we are actually interested in are the REST Services and their use of the Components classes, in which the smartcards are included.
 
-P2ABCE project is based on the concept of smartcards to store the credentials, logical or physical. An interface is defined to communicate with these smartcards, and then different implementations allow to use either \textit{Software Smartcards} or \textit{Hardware Smartcards}. 
+\subsection{P2ABCE Structure and Services}
+The Java code is managed by a Maven project, structured using various known design patterns, but not of our interest. The part we are actually interested in are the \textit{REST Services} and their use of the \textit{Components} classes, where the smart card's logic and use are defined.
 
-The \textit{SoftwareSmartcard} class implements the interface in Java, suitable for tests and self-stored smartcards that any application using P2ABCE may need.
+P2ABCE project is based on the concept of smart cards, virtual or physical, to store the credentials. An interface is defined to communicate with these smart cards, and then different implementations allow to use either \textit{Software Smartcards} or \textit{Hardware Smartcards}. 
 
-The \textit{HardwareSmartcard} class uses the standard APDU messages [TODO:ref] to interact with smartcards. P2ABCE defines for every method in the mentioned interface, the necessary APDU instructions, and currently relies on \textit{javax.smartcardio} abstract classes (implemented by Oracle in their JRE) to communicate with the smartcard reader. This way, it doesn't matter what manufacturer issues the smartcard, or if it's an Android device, if they support the APDU API, P2ABCE will work with them.
+The \textit{SoftwareSmartcard} class implements the interface in Java, suitable for applications using P2ABCE self-storing digital smart cards, like a virtual wallet.
+
+The \textit{HardwareSmartcard} class uses the standard APDU messages (\ref{subsec:APDU}) to interact with smartcards. P2ABCE defines the necessary APDU instructions for the smart card needed to implement each method of the interface. It relies on \textit{javax.smartcardio} abstract classes (implemented by Oracle in their JRE) to communicate the smart card reader and the smart card. This way, it doesn't matter what manufacturer issues the smartcard, or if it's an Android device with NFC, if they support the APDU instructions, P2ABCE will work with them.
 
 \begin{figure}[bth]
 	\begin{center}
@@ -73,30 +76,19 @@ The \textit{HardwareSmartcard} class uses the standard APDU messages [TODO:ref] 
 \end{figure}
 
 
-As a PoC the P2ABCE project includes the ABC4Trust Card Lite, an implementation for ML3-36K-R1 Multos Smartcards. The code is written in C, but is very dependent on the Multos framework, aside from numerous bugs and bad coding habits. 
+\hfil
 
+The project also provides a set of REST services to control each role of the P2ABCE systeam (User, Issuer, Verifier, Inspector, etc.). The methods implemented include the creation of \textit{Software} smart cards within the User Service, and store them in a data base for future REST calls that may need them.
 
+The services receive parameters like the length of the cryptographic keys, IDs, or XML files to parse. The REST API is not meant for a User Service to communicate with an Issuer Service, for example, but for the User actor to call the Engine through the User Service, to perform specific actions, and then the Service returns the response XML. Those XML files are the way to communicate two different actors. The transmission method to exchange the XML depends on the specific scenario.
 
-At this stage, we have two options to implement our IoT device compatible with P2ABCE:
-
-\begin{itemize}
-	\item Implement in C the \textit{Smartcard} interface used by P2ABCE architecture, and use some communication protocol to remotelly call the methods from the machine running the P2ABC Engine.
-	\item Present the IoT device as a hardware smart card, using the APDU protocol (already defined, standard and with minimal overload). Providing a \textit{javax.smartcardio} ``IoT implementation'' to communicate with the IoT device through a transmission protocol, the already existing \textit{HardwareSmartcard} class can work with the new \textit{IoTSmartcard} in the IoT device.
-\end{itemize}
-
-
-%TODO : hablar más de los servicios REST
 
 
 \subsection{ABC4Trust Card Lite}
 
-%TODO: as part of P2ABCE project, this MULTOS PoC
+As a PoC the P2ABCE project includes a smart card reference implementation, the ABC4Trust Card Lite \citep{ABC4TCardLite}. It supports device-bound U-Prove and Idemix, and virtually any discrete logarithm based pABC system.
 
-%TODO: check content
-
-P2ABCE provides a smart card reference implementation, ABC4Trust Card Lite \citep{ABC4TCardLite}. It supports device-bound U-Prove and Idemix, and virtually any discrete logarithm based pABC system.
-
-Version 1.2 is based on MULTOS ML3 cards, with approximately 64KB of EEPROM (non-volatile memory), 1KB of RAM and an Infineon SLE 78 microcontroller, a 16-bit based CPU aimed for chip cards.
+Version 1.2 is written for \texttt{ML3-36K-R1} MULTOS smart cards, with approximately 64KB of EEPROM (non-volatile memory), 1KB of RAM and an Infineon SLE 78 microcontroller, a 16-bit based CPU aimed for chip cards.
 
 The card stores the user's private key $x$ and any \ac{BLOB} that the P2ABCE may need (like user's credentials). Then P2ABCE delegates the cryptographic operations on the smart card, that operates with $x$.
 
@@ -108,35 +100,46 @@ The card stores the user's private key $x$ and any \ac{BLOB} that the P2ABCE may
 	\label{fig:ABC4TCardLite}
 \end{figure}
 
-The cryptographic operations performed by the smartcard are the modular exponentiation and addition that discrete logarithm ZKPs are based on.
+The cryptographic operations performed by the smartcard are the modular exponentiation and addition used by ZKPs based on the discrete logarithm problem.
 
 \hfil
 
-The code is available from the P2ABCE project and has some good and bad points to have in count:
+The code is available from the P2ABCE's repository and has some good and bad points to have in count:
 
-The best asset of this code is that it's written in C aiming to a very constrained device, similar in computational power to many IoT devices, and very limited memory.
+The best asset of this code is that it's written in C aiming to a very constrained device, with very limited memory and similar computational power to many other IoT devices.
 
-Some \textit{tricks} in the code include using \textit{union} data types for variables that will be stored on the same data location, but at different moments (e.g. depending on APDU Command INS byte), minimizing this way the use of RAM and making code readability better; or strong use of pointers and \textit{memcpy} calls to copy structures with multiple variables as arrays of bytes.
-
-
-Among the many drawbacks, we could highlight the awful coding, the strong dependency on MULTOS framework and some bugs found. 
-
-The code is structured in two files, \textit{main.h} and \textit{main.c}, with 557 and 5157 lines of code respectively.
-
-The file \textit{main.h} is mostly a reimplementation in assembly MEL of some MULTOS functionality already offered with latest \textit{multos.h}.
-
-The \textit{main.c} consists on near 600 lines of variables and data structures declarations, followed by the \textit{main()} function, a 2635 lines long \textit{switch-case} with practically no comments, and to conclude, the implementation of thirty functions called \textit{Subroutines} at the end of the file.
+The code uses some good practices when programming for IoT devices, like using \textit{union} data types for variables that will be stored on the same data location, but at different times, minimizing this way the use of RAM and making code readability better; or like the strong use of pointers and \textit{memcpy} calls to copy structures with multiple variables as arrays of bytes.
 
 
-This gives an idea of the problematic to maintain or even understand the code. But once one studies MULTOS framework in deep and applies many refactoring techniques to ABC4T Card's code, this becomes the best starting point for the IoT version.
+Although, among the many drawbacks, we could highlight the \textit{awful} coding style, the strong dependency on MULTOS framework and many bugs found. 
+
+The code is structured in two files, \textit{main.h} and \textit{main.c}, with around $550$ and $5200$ lines of code, respectively.
+
+The file \textit{main.h} is mostly a reimplementation in assembly MEL code of some MULTOS functionality already offered by their API.
+
+The \textit{main.c} consists on nearly $600$ lines of variables and data structures declarations; followed by the \textit{main()} function, a $2600$ lines long \textit{switch-case} expression, with practically no comments; and to conclude, the implementation of thirty functions called \textit{Subroutines} at the end of the file, around other $2000$ lines of code.
+
+\hfil
+
+At this stage, we have two options to implement our IoT device compatible with P2ABCE:
+
+\begin{itemize}
+	\item Implement in C the \textit{Smartcard} interface used by P2ABCE architecture, and use some communication protocol to remotelly call the methods from the machine running the P2ABC Engine.
+	\item Present the IoT device as a hardware smart card, using the APDU protocol (already defined, standard and with minimal overload). Providing a \textit{javax.smartcardio} ``IoT implementation'' to communicate with the IoT device through a transmission protocol, making the already existing \textit{HardwareSmartcard} class compatible with the new \textit{IoTSmartcard} running in the IoT device.
+\end{itemize}
+
+Even with the problematic to maintain or even understand the code of ABC4Trust Card Lite, once one studies MULTOS framework in deep and applies many refactoring techniques to the code, it becomes the best starting point for the IoT version, making us opt for the second option.
+
 
 
 
 
 \section{Preliminaries about smart cards}
 
+In this section we will introduce a brief description of the APDU standard protocol, and the MULTOS framework used by the ABC4Trust Card Lite.
 
-\subsection{Smart Card Communication Protocol}
+
+\subsection{Smart Card Communication Protocol}\label{subsec:APDU}
 
 To communicate the smart cards and the reader the ISO/IEC 7816-4 \citep{APDUISO} specifies a standardized protocol .
 
@@ -302,21 +305,31 @@ Nevertheless, the C-API documentation \citep{MultosTechLib} provides rich descri
 \section{Development environment}
 
 
+For almost every IoT device in the market, there exists a C compiler and many frameworks available to build firmware binaries, like Arduino Core, Contiki, Mongoose OS, ThreadX OS, OpenWrt, LEDE, proprietary SDKs, etc. Each firmware targets a specific range of devices, depending on processing power and memory limitations. For example, Arduino and Contiki aim for very constrained microcontrollers, like Atmel's ATmega or TI's MSP430, but can also be used in ESP8266, a more powerful device, with WiFi capabilities.
+\marginpar{\includegraphics[width=0.8\linewidth]{gfx/ATmega328P}\\$ATmega328P$}
 
-The development is divided between the \ac{IoT} device code and the \ac{P2ABCE} services. To ease the setup of new developing machines, we will use Docker to create compiling containers.
+Starting a big project development for \ac{IoT}, aiming the most constrained devices may not be a good idea. The lack of usual OS tools, like POSIX, threads, or minimum I/O, like a terminal, can make debugging a tedious task. With good programming practices, one can start from the top and slowly end with more constrained devices and reliable code.
+
+
+For this reason, the current \ac{PoC} is developed on LEDE, Linux Embedded Development Environment \citep{ledeproject}, using the Onion Omega2 development board. Although the Omega2 uses LEDE, its microcontroller is also listed as compatible with ThreadX OS \citep{THREADX}, a Real-Time Operative System for embedded devices, therefore, the performance measured in our PoC can be relevant to real scenarios with similar hardware.
+
+The PoC will take advantage of the Linux system using mainly files and sockets like in any other Linux desktop distribution, so we can focus on the project itself rather than the specific platform APIs for storage and connectivity.
+
 
 \hfil
 
-The P2ABCE is already written in Java, and few modifications will be done to the code in comparison to the existing project size, so we will continue using Java with the P2ABCE part.
+The project development is divided between the IoT device code and the P2ABCE services. To ease the setup of new developing machines, we will use Docker to deploy containers ready to compile the code.
 
-P2ABCE project needs some minor changes to work with the IoT architecture. It is written in Java using Maven to manage the project dependencies. Any text editor or Java IDE is suitable for the development, because the compilation is done through the terminal, with Maven commands.
+\hfil
 
-We compile the project inside a Docker container, with OpenJDK 7, Maven and the Idemix Maven plugins installed, following the project \href{https://github.com/p2abcengine/p2abcengine/wiki/How-to-Build-the-ABC-Engine}{instructions} to use Idemix as the Engine for P2ABCE.
+P2ABCE is already written in Java and uses Maven to manage dependencies. The project needs some minor changes to work with our IoT architecture. Any text editor or Java IDE is suitable for the development, because the compilation is done through the terminal, with Maven commands.
+
+We compile the project inside a Docker container, with OpenJDK 7, Maven 3 and Idemix 3.0.36, following the project \href{https://github.com/p2abcengine/p2abcengine/wiki/How-to-Build-the-ABC-Engine}{instructions} to use Idemix as the Engine for P2ABCE.
 
 \hfil
 
 We can assume all IoT devices have a C cross-compiler, some even a C++ cross-compiler. The worst case scenario is that one must write assembly code, and that code will be specific of that target, so we won't consider them.
-If now we focus on the most constrained devices, we could find out that some can't compile C++, some may not have many common libraries, and that the memory limitations they face make practically impossible to use dynamic memory, if we want to avoid many execution malfunctions.
+If now we focus on the most constrained devices, we could find out that for some we can't use C++, some may not have many usual libraries, moreover, the memory limitations they face make practically impossible to use dynamic memory, if we want to avoid many execution malfunctions.
 
 For that reason, the developed code for IoT devices should be written with standard C, without using dynamic memory or third party libraries.
 
@@ -334,7 +347,7 @@ To manage the PoC code we chose CMake, providing many advantages over Makefiles:
 
 \hfil
 
-Although the ideal final code is pure C, without external libraries or dynamic memory, the \ac{PoC} uses three major libraries:
+Although the ideal final code is written in pure C, without external libraries or dynamic memory, the PoC uses three major libraries:
 
 \begin{itemize}
 	\item OpenSSL: Provides reliable and tested AES128, SHA256 and random number generator implementations.
@@ -348,5 +361,4 @@ These three libraries are used to implement different interfaces in the project,
 
 Finally, we use Docker to deploy the compilation environment. Our container includes CMake and the LEDE SDK \citep{ledeproject}, configured for the Omega2 target, the device chose for the PoC.
 
-The Dockerfiles can be found in the Appendix.
-%TODO
+The Dockerfiles can be found in \autoref{ch:docker}.
