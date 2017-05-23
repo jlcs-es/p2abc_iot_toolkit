@@ -6,6 +6,7 @@
 
 
 %TODO resumir organización del capítulo
+% Incluir bibliografía: vanet, wiki
 
 
 In this chapter we describe the project objectives, and the methodology followed during its development. In section ... TODO
@@ -51,14 +52,47 @@ Finally, the PoC must be evaluated to assert we achieved our goals, and measure 
 
 \section{Analysis of P2ABCE}
 
+A Privacy Preserving Attribute Based Credential system is composed by several actors, each one of them with different roles. One entity could act with more than one role, e.g., an Issuer could also act as a Verifier, but one can assume each actor acts with one role at a time.
+
+
+The roles are:
+
+
+\begin{figure}[bth]
+	\begin{center}
+		\includegraphics[width=\linewidth]{gfx/actors}
+	\end{center}
+	\caption{Entities in a P2ABC System}
+	\label{fig:actors}
+\end{figure}
+
+\begin{itemize}
+	\item \textbf{Issuer}\\
+	In the ABC infrastructure, the Issuer is a trusted entity responsible for issuing credentials, vouching for the correctness of the information contained. Each Issuer generates a secret key and publishes the Issuer parameters that include the corresponding public verification key.
+	
+	\item \textbf{User}\\
+	Entities that collect credentials from various Issuers. They can decide between all their credentials which attributes and values to present when making assertions about their identity to service providers.
+	
+	\item \textbf{Verifier}\\
+	A service provider that protects access to a resource by imposing restrictions on the credentials that users must own and the information from these credentials that users must present in order to access the service.
+	
+	\item \textbf{Revocation Authority} (optional)\\
+	This entity is responsible for revoking issued credential, preventing their further usage to generate a presentation token. Each revocation authority generates and publishes its revocation parameters.
+	
+	\item \textbf{Inspector} (optional)\\
+	The Inspector's duty is to de-anonymize the user's presentation token under specific circumstances (e.g. misuse or liability). At setup, each inspector generates a private decryption key and a corresponding public encryption key. Usually, the capability of inspection should be bonded to privacy protection laws.
+	
+\end{itemize}
+
+To sum up, an attribute-based credential contains attribute-value pairs that are certified by a trusted Issuer. A credential can also specify one or more Revocation Authorities who are able to revoke the credential if necessary. Using her credentials, a User can form a presentation token that contains a subset of the certified attributes, provided that the corresponding credentials have not been revoked. Additionally, some of the attributes can be encoded in the presentation token so that they can only be retrieved by an Inspector. Receiving a presentation token from a User, a Verifier checks whether the presentation token is valid w.r.t. the relevant Issuers and Inspector's public keys and the latest revocation information. If the verification succeeds, the Verifier will be convinced that the attributes contained in the presentation token are vouched by the corresponding Issuers.
+
+
+\hfil
+
 In the P2ABCE repository \citep{p2abcurl} there is available the project's code, divided in two solutions: a complete P2ABCE implementation in Java and a MULTOS smart card implementation as PoC for the project.
 
+\subsection{P2ABCE Code Structure and REST Services}
 
-\subsection{P2ABCE system}
-%TODO: actores y sus papeles
-
-
-\subsection{P2ABCE Structure and Services}
 The Java code is managed by a Maven project, structured using various known design patterns, but not of our interest. The part we are actually interested in are the \textit{REST Services} and their use of the \textit{Components} classes, where the smart card's logic and use are defined.
 
 P2ABCE project is based on the concept of smart cards, virtual or physical, to store the credentials. An interface is defined to communicate with these smart cards, and then different implementations allow to use either \textit{Software Smartcards} or \textit{Hardware Smartcards}. 
@@ -300,7 +334,7 @@ Nevertheless, the C-API documentation \citep{MultosTechLib} provides rich descri
 
 
 
-
+\hfil
 
 \section{Development environment}
 
@@ -361,4 +395,4 @@ These three libraries are used to implement different interfaces in the project,
 
 Finally, we use Docker to deploy the compilation environment. Our container includes CMake and the LEDE SDK \citep{ledeproject}, configured for the Omega2 target, the device chose for the PoC.
 
-The Dockerfiles can be found in \autoref{ch:docker}.
+The Dockerfiles and CMake cross-compilation toolchain can be found in \autoref{ch:docker}.
