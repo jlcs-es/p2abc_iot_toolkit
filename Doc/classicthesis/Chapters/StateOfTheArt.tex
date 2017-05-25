@@ -5,7 +5,7 @@
 In this chapter we present the two domains of this project: the Zero-Knowledge Proof based systems and the Internet of Things.
 
 
-\section{Systems based on Zero-Knowledge Proofs}
+\section{Anonymous Credentials Systems}
 % ZKP vs minimal disclosure como OAuth
 % Persiano
 % U -Prove
@@ -21,6 +21,117 @@ Other solutions are based on minimal disclosure. Standards like OAuth offer secu
 But this is only minimizes how many services have our data. Our OAuth provider could be attacked, revealing all our data, or our service provider, revealing now less data.
 %%%
 
+%%%%
+
+A Quick Introduction to
+Anonymous Credentials
+Gregory Neven
+IBM Zürich Research Laboratory
+August 2008
+
+
+Intuitively, an anonymous credential can be thought of as a digital signature by the Issuer on a list of
+attribute-value pairs, e.g. the list
+(fname=”Alice”, lname=”Anderson”, bdate=”1977/05/10”, nation=”DE”).
+The most straightforward way for the User to convince a Verifier of her list of attributes would be to
+simply transmit her credential to the Verifier. This approach has a number of disadvantages, most
+notably
+· that the User has to reveal all of her attributes so that the Verifier can check the signature;
+· that the Verifier can reuse the credential to impersonate Alice wrt other Verifiers.
+With anonymous credentials, the User never transmits the credential itself, but rather uses it to convince
+the Verifier that her attributes satisfy certain properties – without leaking anything about the credential
+other than the shown properties. This has the obvious advantage that the Verifier can no longer reuse the
+credential to impersonate Alice. Another advantage is that anonymous credentials allow the User to
+reveal a selected subset of her attributes. In the example above, Alice could for example reveal her first
+name and last name, but keep her birth date hidden.
+Stronger even, apart from showing the exact value of an attribute, the User can even convince the
+Verifier that some complex predicate over the attributes holds. In particular, she can demonstrate any
+predicate consisting of the following operations:
+· Integer arithmetic: att+c , att+att , att·c : sum of attributes and/or constants, product of
+attributes with constants
+· Comparative: exp1 = exp2 , exp1 < exp2 , exp1 > exp2 , exp1  exp2 , exp1  exp2 : compare
+arithmetic expressions over attributes/constants
+· Logical: pred1 AND pred2 , pred1 OR pred2
+Note that revealing a subset of attributes comes down to the special of showing that the predicate
+att1 = val1 AND att2 = val2 AND …
+holds. In the example above, Alice could show that she’s an overage national of an EU country by
+showing that he has a credential satisfying
+bdate  today – 18y AND ( nation=”DE” OR nation=”FR” OR … ) .
+The Show protocol does not leak any information other than the truth of the statement. So in the
+example above, not only does Alice’s name remain hidden from the Verifier, but so do her exact birth
+date and nationality; the only information leaked is that her birth date is more than 18 years ago, and that
+her nationality is one of the EU countries.
+%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+
+@book{book:185217,
+	title =     {Financial Cryptography: 8th International Conference, FC 2004, Key West, FL, USA, February 9-12, 2004. Revised Papers},
+	author =    {Jack R. Selby (auth.), Ari Juels (eds.)},
+	publisher = {Springer-Verlag Berlin Heidelberg},
+	isbn =      {3540224203,9783540224204,9783540278092},
+	year =      {2004},
+	series =    {Lecture Notes in Computer Science 3110},
+	edition =   {1},
+	volume =    {},
+	pages = {196-211},
+	url =       {http://gen.lib.rus.ec/book/index.php?md5=24CD58AE88D5564A03C2E44B96732298}}
+
+
+Persiano and Visconti presented a non-transferable anonymous
+credential system that is multi-show and for which it is possible to prove
+properties (encoded by a linear Boolean formula) of the credentials. Unfortunately,
+their proof system is not efficient since the step in which a user proves
+possession of credentials (that needs a number of modular exponentiations that
+is linear in the number of credentials) must be repeated times (where is the
+security parameter) in order to obtain a satisfying soundness
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%
+@book{book:947508,
+	title =     {Security and Privacy in Communication Networks: 7th International ICST Conference, SecureComm 2011, London, UK, September 7-9, 2011, Revised Selected Papers},
+	author =    {Zhiyun Qian, Z. Morley Mao, Ammar Rayes, David Jaffe (auth.), Muttukrishnan Rajarajan, Fred Piper, Haining Wang, George Kesidis (eds.)},
+	publisher = {Springer-Verlag Berlin Heidelberg},
+	isbn =      {978-3-642-31908-2,978-3-642-31909-9},
+	year =      {2012},
+	series =    {Lecture Notes of the Institute for Computer Sciences, Social Informatics and Telecommunications Engineering 96},
+	edition =   {1},
+	volume =    {},
+	pages = {243-260},
+	url =       {http://gen.lib.rus.ec/book/index.php?md5=A7667DB3EE5B36AAA6E93AE07E888D8D}}
+
+U-Prove. Stefan Brands provided the first integral description of the U-Prove
+technology in his thesis [6] in 2000, after which he founded the company Credentica
+in 2002 to implement and sell this technology. Microsoft acquired Credentica
+in 2008 and published the U-Prove protocol specification [5] in 2010
+under the Open Specification Promise4 together with open source reference software
+development kits (SDKs) in C# and Java.
+The U-Prove technology is centred around a so-called U-Prove token. This
+token serves as a pseudonym for the prover. It contains a number of attributes
+which can be selectively disclosed to a verifier. Hence the prover decides which
+attributes to show and which to withhold (e.g. one can reveal the birth date,
+but not the residence address). Besides the attributes the token contains two
+information fields, one defined by the issuer, and one by the prover. These fields
+are always disclosed and can be used to provide some meta data such as a validity
+date of the token. Finally there is the token’s public-key, which aggregates all
+information in the token, and a signature from the issuer over this public-key to
+ensure the authenticity
+
+5. Brands, S., Paquin, C.: U-Prove cryptographic specification v1.0. Tech. rep., Microsoft
+Corporation (March 2010)
+6. Brands, S.A.: Rethinking Public Key Infrastructures and Digital Certificates:
+Building in Privacy. MIT Press (August 2000)
+%%%%%%%%%%%
+
+
+
+
+
+%% Idemix:
+
+En \citep{Camenisch:GroupSig} \citep{Camenisch:AnonCred} \citep{camenisch2002signature} describen los métodos criptográficos iniciales utilizando ZKPs que evolucionarán a Idemix. En \citep{idemixSpec} se encuentra la especificación actual del protocolo Identity Mixer de IBM.
 
 \section{Internet of Things}
 
@@ -42,3 +153,16 @@ The problem of Internet security has been approached by securing the transmissio
 
 %%%%
 
+
+%%%%%%%%%%%%%%
+
+Estudio teórico de cómo integrar Idemix en una smart card, según el reparto de cálculos y valores secretos \citep{luuk}.
+Implementación de Idemix en smart cards MULTOS \citep{vullers2013efficient}
+\citep{sucasas} Diseño de sistema anonymous credential system with sc support, y haciendo pruebas en simulador de smart card, sin embargo no utilizan Idemix ni dan toda su funcionalidad, pero sí aportan un estudio de cómo afrontar la implementación: smart cards.
+Integración en IoT device con P2ABCE en \citep{vanet}
+
+
+
+
+
+Why ABC4Trust Card Lite: soporte de las APDUs del proyecto P2ABCE, más grande, multi-engine, como dice su powerpoint, adaptable a cualquiera que use Discrete Log.
