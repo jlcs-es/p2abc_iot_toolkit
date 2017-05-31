@@ -2,167 +2,83 @@
 \chapter{State of the art}\label{ch:stateoftheart}
 %*****************************************
 
-In this chapter we present the two domains of this project: the Zero-Knowledge Proof based systems and the Internet of Things.
+In this project we will study Identity Mixer as an Attribute-Based Credentials (ABC) solution for privacy-preserving scenarios, but there exist other solutions competing to give the best performance and capabilities as possible. The two most known alternatives to Idemix are Microsoft's U-Prove and Persiano's ABC systems.
 
-
-\section{Anonymous Credentials Systems}
-% ZKP vs minimal disclosure como OAuth
+%minimal disclosure
 % Persiano
+% Verheul's self-blindable: only binary attributes [14]deIdemixSC
 % U -Prove
 % Idemix
 % P2ABCE 
 % TODO: explicar P2ABCE
 %\ac{P2ABCE}
-% Credential: a certified container of attributes where an attribute has a type and a value
-
-%%%
-Other solutions are based on minimal disclosure. Standards like OAuth offer secure delegated access to the user information and when registering to a new service, the user can give a key to access only the data they want from another trusted service. This lets the service provider to work with the OAuth server, offering the same service as before without knowing as much data.
-
-But this is only minimizes how many services have our data. Our OAuth provider could be attacked, revealing all our data, or our service provider, revealing now less data.
-%%%
-
-%%%%
-
-A Quick Introduction to
-Anonymous Credentials
-Gregory Neven
-IBM Zürich Research Laboratory
-August 2008
 
 
-Intuitively, an anonymous credential can be thought of as a digital signature by the Issuer on a list of
-attribute-value pairs, e.g. the list
-(fname=”Alice”, lname=”Anderson”, bdate=”1977/05/10”, nation=”DE”).
-The most straightforward way for the User to convince a Verifier of her list of attributes would be to
-simply transmit her credential to the Verifier. This approach has a number of disadvantages, most
-notably
-· that the User has to reveal all of her attributes so that the Verifier can check the signature;
-· that the Verifier can reuse the credential to impersonate Alice wrt other Verifiers.
-With anonymous credentials, the User never transmits the credential itself, but rather uses it to convince
-the Verifier that her attributes satisfy certain properties – without leaking anything about the credential
-other than the shown properties. This has the obvious advantage that the Verifier can no longer reuse the
-credential to impersonate Alice. Another advantage is that anonymous credentials allow the User to
-reveal a selected subset of her attributes. In the example above, Alice could for example reveal her first
-name and last name, but keep her birth date hidden.
-Stronger even, apart from showing the exact value of an attribute, the User can even convince the
-Verifier that some complex predicate over the attributes holds. In particular, she can demonstrate any
-predicate consisting of the following operations:
-· Integer arithmetic: att+c , att+att , att·c : sum of attributes and/or constants, product of
-attributes with constants
-· Comparative: exp1 = exp2 , exp1 < exp2 , exp1 > exp2 , exp1  exp2 , exp1  exp2 : compare
-arithmetic expressions over attributes/constants
-· Logical: pred1 AND pred2 , pred1 OR pred2
-Note that revealing a subset of attributes comes down to the special of showing that the predicate
-att1 = val1 AND att2 = val2 AND …
-holds. In the example above, Alice could show that she’s an overage national of an EU country by
-showing that he has a credential satisfying
-bdate  today – 18y AND ( nation=”DE” OR nation=”FR” OR … ) .
-The Show protocol does not leak any information other than the truth of the statement. So in the
-example above, not only does Alice’s name remain hidden from the Verifier, but so do her exact birth
-date and nationality; the only information leaked is that her birth date is more than 18 years ago, and that
-her nationality is one of the EU countries.
-%%%
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 
-@book{book:185217,
-	title =     {Financial Cryptography: 8th International Conference, FC 2004, Key West, FL, USA, February 9-12, 2004. Revised Papers},
-	author =    {Jack R. Selby (auth.), Ari Juels (eds.)},
-	publisher = {Springer-Verlag Berlin Heidelberg},
-	isbn =      {3540224203,9783540224204,9783540278092},
-	year =      {2004},
-	series =    {Lecture Notes in Computer Science 3110},
-	edition =   {1},
-	volume =    {},
-	pages = {196-211},
-	url =       {http://gen.lib.rus.ec/book/index.php?md5=24CD58AE88D5564A03C2E44B96732298}}
+
 
 
 Persiano and Visconti presented a non-transferable anonymous
 credential system that is multi-show and for which it is possible to prove
-properties (encoded by a linear Boolean formula) of the credentials. Unfortunately,
-their proof system is not efficient since the step in which a user proves
+properties (encoded by a linear Boolean formula) of the credentials \citep{book:185217}. Unfortunately, their proof system is not efficient since the step in which a user proves
 possession of credentials (that needs a number of modular exponentiations that
 is linear in the number of credentials) must be repeated times (where is the
-security parameter) in order to obtain a satisfying soundness
+security parameter) in order to obtain a satisfying soundness.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 %%%%%%%%%
-@book{book:947508,
-	title =     {Security and Privacy in Communication Networks: 7th International ICST Conference, SecureComm 2011, London, UK, September 7-9, 2011, Revised Selected Papers},
-	author =    {Zhiyun Qian, Z. Morley Mao, Ammar Rayes, David Jaffe (auth.), Muttukrishnan Rajarajan, Fred Piper, Haining Wang, George Kesidis (eds.)},
-	publisher = {Springer-Verlag Berlin Heidelberg},
-	isbn =      {978-3-642-31908-2,978-3-642-31909-9},
-	year =      {2012},
-	series =    {Lecture Notes of the Institute for Computer Sciences, Social Informatics and Telecommunications Engineering 96},
-	edition =   {1},
-	volume =    {},
-	pages = {243-260},
-	url =       {http://gen.lib.rus.ec/book/index.php?md5=A7667DB3EE5B36AAA6E93AE07E888D8D}}
 
-U-Prove. Stefan Brands provided the first integral description of the U-Prove
-technology in his thesis [6] in 2000, after which he founded the company Credentica
+
+
+
+Stefan Brands provided the first integral description of the U-Prove
+technology in his thesis \citep{uprove} in 2000, after which he founded the company Credentica
 in 2002 to implement and sell this technology. Microsoft acquired Credentica
-in 2008 and published the U-Prove protocol specification [5] in 2010
+in 2008 and published the U-Prove protocol specification \citep{uprove2} in 2010
 under the Open Specification Promise4 together with open source reference software
-development kits (SDKs) in C# and Java.
-The U-Prove technology is centred around a so-called U-Prove token. This
+development kits (SDKs) in C\# and Java.
+The U-Prove technology is centered around a so-called U-Prove token. This
 token serves as a pseudonym for the prover. It contains a number of attributes
 which can be selectively disclosed to a verifier. Hence the prover decides which
-attributes to show and which to withhold (e.g. one can reveal the birth date,
-but not the residence address). Besides the attributes the token contains two
-information fields, one defined by the issuer, and one by the prover. These fields
-are always disclosed and can be used to provide some meta data such as a validity
-date of the token. Finally there is the token’s public-key, which aggregates all
-information in the token, and a signature from the issuer over this public-key to
-ensure the authenticity
+attributes to show and which to withhold. Finally there is the token’s public-key, which aggregates all information in the token, and a signature from the issuer
+over this public-key to ensure the authenticity \citep{book:947508}.
 
-5. Brands, S., Paquin, C.: U-Prove cryptographic specification v1.0. Tech. rep., Microsoft
-Corporation (March 2010)
-6. Brands, S.A.: Rethinking Public Key Infrastructures and Digital Certificates:
-Building in Privacy. MIT Press (August 2000)
 %%%%%%%%%%%
 
 
-
-
-
-%% Idemix:
-
-En \citep{Camenisch:GroupSig} \citep{Camenisch:AnonCred} \citep{camenisch2002signature} describen los métodos criptográficos iniciales utilizando ZKPs que evolucionarán a Idemix. En \citep{idemixSpec} se encuentra la especificación actual del protocolo Identity Mixer de IBM.
-
-\section{Internet of Things}
-
-% Adaptar seguridad "clásica" de cifrado de mensajes con claves simétrica y asimétrica, RSA, curva elíptica, DH, 
-% Que el principio de las ZKP ya se usaba en las tarjetas, de manera básica, pero no como parte de un sistema mayor como Idemix
-% Vanets y otros intentos de meter sistemas previos en IoT
-
-Regarding the Internet of Things security, 
-
-
-\section{Idemix}
-
-\paragraph{TODO: Move to motivation}
-
-%%%%
-The problem of Internet security has been approached by securing the transmission channel (e.g. SSL/TLS) and the data stored in both ends (strict access policies, local encryption, etc.). In the end, the data exists in two entities, the owner of the data and the service provider. The owner is the most interested in securing his data, and can apply as many measures as he wants, but only on his side of the table. The service provider that stores the user data needs it to provide the service, and a successful attack would reveal many users data, aside from how many measures each one used to protect it. The case of PlayStation Network outage in 2011 \citep{PSN2011} affected 77 million accounts, with suspected credit card fraud, is an example of this kind of attacks.
-
 \hfil
 
+Jan Camenisch, Markus Stadler and Anna Lysyanskaya studied in \citep{Camenisch:GroupSig}, \citep{Camenisch:AnonCred} and \citep{camenisch2002signature} the cryptographic bases for signature schemes and anonymous credentials, that later became IBM's Identity Mixer protocol specification \citep{idemixSpec}.
+
+
+Luuk Danes in 2007 studied theoretically how Idemix's User role could be implemented using  
+smart cards \citep{luuk}, identifying what data and operations should be kept inside the device to perform different levels of security. The User role was divided between the smart card, holding secret keys, and the Idemix terminal, that commanded operations inside the smart card, or read the keys in it to perform the instructions itself. The studied sets were:
+\begin{itemize}
+	\item The smart card gives all information to the terminal.
+	\item The smart card only keeps the master key secret.
+	\item The smart card only gives the pseudonym with the verifier to the terminal.
+	\item The smart card keeps everything secret.
+\end{itemize}
 %%%%
+
+Later, in 2008 Víctor Sucasas also studied an anonymous credential system with smart card support \citep{sucasas}, equivalent to a basic version of Idemix, using a simulator to test the PoC and pointing out some crucial implementation details for performance. The researching tendency starts to show that smart cards are the best solution to hold safely the User's credentials.
+
+In 2009, some Java smart card PoC for Idemix were developed in \citep{javaIdemix1} and \citep{javaIdemix2}, but they weren't optimal and didn't include some Idemix's functionalities, like selective disclosure.
+
+Later, in 2013, Vullers and Alpar, implemented an efficient smart card for Idemix \citep{vullers2013efficient}, aiming to integrate it in the IRMA\footnote{The IRMA project has been recently included in the Privacy by Design Foundation: \url{https://privacybydesign.foundation/}} project, and comparing the performance with U-Prove's smart cards. This new implementation was written in C, under the MULTOS platform for smart cards, and describes many decisions made during the development to improve the performance on such constrained devices. The terminal application was written in Java and used an extension of the Idemix cryptographic library to take care of the smart card specifics.
+
+
+Extending the concept of smart cards, physical or logical, as holders of the credentials, the ABC4Trust's project, P2ABCE\footnote{\acl{P2ABCE} - \url{https://github.com/p2abcengine/p2abcengine}}, was created as a unified ABC system for different cryptographic engines, currently supporting U-Prove and Idemix. The Idemix library was updated to support P2ABCE and the last version is interoperable with U-Prove. Therefore, the smart card specification from the P2ABCE project could be considered the official version to work with.
+
+
+% Uso de P2ABCE en VANETs
+Related to the IoT, the P2ABCE project has been used to test in a VANET\footnote{Vehicular Ad-Hoc Network} scenario how an OBU (On Board Unit), with constrained hardware, could act as a User in an P2ABC system \citep{vanet}. However, after the theoretical analysis, the paper only simulates a computer with similar performance as an OBU, without adapting the existing Java implementation of P2ABCE to a real VANET system. In our project, we can consider ourselves as part of their \textit{future work}, because our PoC will execute on hardware actually used in VANET systems, although the OS may not be the same.
 
 
 %%%%%%%%%%%%%%
-
-Estudio teórico de cómo integrar Idemix en una smart card, según el reparto de cálculos y valores secretos \citep{luuk}.
-Implementación de Idemix en smart cards MULTOS \citep{vullers2013efficient}
-\citep{sucasas} Diseño de sistema anonymous credential system with sc support, y haciendo pruebas en simulador de smart card, sin embargo no utilizan Idemix ni dan toda su funcionalidad, pero sí aportan un estudio de cómo afrontar la implementación: smart cards.
-Integración en IoT device con P2ABCE en \citep{vanet}
-
-
-
-
-
-Why ABC4Trust Card Lite: soporte de las APDUs del proyecto P2ABCE, más grande, multi-engine, como dice su powerpoint, adaptable a cualquiera que use Discrete Log.

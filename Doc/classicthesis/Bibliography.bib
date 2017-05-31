@@ -1,16 +1,16 @@
-% Encoding: windows-1252
+% Encoding: utf-8
 
 @Article{Camenisch:GroupSig,
 	author = {Jan Camenisch and Markus Stadler},
-	title = {Ecient Group Signature Schemes for Large Groups},
-	journal = {Advances in Cryptology | CRYPTO 97},
+	title = {Eficient Group Signature Schemes for Large Groups},
+	journal = {Advances in Cryptology CRYPTO 97},
 	year = {1997},
 }
 
 @Article{Camenisch:AnonCred,
 	author = {Jan Camenisch and Anna Lysyanskaya},
 	title = {An Eficient System for Non-transferable Anonymous Credentials with Optional Anonymity Revocation},
-	journal = {Advances in Cryptology | EUROCRYPT 2001},
+	journal = {Advances in Cryptology EUROCRYPT 2001},
 	year = {2001},
 }
 
@@ -19,17 +19,24 @@
 	title={A signature scheme with efficient protocols},
 	author={Camenisch, Jan and Lysyanskaya, Anna},
 	booktitle={International Conference on Security in Communication Networks},
-	pages={268--289},
+	pages={268-289},
 	year={2002},
 	organization={Springer}
 }
 
+@Misc{introCredIBM,
+	title = {A Quick Introduction to Anonymous Credentials},
+	author = {Gregory Neven},
+	organization = {IBM Zürich Research Laboratory},
+	month =	aug,
+	year = {2008}
+}
 
 @TechReport{idemixSpec,
 	title = {Specification of the Identity Mixer Cryptographic Library (v2.3.43)},
 	institution = {IBM Research},
 	year = {2013},
-	month = {January},
+	month = jan,
 }
 
 @MastersThesis{luuk,
@@ -42,11 +49,26 @@
 
 @inproceedings{vullers2013efficient,
 	title={Efficient selective disclosure on smart cards using idemix},
-	author={Vullers, Pim and Alp{\'a}r, Gergely},
+	author={Vullers, Pim and Alpar, Gergely},
 	booktitle={IFIP Working Conference on Policies and Research in Identity Management},
 	pages={53--67},
 	year={2013},
 	organization={Springer}
+}
+
+@Misc{javaIdemix1,
+	title={Anonymous credentials on a standard Java Card. CCS},
+	author={Bichsel, P. and Camenisch, J. and Grob, T. and Shoup, V.},
+	year={2009},
+	pages={600–610},
+}
+
+@Misc{javaIdemix2,
+	title={Efficient implementation
+	of anonymous credentials on Java Card smart cards. In: WIFS},
+	author={Sterckx, M. and Gierlichs, B. and Preneel, B. and Verbauwhede, I.},
+	year={2009},
+	pages={106–110},
 }
 
 @article{Atzori20102787,
@@ -58,7 +80,7 @@
 	year = {2010},
 	issn = {1389-1286},
 	doi = {http://dx.doi.org/10.1016/j.comnet.2010.05.010},
-	url = "http://www.sciencedirect.com/science/article/pii/S1389128610001568",
+	note = {\url{http://www.sciencedirect.com/science/article/pii/S1389128610001568}},
 	author = "Luigi Atzori and Antonio Iera and Giacomo Morabito",
 	keywords = "Internet of Things",
 	keywords = "Pervasive computing",
@@ -82,7 +104,7 @@
 @MastersThesis{sucasas,
 	author = {Víctor Sucasas Iglesias},
 	title = {IMPLEMENTATION OF AN ANONYMOUS CREDENTIAL PROTOCOL},
-	school = {Escuela Tecnica Superior de Ingenieros de Telecomunicación. Universidad de Vigo},
+	school = {Escuela Técnica Superior de Ingenieros de Telecomunicación. Universidad de Vigo},
 	year = {2008-2009},
 }
 
@@ -92,22 +114,59 @@
 	title = {Assessment of attribute-based credentials for privacy-preserving road traffic services in smart cities},
 	journal = {Personal and Ubiquitous Computing Journal, Special Issue on Security and Privacy for Smart Cities},
 	year = {2017},
-	month = {February},
+	month = feb,
 	note = {\url{http://www.seg.inf.uc3m.es/~jfuentes/papers/PrivacyABC-VANET.pdf}}
+}
+
+@Misc{uprove,
+	title={Rethinking Public Key Infrastructures and Digital Certificates:
+	Building in Privacy. MIT Press},
+	author={Brands, S.A.},
+	month=aug,
+	year={2000}
+}
+
+@TechReport{uprove2,
+	title={ U-Prove cryptographic specification v1.0. Tech. rep.},
+	author={Brands, S. and Paquin, C.},
+	institution={Microsoft},
+	month=mar,
+	year={2010}
 }
 
 @Article{stronganonymity,
 	author = {Tom Henriksson},
-	title = {How ‘strong anonymity’ will finally fix the privacy problem},
+	title = {How strong anonymity will finally fix the privacy problem},
 	journal = {VentureBeat},
 	year = {2016},
-	month = {October},
+	month = oct,
 	note = {\url{https://venturebeat.com/2016/10/08/how-strong-anonymity-will-finally-fix-the-privacy-problem/}}
 }
 
-@Misc{idemixurl,
-	title = {Identity Mixer},
-	note = {\url{https://www.research.ibm.com/labs/zurich/idemix/}},
+@book{book:185217,
+	title =     {Financial Cryptography: 8th International Conference, Revised Papers},
+	author =    {Jack R. Selby (auth.), Ari Juels (eds.)},
+	publisher = {Springer-Verlag Berlin Heidelberg},
+	isbn =      {3540224203,9783540224204,9783540278092},
+	year =      {2004},
+	series =    {Lecture Notes in Computer Science 3110},
+	edition =   {1},
+	volume =    {},
+	pages = {196-211},
+	note  =   {\url{http://gen.lib.rus.ec/book/index.php?md5=24CD58AE88D5564A03C2E44B96732298}}
+}
+
+
+@book{book:947508,
+	title =     {Security and Privacy in Communication Networks: 7th International ICST Conference, SecureComm 2011, London, UK, September 7-9, 2011, Revised Selected Papers},
+	author =    {Zhiyun Qian and Z. Morley Mao and Ammar Rayes and David Jaffe (auth.) and Muttukrishnan Rajarajan and Fred Piper and Haining Wang and George Kesidis (eds.)},
+	publisher = {Springer-Verlag Berlin Heidelberg},
+	year =      {2012},
+	series =    {Lecture Notes of the Institute for Computer Sciences, Social Informatics and Telecommunications Engineering 96},
+	edition =   {1},
+	volume =    {},
+	pages = {243-260},
+	url =       {http://gen.lib.rus.ec/book/index.php?md5=A7667DB3EE5B36AAA6E93AE07E888D8D}
 }
 
 @Misc{p2abcurl,
@@ -185,7 +244,7 @@
 	title = {ABC4Trust on Smart Cards. Embedding Privacy-ABCs on Smart Cards},
 	author = {Pascal Paillier - CryptoExperts},
 	address = {Summit Event, Brussels},
-	month = {Jan},
+	month = jan,
 	year = {2015},
 }
 
@@ -195,7 +254,7 @@
   title  = {{S}mart {C}ard {I}ntegration in the {P}seudonym {S}ystem {I}demix},
   school = {University of Groningen, Faculty of Mathematics},
   year   = {2007},
-  month  = {December},
+  month  = dec,
 }
 
 
@@ -208,7 +267,7 @@
 }
 
 @Article{ZKPcave:story,
-	author = {Quisquater, Jean-Jacques; Guillou, Louis C.; Berson, Thomas A.},
+	author = {Jean-Jacques Quisquater, Louis C. Guillou and Thomas A. Berson},
 	title = {How to Explain Zero-Knowledge Protocols to Your Children},
 	journal = {Advances in Cryptology - CRYPTO '89},
 	year = {1990},
