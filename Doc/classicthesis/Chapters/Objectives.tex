@@ -1,5 +1,5 @@
 %************************************************
-\chapter{Analysis and methodology}\label{ch:objectives}
+\chapter{Analysis and objectives}\label{ch:objectives}
 %************************************************
 
 % descripción del proyecto: objetivos, metodología: pasos del diseño y desarrollo, ver figura 3.1 (elección de sensores: computing offloading), contexto (partimos de ABC4T: recordar P2ABCE y que se basa en tarjetas), entorno de desarrollo (meter elección del Omega2, LEDE, teoría de APDUs, código heredado) el sw, los tests p2abce puro, 
@@ -13,7 +13,9 @@ In this chapter we describe the project objectives, and the methodology followed
 
 \section{Project description}
 
-The purpose of this project is the integration of IBM's privacy preserving solution, Idemix, in the environment of the Internet of Things. The objective is to design a general solution for the existing IoT devices and systems, without compromising any feature of Idemix, and provide a working PoC in a real IoT environment, even though it isn't the most constrained scenario. The project is aimed to be used in privacy preserving environments, providing security for IoT, controlling what data is being disclosed and to whom. In a smart city project, citizens data can be privatized and continue to offer the benefits of the sensors around. Authorized personnel can disclose the information when required, like firefighters that could access a building sensors to know how many people and what conditions they are in, in case of a emergency; and keep such invasive data private to other non-critical services, for example, only giving a proof that there are more than a minimum number of people in the building, to activate or deactivate the air-conditioning system.
+The purpose of this project is the integration of IBM's privacy preserving solution, Idemix, in the environment of the Internet of Things. The objective is to design a general solution for the existing IoT devices and systems, without compromising any feature of Idemix, and provide a working PoC in a real IoT environment, even though it isn't the most constrained scenario. The project is aimed to be used in privacy-preserving environments, providing security for IoT, controlling what data is being disclosed and to whom.
+
+In a smart city project, citizens' data can be privatized and at the same time continue to offer the benefits of the sensors around. Authorized personnel can disclose the information when required, like fire-fighters accessing a building's sensors to check how many people there are and what conditions they are in, in case of an emergency; but keep such invasive data private to other non-critical services, for example, only giving a proof that there are people in a floor of the building, to activate or deactivate the air-conditioning system.
 
 \hfil
 
@@ -22,9 +24,9 @@ We will divide the project in various \textbf{objectives}, starting from the pri
 \hfil
 
 \paragraph{Idemix and the IoT}
-We part from this main objective, integrating IBM's privacy preserving system in the IoT environment. 
+This is our main objective, integrating IBM's privacy-preserving system in the IoT environment. 
 
-\paragraph{Analysis} Study the state of the art for Idemix and the IoT, analyzing related projects like ABC4Trust's \ac{P2ABCE}, papers with similar approaches, and our task is to consider the best fitting solutions from where to start.
+\paragraph{Analysis} Study the state of the art of Idemix and the IoT, analysing related projects, papers with similar approaches, and consider the best fitting solutions from where to begin.
 
 \paragraph{Design and implementation} After studying the existing works, we must give a formal solution to be implemented. This includes the theoretical architecture, the steps to take, the software to implement, the hardware to use, and any simplifications to leave as future work.
 
@@ -38,22 +40,35 @@ Our \textbf{hardware} objective is to use devices as constrained as possible. Bu
 
 \section{Methodology}
 
-Giving the vast range of IoT devices, a one-for-all solution must take in consideration multiple requirements and limitations. We will break down the original system, Idemix and P2ABCE, analyze every part of it and categorize them. We will consider what components are mandatory to be executed in the target device and which ones the devices would be able to execute.
+Giving the vast range of IoT devices, a one-for-all solution must take in consideration multiple requirements and limitations. We will break down the original system, Idemix and P2ABCE, analyze every part of it and categorize them. We will consider what components are mandatory to be executed in the target device that wants to act as User of Verifier, and which components the devices would actually be able to execute.
 
-Devices with equivalent processing power to smart phones are capable to execute the current Java implementations of P2ABCE and Idemix, but the most constrained ones can't handle the entire system, only the key cryptographic operations.
+Devices with equivalent processing power to smart phones are capable of running the current Java implementations of P2ABCE with Idemix, but the most constrained IoT devices can not handle the entire system, only the mandatory cryptographic operations.
 
-Using the technique known as \textit{Computation Offloading} we will design an IoT architecture where the most constrained targets can keep their private keys and certificates secure in the same device, and act as any other User in the P2ABCE system. Studying the P2ABCE architecture and implementations we will identify those mandatory operations to be executed in the constrained device, and how to communicate efficiently during the delegation.
+Using the technique known as \textit{Computation Offloading} we can design an IoT architecture where the most constrained targets can keep their private keys and certificates secure within the device, and act as any other actor in the P2ABCE system. Studying the original P2ABCE architecture and implementations we will identify the key operations to be executed in the constrained device, and how to communicate efficiently during the delegation.
 
-After the technical design, we will implement the PoC, using software designs patterns known to many professionals, that will improve the maintainability of the project, for improvements and fixes. Taking advantage of this practices, we can document the immediate steps for future developers, how to reimplement certain interfaces when porting the application to a new system, or where the core logic lies for future protocol changes.
+After the technical design, we will implement the PoC, using known software designs patterns, that will improve the maintainability of the project. Taking advantage of this practices, we can document the immediate steps for future developers, how to reimplement certain interfaces when porting the application to a new system, or where the core logic lies, to implement future protocol changes.
 
-Finally, the PoC must be evaluated to assert we achieved our goals, and measure its performance, judging if it could be fitting for real IoT environments.
+Finally, the PoC will be evaluated to assert that we achieved our goals, and measure its performance, judging if it can indeed be suitable for a IoT deployment.
 
-% TODO
-% Credential: a certified container of attributes where an attribute has a type and a value
+
 
 \section{Analysis of P2ABCE}
 
-A Privacy Preserving Attribute Based Credential system is composed by several actors, each one of them with different roles. One entity could act with more than one role, e.g., an Issuer could also act as a Verifier, but one can assume each actor acts with one role at a time.
+There are several cryptographic systems for dealing with attribute-based
+identities. Typically these systems distinguish credentials and attributes. Informally,
+a credential is a cryptographic container of attributes, where an attribute has a type and a value \citep{vullers2013efficient}.
+
+\begin{figure}[bth]
+	\begin{center}
+		\includegraphics[width=0.4\linewidth]{gfx/ABC}
+	\end{center}
+	\caption{A first look at an attribute-based credential with four attributes.}
+	\label{fig:abc}
+\end{figure}
+
+
+
+The Privacy Preserving Attribute Based Credentials system is composed by several actors, each one of them with different roles. One entity could act with more than one role, e.g., in a M2M (Machine To Machine) scenario, a device could act as both User and Verifier to other peers; but one can assume each actor acts with one role at a time.
 
 
 The roles are:
@@ -84,6 +99,30 @@ The roles are:
 	The Inspector's duty is to de-anonymize the user's presentation token under specific circumstances (e.g. misuse or liability). At setup, each inspector generates a private decryption key and a corresponding public encryption key. Usually, the capability of inspection should be bonded to privacy protection laws.
 	
 \end{itemize}
+
+
+The cryptographic nature of the credential-as-container concept includes the
+following four security aspects \citep{vullers2013efficient}:
+\begin{itemize}
+	\item The issuer’s digital signature ensures \textbf{authenticity}: the credential originates
+	from the issuer, and this issuer asserts that the attributes hold for the person.
+	\item This signature also guarantees integrity: the attributes contained in the credential
+	have not been altered since they were issued.
+	\item A credential is \textbf{non-transferable} as it is bound to the secret key, only known by the credential owner.
+	\item A credential \textbf{hides} its content, so it does not reveal the attributes it contains.
+	Furthermore, a credential protects the privacy of its owner through the following
+	cryptographic properties.
+	\item Issuer \textbf{unlinkability} ensures that any information gathered during issuing
+	cannot be used to link a verification of the credential to its issuance.
+	\item \textbf{Multi-show unlinkability} guarantees that when a credential is verified multiple
+	times, these sessions cannot be linked.
+\end{itemize}
+
+Zero-knowledge proofs, used in Idemix, allow a user to prove ownership of a credential without
+revealing the credential itself. Since the verifier does not see the credential, verification
+instances are unlinkable and they also cannot be related to the issuing procedure. The privacy of users is protected by these unlinkability properties, even if the credential issuer and all verifiers collude.
+
+
 
 To sum up, an attribute-based credential contains attribute-value pairs that are certified by a trusted Issuer. A credential can also specify one or more Revocation Authorities who are able to revoke the credential if necessary. Using her credentials, a User can form a presentation token that contains a subset of the certified attributes, provided that the corresponding credentials have not been revoked. Additionally, some of the attributes can be encoded in the presentation token so that they can only be retrieved by an Inspector. Receiving a presentation token from a User, a Verifier checks whether the presentation token is valid w.r.t. the relevant Issuers and Inspector's public keys and the latest revocation information. If the verification succeeds, the Verifier will be convinced that the attributes contained in the presentation token are vouched by the corresponding Issuers.
 
@@ -143,7 +182,7 @@ The code is available from the P2ABCE's repository and has some good and bad poi
 
 The best asset of this code is that it's written in C aiming to a very constrained device, with very limited memory and similar computational power to many other IoT devices.
 
-The code uses some good practices when programming for IoT devices, like using \textit{union} data types for variables that will be stored on the same data location, but at different times, minimizing this way the use of RAM and making code readability better; or like the strong use of pointers and \textit{memcpy} calls to copy structures with multiple variables as arrays of bytes.
+The code uses some good practices when programming for constrained devices, also explained in the first implementation of Idemix in smart cards \citep{vullers2013efficient}. Aside the implementation in assembly code of some operations to accelerate the execution, most techniques aim to reduce the memory usage. They define \texttt{union} data types to join variables never used at the same time, so they can be stored on the same data location. Instead of function parameters, most variables are made global, reducing the space on the stack used when calling other functions. If parameters are needed, they are pointers to shared buffers with fixed sizes, avoiding the use of any dynamic memory allocation.
 
 
 Although, among the many drawbacks, we could highlight the \textit{awful} coding style, the strong dependency on MULTOS framework and many bugs found. 
@@ -176,7 +215,7 @@ In this section we will introduce a brief description of the APDU standard proto
 
 \subsection{Smart Card Communication Protocol}\label{subsec:APDU}
 
-To communicate the smart cards and the reader the ISO/IEC 7816-4 \citep{APDUISO} specifies a standardized protocol .
+To communicate the smart cards and the reader the \texttt{ISO/IEC 7816-4} \citep{APDUISO} specifies a standardized protocol .
 
 The messages, also kown as \acp{APDU}, are divided in APDU Commands and APDU Responses.
 
@@ -258,11 +297,14 @@ MULTOS is a multi-application smart card operative system, which provides a cust
 
 In this section we will present the main characteristics of a MULTOS smart card that shaped the ABC4Trust Card Lite code and that we had to be aware of when adapting it to IoT devices.
 
+
 \paragraph{MULTOS programming languages} A native assembly language called MEL, C and, to a lesser extent, Java, are the available languages to code for MULTOS. In our case, ABC4T Card Lite uses MEL and C.
 
-\paragraph{MULTOS Workflow}
+\paragraph{Execution Model}
+Applications on a MULTOS card are executed in a virtual machine, called the Application Abstract Machine (AAM). The AAM is a stack machine that interprets instructions from the MULTOS Executable
+Language (MEL).
 
-Most of the transmission and communication process is done by MULTOS core, and it then selects, based on the CLA byte of the APDU, the application to load. This application is what most developers will only worry about, and is where their $main()$ function will start.
+The transmission and communication process is done by MULTOS core, and it then selects, based on the CLA byte of the APDU, the application to load. This application is what most developers will only worry about, and is where their compiled \texttt{main()} function will start.
 
 \begin{figure}[bth]
 	\begin{center}
@@ -272,11 +314,12 @@ Most of the transmission and communication process is done by MULTOS core, and i
 	\label{fig:multosWorkflow}
 \end{figure}
 
-The application uses then the \textit{multos.h} file that declares multiple global variables already loaded with the needed data, including the APDU Command bytes.
+Now the developer is in charge of checking what instruction was sent, handle it with regard to his domain logic,  write in the specific data space the APDU Response bytes, and call \texttt{multosExit()}, a MULTOS API function that will be in charge to send the APDU Response.
+In summary, our application starts with all data loaded in memory and exits without worrying how the answer is sent back.
 
-Now the developer is in charge of checking what instruction was sent and if the APDU has the expected ISO Case. If everything is ok, code what needs to be run and write in specific data space the APDU Response bytes, call \textit{multosExit()} and MULTOS will be in charge to send the APDU Response.
+As we can see, MULTOS is a comfortable framework to develop smart card applications, and now we must adapt and implement it for our IoT devices, if we want to port ABC4Trust Card Lite's code.
 
-In summary, our application starts with all data loaded and exits without worrying how to send the answer. A very comfortable workflow that we must now implement for our IoT device if we would want ABC4T Card Lite code to work.
+
 
 \paragraph{MULTOS Memory Layout}
 
@@ -294,7 +337,7 @@ Each application in MULTOS has access to a specific memory layout, divided in di
 The Code Space is where the application code is stored.
 The Data Space is divided in Static memory, Public memory and Dynamic memory.
 
-\textbf{Static memory} are the application variables declared after the specific \textit{\#pragma melstatic} compiler directive. These variables are stored in the non-volatile EEPROM, and any write is assured to be saved because they are not loaded into RAM.
+\textbf{Static memory} are the application variables declared after the specific \textit{\#pragma melstatic} compiler directive. These variables are stored in the non-volatile secure EEPROM, and any write is assured to be saved because they are not loaded into RAM.
 
 \textbf{Public memory} can be seen as the input/output buffer for applications and MULTOS system. The APDU header appears at the top of Public, and command data at the bottom. The application writes then the APDU Response bytes in Public, at specific position (see \autoref{fig:multosPubMem}). To declare variables in this data space, the \textit{\#pragma melpublic} directive is available.
 
