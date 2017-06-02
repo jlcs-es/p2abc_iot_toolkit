@@ -39,12 +39,10 @@ Even in the case we were to implement all P2ABCE inside an IoT device, we would 
 
 Computation offloading is not new to IoT deployments. For example, IPv6 involves managing 128 bits per address and other headers, and many IoT scenes only need to communicate inside a private network, making only the last 64 bits in an address relevant. To reduce that overhead, instead of IPv6 they use 6LoWPAN to compress packets and use smaller address sizes. To communicate a 6LoWPAN with the Internet or other networks, the IoT devices delegate the networking workload on a proxy that can manage the 6LoWPAN and IPv6 stacks. In the scope of consumer devices, smart bands or watches can install applications, bit many of them delegate on the user's phone to accomplish their task.
 
+Therefore, the IoT device now has a \textbf{duality} in its functions, because it is the User that starts any interaction with other actors, and it's also the smart card that a P2ABCE server must ask for cryptographic operations. It can also be seen as a \textbf{double delegation}. The IoT device delegates on the external P2ABCE server to manage the protocol, and the P2ABCE server delegates on the IoT, acting now as a smart card, for the cryptography.
 
 \subsection{System architecture}
 
-% TODO : system architecture:
-% Definir cada etapa: inicio conversación con otro actor, delegación indicando cómo accede a la iot sc, transmisión de APDUs, de los dos últimos la seguridad y escenarios posibles en un último párrafo.
-%describir fig:P2ABCE-IoT
 
 
 \begin{figure}[bth]
@@ -66,11 +64,61 @@ Computation offloading is not new to IoT deployments. For example, IPv6 involves
 \hfil
 
 
-Therefore, the IoT device now has a \textbf{duality} in its functions, because it is the User that starts any interaction with other actors, and it's also the smart card that a P2ABCE server must ask for cryptographic operations. It can also be seen as a \textbf{double delegation}. The IoT device delegates on the external P2ABCE server to manage the protocol, and the P2ABCE server delegates on the IoT, acting now as a smart card, for the cryptography.
+The system will be compounded by the IoT device, the P2ABCE delegation server and the third party P2ABCE actors.
+
+\begin{itemize}
+	
+	\item \textbf{IoT device}
+	
+	In \autoref{fig:P2ABCE-IoT} the IoT device is represented with two interfaces, physical or virtual. One allows external communications to other machines, including other P2ABCE actors, that could be on the Internet, a corporate LAN, a M2M overlay network, etc. Through this interface, the P2ABCE XML messages are exchanged as in any other deployment. This allows an IoT device to interact with other actors without special adaptations to the protocol. The other interface allows a secure communication with the delegation server. Both the delegation messages and the APDU Dialogue are transmitted over this interface, making it a point of attack to the system, and we will talk about its security in the delegation process.
+	
+	The scheme also shows the \textit{P2ABCE IoT Toolkit}. This piece of software includes the IoT Smart Card, and the API for other processes that want to use the P2ABCE system.
+	
+	The IoT Smart Card is the implementation of a software smart card, listens for APDU Commands from the secure interface and stores securely the credentials and private keys within the device's memory.
+	
+	The P2ABCE API is an interface for other processes that wish to use the private-preserving environment of P2ABCE. It provides access to every operation available, hiding the delegation process. In the future, if for example the Verification Service is implemented for the IoT device, i.e., there's no need to delegate to other machine to act as a Verifier, then any program using the API won't need to change anything, the toolkit conceals the transition from delegating to native execution.
+	
+	
+	\item \textbf{P2ABCE actors}
+	
+	If we recall from \autoref{analysisP2ABCE}, the possible roles in the system were the Issuer, the User, the Verifier, the Revocation Authority and the Inspector. All of them use the P2ABCE XML schema in the specification to communicate to each other. Any third party actor will be unaware of the fact that the device is a constrained IoT device that delegates on the P2ABCE server.
 
 
 
+	\item \textbf{P2ABCE Delegation Server}
+	
+	The machine in charge of receiving authorized IoT devices' commands to parse the XML files exchanged and orchestrate the cryptographic operations the IoT smart card must perform.
 
+
+\end{itemize}
+
+\hfil
+
+\begin{flushleft}
+	\textbf{Delegation process}
+\end{flushleft}
+
+Here we describe the computation offloading carried out by the IoT device.  In \autoref{fig:DelegationProving} we show an example of the IoT acting as a User, Proving a Presentation Policy to a third party Verifier.
+
+\begin{enumerate}
+	\item Communication with P2ABCE actor.
+	
+	The IoT device starts an interaction with another actor, e.g. an Issuer or Verifier, receiving a P2ABCE XML file.
+	
+	
+	\item Delegation to the P2ABCE Server.
+	
+	Depending on what role the IoT device is acting as, it will delegate in the corresponding service, e.g. User Service. The delegation message must include the XML file, and any parameter required to accomplish the task, like the information on how to communicate with the IoT smart card (listening port, security challenge, etc.).
+	
+	\item APDU Dialogue (if necessary).
+	
+	The server may need to send APDU Commands to the IoT smart card to read the credential information or perform cryptographic operations involving private keys.
+	
+	\item Server response.
+	
+	The server may return a status code or a XML file if the first one required an answer from the IoT device, in which case, it will send as response to the third party actor, resuming the communication.
+	
+\end{enumerate}
 
 \begin{figure}[bth]
 	\begin{center}
@@ -80,6 +128,25 @@ Therefore, the IoT device now has a \textbf{duality} in its functions, because i
 	\label{fig:DelegationProving}
 \end{figure}
 
+Transmissions over the \textit{Server-IoT} channel must be secured in order to avoid attacks like: impersonate the P2ABCE delegation server, having access to the IoT smart card sending the APDU Commands the attacker wishes; delegate as a device on the server but giving the parameters of another device, making the delegation server send the APDU Commands to a victim IoT smart card.
+
+
+We could use a corporative PKI to issue certificates to the server and devices and configure policies for access control; design a challenge-response system combined with the smart card PIN, like a password and TOTP\footnote{Time-based One-time Password} in a 2FA\footnote{Two-factor authentication} login; we also could connect physically the delegation service through RS-232 serial to the IoT device, securing both physically as we would do with the IoT device on its own, isolating the delegation system from any network attack.
+
+
+As we can see, there are many state of the art solutions for all this threads, therefore, we can assume a secure channel without mentioning a specific solution, providing freedom to choose the most fitting one in a real deployment.
+
+
+
+\paragraph{Modifications for more constrained devices}
+
+Our architecture is designed for devices that could in a future run a reimplemented version of P2ABCE, that means, the devices could perform more tasks than only running the smart card software and their main purpose process, e.g. recollecting sensor data. But if our target devices are so constrained that can barely run the smart card, they may not be able to handle the XML files because of memory restrictions, like a MSP430\footnote{\url{http://www.ti.com/lsds/ti/microcontrollers-16-bit-32-bit/msp/overview.page}} running Contiki-OS, the microcontroller has between hundred of bytes to tens of kilobytes of memory, making impossible to store multiple XML files in the size range of tens of kilobytes.
+
+In these cases, the delegation in the server goes a step forward, making the server a proxy to communicate with other P2ABCE actors, and the IoT device only acts as a smart card. The IoT device would still act as the User, or any other P2ABCE, role because it orchestrates when and how an interaction with other actor is executed, but the communications would be between the proxy and the third party actor. 
+
+
+
+\section{Proof of Concept Implementation}
 
 
 \paragraph{PoC Delegation to the P2ABCE Server} \hfil
@@ -88,9 +155,9 @@ We now will address each type of delegation: from the IoT device as a P2ABCE act
 
 \hfil
 
-Currently P2ABCE offers multiple REST web services to run different roles in P2ABCE system: User Service, Issuer Service, Verification Service, etc. An application that integrates P2ABCE can make use of this services in the same machine or implement the functionality using the core components written in Java, the same ones the REST services use. Our PoC machine, the Omega2, can make REST calls easily, but other devices may use \ac{CoAP}, and in that case, the P2ABCE REST services should be rewritten to offer CoAP support. The commands needed to delegate to the P2ABCE delegation server will be the same to operate with the REST services. This way, the first issue is solved.
+Currently P2ABCE offers multiple REST web services to run different roles in P2ABCE system: User Service, Issuer Service, Verification Service, etc. An application that integrates P2ABCE can make use of this services in the same machine or implement the functionality using the core components written in Java, the same ones the REST services use. Our PoC machine, the Omega2, can make REST calls easily, but other devices may use \ac{CoAP}, and in that case, the P2ABCE REST services should be adapted to offer CoAP support. The commands needed to delegate to the P2ABCE delegation server will be the same to operate with the REST services. This way, the first issue is solved.
 
-The transmission of the messages will depend on the specific use cases, capabilities and resources available. If the delegation server is connected, for example, through RS-232 serial with the IoT device, and physically inaccessible, in the same way an IoT device on its own would be protected, the communication is simple, and not far away from the Arduino Yun idea of combining two devices, one more powerful but to use only when needed. But if the IoT device and the delegation server are apart, or more than one IoT device delegates to it, then the transmission must be secured. They could use 6LoWPAN to talk to each other (the delegation service could be deployed in the proxy) and then secure communications with existing solutions, like with pre-shared symmetric keys, certificates for authentication and authorization, etc., it depends on each particular deployment.
+The transmission of the messages will depend on the specific use cases, capabilities and resources available. If the delegation server is connected, for example, through RS-232 serial to the IoT device, it benefits from the same level of security as the physical device,  reducing the security considerations of the delegation channel to that of the devices security, the communication is simple, and not far away from the Arduino Yun idea of combining two devices, one more powerful but to use only when needed. But if the IoT device and the delegation server are apart, or more than one IoT device delegates to it, then the transmission must be secured. They could use 6LoWPAN to talk to each other (the delegation service could be deployed in the proxy) and then secure communications with existing solutions, like with pre-shared symmetric keys, certificates for authentication and authorization, etc., it depends on each particular deployment.
 
 At the end of the day, this is all about usual security in IoT. Many other studies focus on this matter, so we will assume it can be done, and focus on what's new, P2ABCE in IoT.
 
@@ -98,7 +165,7 @@ At the end of the day, this is all about usual security in IoT. Many other studi
 \hfil
 
 
-% TODO: imagen con servicios desplegados/actores en cada máquina
+
 
 
 To sum up, our IoT device will act as User (Prover or Verifier) keeping its secrets in a software smart card. When it starts an interaction with other actor of the P2ABCE system (Issuer, Verifier, etc.), the IoT device will delegate with a remote call (using REST in our PoC) to a P2ABCE delegation server, attaching the XML file and the necessary information for the server to send the APDUs to the software smart card (in our PoC using TCP sockets, giving the IP and listening port).
@@ -117,7 +184,6 @@ In the future, more functionality currently delegated in the P2ABCE server can b
 
 
 
-\section{Implementation}
 
 
 \section{IoT Smart Card}
