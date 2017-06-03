@@ -1,0 +1,83 @@
+'TODO
+
+@startuml
+skinparam dpi 300
+skinparam monochrome true
+hide footbox
+title P2ABCE Delegation User Service Sequence Diagram
+
+actor "IoT Device" as IoT
+participant "REST User Service" as REST
+box "CORE/" #FEFECE
+participant "APDU Handler" as Handler
+participant "Subroutines" as Subroutines
+participant "MULTOS\nreimplemented C-API" as mAPI
+end box
+
+box "INTERFACES/"
+participant "SC Status\nSerialization" as Serialization
+participant "APDU I/O" as APDUIO
+participant "Modular Arithmetic" as Modarith
+end box
+
+
+
+'IoT -> BIOSC: BootSmartCard( listening_port, json_file )
+activate BIOSC
+
+BIOSC -> Serialization: read_sc_status( json_file )
+activate Serialization
+Serialization --> BIOSC:
+deactivate Serialization
+BIOSC -> BIOSC: OpenTCPSocket(listening_port)
+
+loop Listen on Socket for APDU Commands
+BIOSC -> Handler: handle_APDU( apdu_command_bytes )
+activate Handler
+Handler -> APDUIO: parse_APDU_bytes( apdu_command_bytes )
+activate APDUIO
+APDUIO --> Handler: [ CLA INS P1 P2 Lc Payload Le ISO_Case]
+deactivate APDUIO
+
+' switch ( INS_byte ) - case
+Handler -> Handler: handle_INS( INS_byte )
+activate Handler
+Handler -> Subroutines: aux_function() *
+activate Subroutines
+note left: Example use of\nSubroutines, MULTOS\nAPI and Interfaces.
+Subroutines -> mAPI: multos_func() *
+activate mAPI
+mAPI -> Modarith: some_function() *
+activate Modarith
+Modarith --> mAPI:
+deactivate Modarith
+mAPI --> Subroutines:
+deactivate mAPI
+Subroutines --> Handler:
+deactivate Subroutines
+Handler -> mAPI: mExit()
+note left: <b>Always</b> call mExit to\nend the APDU handling\nlike in a MULTOS s.c.
+
+activate mAPI
+mAPI -> Serialization: save_sc_status()
+note right: Save the new status of the smart card\nbefore sending the APDU Response.
+activate Serialization
+Serialization --> mAPI:
+deactivate Serialization
+mAPI -> APDUIO: output_APDU_Response()
+note right: Sends APDU Response\nbytes through the socket.
+activate APDUIO
+APDUIO --> mAPI:
+deactivate APDUIO
+mAPI --> Handler:
+deactivate mAPI
+Handler --> Handler:
+deactivate Handler
+Handler --> BIOSC:
+deactivate Handler
+end
+
+'BIOSC --> IoT: return
+deactivate BIOSC
+
+@enduml

@@ -122,7 +122,7 @@ Here we describe the computation offloading carried out by the IoT device.  In \
 
 \begin{figure}[bth]
 	\begin{center}
-		\includegraphics[width=\linewidth]{gfx/DelegationProving}
+		\includegraphics[width=\linewidth]{gfx/UML/DelegationProving}
 	\end{center}
 	\caption{IoT Delegation in P2ABCE for Proving.}
 	\label{fig:DelegationProving}
@@ -355,8 +355,15 @@ The \textit{output\_large\_data} function is a tool used in MULTOS smart cards t
 A future change to the project may include support for Extended APDUs, avoiding the use of multiple GET RESPONSE. To do this, the \textit{output\_large\_data} function and the \textit{IoTsmartcardio} implementation of \textit{javax.smartcardio} must support the feature.
 
 
-% TODO -Sequence diagrams.
+% TODO -Sacar en mayor calidad
+\begin{figure}[bth]
+	\begin{center}
+		\includegraphics[width=\linewidth]{gfx/UML/sequenceBIOSC}
+	\end{center}
+	\caption{IoT Smart Card Sequence Diagram.}
+	\label{fig:sequenceBIOSC}
+\end{figure}
 
 
 
-
+%TODO : optional: diagrama secuencia de P2ABCE, pero si eso solo de la reimplementación de javax.smartcardio y su uso por HardwareSmartcard

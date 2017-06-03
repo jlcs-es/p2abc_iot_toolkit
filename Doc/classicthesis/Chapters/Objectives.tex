@@ -142,11 +142,11 @@ P2ABCE project is based on the concept of smart cards, virtual or physical, to s
 
 The \textit{SoftwareSmartcard} class implements the interface in Java, suitable for applications using P2ABCE self-storing digital smart cards, like a virtual wallet.
 
-The \textit{HardwareSmartcard} class uses the standard APDU messages (\ref{subsec:APDU}) to interact with smartcards. P2ABCE defines the necessary APDU instructions for the smart card needed to implement each method of the interface. It relies on \textit{javax.smartcardio} abstract classes (implemented by Oracle in their JRE) to communicate the smart card reader and the smart card. This way, it doesn't matter what manufacturer issues the smartcard, or if it's an Android device with NFC, if they support the APDU instructions, P2ABCE will work with them.
+The \textit{HardwareSmartcard} class uses the standard APDU messages (\ref{subsec:APDU}) to interact with smartcards. P2ABCE defines the necessary APDU instructions for the smart card needed to implement each method of the interface. It relies on \texttt{javax.smartcardio} abstract classes (implemented by Oracle in their JRE) to communicate the smart card reader and the smart card. This way, it doesn't matter what manufacturer issues the smartcard, or if it's an Android device with NFC, if they support the APDU instructions, P2ABCE will work with them.
 
 \begin{figure}[bth]
 	\begin{center}
-		\includegraphics[width=\linewidth]{gfx/p2abceBasicUML}
+		\includegraphics[width=\linewidth]{gfx/UML/p2abceBasicUML}
 	\end{center}
 	\caption{Basic P2ABCE structure}
 	\label{fig:p2abceBasicUML}
