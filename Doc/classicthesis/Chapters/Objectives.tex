@@ -103,29 +103,52 @@ The roles are:
 	
 \end{itemize}
 
-
-The cryptographic nature of the credential-as-container concept includes the
-following four security aspects \citep{vullers2013efficient}:
-\begin{itemize}
-	\item The issuer’s digital signature ensures \textbf{authenticity}: the credential originates
-	from the issuer, and this issuer asserts that the attributes hold for the person.
-	\item This signature also guarantees integrity: the attributes contained in the credential
-	have not been altered since they were issued.
-	\item A credential is \textbf{non-transferable} as it is bound to the secret key, only known by the credential owner.
-	\item A credential \textbf{hides} its content, so it does not reveal the attributes it contains.
-	Furthermore, a credential protects the privacy of its owner through the following
-	cryptographic properties.
-	\item Issuer \textbf{unlinkability} ensures that any information gathered during issuing
-	cannot be used to link a verification of the credential to its issuance.
-	\item \textbf{Multi-show unlinkability} guarantees that when a credential is verified multiple
-	times, these sessions cannot be linked.
-\end{itemize}
-
-Zero-knowledge proofs, used in Idemix, allow a user to prove ownership of a credential without
+Zero-knowledge proofs used in Idemix allow a user to prove ownership of a credential without
 revealing the credential itself. Since the verifier does not see the credential, verification
-instances are unlinkable and they also cannot be related to the issuing procedure. The privacy of users is protected by these unlinkability properties, even if the credential issuer and all verifiers collude.
+instances are unlinkable and they also cannot be related to the issuing procedure. The privacy of users is protected by these unlinkability properties, even if the credential issuer and all verifiers collude. We can identify the following key features of the Idemix system \citep{vanet}:
 
+\begin{itemize}
+		
+	\item \textbf{Issuance unlinkability}: the issuer cannot link an issued credential to the presentation of such credential.
 
+	\item \textbf{Multi-show unlinkability}: a credential can be used multiple times without
+	the resulting evidence becoming linkable.
+	
+	\item \textbf{Selective disclosure of attributes}: allows users to prove only a subset of
+	attributes to a verifier.
+	
+	\item \textbf{Predicate proof}: it consists of statements that allow to prove a property
+	of an attribute without disclosing its actual value. Example of these statements
+	are the logical operators > or <.
+	
+	\item \textbf{Proof of holdership}: a cryptographic evidence for proving ownership or
+	possession of a credential without disclosing the attributes contained in
+	that credential.
+	
+	\item \textbf{Non-transferability}: key binding can be used to bind one or more credentials
+	of a user to the same secret.
+	
+	\item \textbf{Scope-exclusive pseudonyms}: a certified pseudonym unique for a specific
+	scope and secret key, i.e. a single pseudonym can be created for each credential.
+	
+	\item \textbf{Carry-over attributes}: it relies on the assumption that the user already
+	possesses a credential, from which a given attribute can be carried over
+	into the new credential without disclosing the attribute value to the Issuer.
+	
+	\item \textbf{Cross-credential proofs}: it allows users to prove relations between attributes
+	from two or more credentials without revealing them to the verifier. For
+	instance, that the name contained on a credit card and on a passport
+	match.
+	
+	\item \textbf{De-anonymization}: it is an optional feature that allows an Inspector, either
+	alone or in cooperation with other entities, to reveal the identity of users
+	in cases of accountability and non-repudiation.
+	
+	\item \textbf{Revocation}: in case of misuse, it allows the revocation of issued credentials
+	to (misbehaving) users. Thus, revoked credentials can no longer be used to
+	generate Presentation Tokens.
+
+\end{itemize}
 
 To sum up, an attribute-based credential contains attribute-value pairs that are certified by a trusted Issuer. A credential can also specify one or more Revocation Authorities who are able to revoke the credential if necessary. Using her credentials, a User can form a presentation token that contains a subset of the certified attributes, provided that the corresponding credentials have not been revoked. Additionally, some of the attributes can be encoded in the presentation token so that they can only be retrieved by an Inspector. Receiving a presentation token from a User, a Verifier checks whether the presentation token is valid w.r.t. the relevant Issuers and Inspector's public keys and the latest revocation information. If the verification succeeds, the Verifier will be convinced that the attributes contained in the presentation token are vouched by the corresponding Issuers.
 

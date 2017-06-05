@@ -105,9 +105,8 @@ Nonetheless, the Omega2 needs fine tunning to start operating, and basic knowled
 	\item A Serial to USB adapter wired to the TX and RX UART pins to use the Serial Terminal, to avoid the use of SSH over WiFi.
 \end{itemize}
 
+A downside of using LEDE and the Omega2 is the lack of hardware acceleration for cryptographic operations, unlike the MULTOS applications, because the smart cards hardware and MULTOS API include support for such common operations in smart cards.
 
-Also, we will need a cross-compiler to generate the smart card binary. Because we will use GMP and OpenSSL as shared libraries, the best option is to use the LEDE SDK. The SDK manages the available packages and generates the GCC toolchain. Also, using CMake, 
-%TODO
 
 
 \paragraph{The network} In our third scenario, the Raspberry Pi 3 and the Omega2 will talk to each other over TCP. This implies possible network delays depending on the quality of the connection. The Raspberry Pi 3 is connected over Ethernet to a switch with WiFi access point. The Omega2 is connected over WiFi n to said AP. To ensure the delay wasn't significant, we measured 6000 APDU messages, and the results show that the mean transmission time is less than half a millisecond per APDU. As we will see in the results section, this network time is negligible.

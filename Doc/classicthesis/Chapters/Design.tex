@@ -8,11 +8,7 @@
 % +Design
 %  -Architecture design: delegation, computation offloading, duality User/SC + Engine
 % 
-% +Implementation:
-%  -REST as current delegation protocol.
-%  -BIOSC as current APDU transmission protocol: no security -> no overload.
-%  -IoT Smart Card software design and implementation notes.
-%  -Sequence diagrams. TODO
+
 
 In this chapter we will describe the process for defining how a constrained IoT device may be integrated in a system like P2ABCE. We will also describe the PoC implementation carried out to test a realistic deployment.
 
@@ -131,14 +127,12 @@ Here we describe the computation offloading carried out by the IoT device.  In \
 Transmissions over the \textit{Server-IoT} channel must be secured in order to avoid attacks like: impersonate the P2ABCE delegation server, having access to the IoT smart card sending the APDU Commands the attacker wishes; delegate as a device on the server but giving the parameters of another device, making the delegation server send the APDU Commands to a victim IoT smart card.
 
 
-We could use a corporative PKI to issue certificates to the server and devices and configure policies for access control; design a challenge-response system combined with the smart card PIN, like a password and TOTP\footnote{Time-based One-time Password} in a 2FA\footnote{Two-factor authentication} login; we also could connect physically the delegation service through RS-232 serial to the IoT device, securing both physically as we would do with the IoT device on its own, isolating the delegation system from any network attack.
-
+We could use a corporative PKI to issue certificates to the server and devices and configure policies for access control; design a challenge-response system combined with the smart card PIN, like a password and TOTP\footnote{Time-based One-time Password} in a 2FA\footnote{Two-factor authentication} login. We also could connect physically the delegation service through RS-232 serial to the IoT device, securing both physically as we would do with the IoT device on its own, isolating the delegation system from any network attack. This last idea is an approximation to the Arduino Yún\footnote{\url{https://www.arduino.cc/en/Main/ArduinoBoardYun}}, a development board that integrates two microcontrollers, one a typical Arduino with very low resources, and another one running a fork of OpenWrt. The Arduino microcontroller can control the terminal of the more powerful one, using the serial pins as commented before.
 
 As we can see, there are many state of the art solutions for all this threads, therefore, we can assume a secure channel without mentioning a specific solution, providing freedom to choose the most fitting one in a real deployment.
 
 
-
-\paragraph{Modifications for more constrained devices}
+\paragraph{Notes for more constrained devices}
 
 Our architecture is designed for devices that could in a future run a reimplemented version of P2ABCE, that means, the devices could perform more tasks than only running the smart card software and their main purpose process, e.g. recollecting sensor data. But if our target devices are so constrained that can barely run the smart card, they may not be able to handle the XML files because of memory restrictions, like a MSP430\footnote{\url{http://www.ti.com/lsds/ti/microcontrollers-16-bit-32-bit/msp/overview.page}} running Contiki-OS, the microcontroller has between hundred of bytes to tens of kilobytes of memory, making impossible to store multiple XML files in the size range of tens of kilobytes.
 
@@ -147,57 +141,150 @@ In these cases, the delegation in the server goes a step forward, making the ser
 
 
 \section{Proof of Concept Implementation}
+% +Implementation:
+% *System:
+% 	-Raspbian OS: distro de debian para Raspberry Pi, que se describirá en los tests
+% 	-LEDE: ash terminal (shell command interpreter), POSIX, typical hardware, libraries with no hardware aceleration vs smart card MULTOS,
+%
+% *Delegation
+%  -REST as current delegation protocol: curl script bash
+%  -BIOSC as current APDU transmission protocol: no security -> no overload.
+% *Smart Card
+%  
+%  -IoT Smart Card software design and implementation notes.
+%  -Sequence diagrams. TODO
 
 
-\paragraph{PoC Delegation to the P2ABCE Server} \hfil
+In this section we present the first PoC implementation, introducing the IoT system where we are going to work, then we will describe the delegation protocols, one for the computation offloading of the IoT device on the P2ABCE server, and another for the transmission of APDU Commands, and finally, we will describe the IoT smart card implementation.
 
-We now will address each type of delegation: from the IoT device as a P2ABCE actor to the P2ABCE delegation server, and from the server to the smart card in the IoT device.
+
+
+\subsection{IoT system}
+
+We will develop our PoC in Linux based systems in order to avoid complications with firmware specific issues that we are not familiar with. Even so, the linux systems used are aimed for the IoT environment and serve as a starting point for future implementations in more constrained devices or different systems.
+
+In our delegation server we will run Raspbian OS, a distribution based on Debian for the Raspberry Pi. We will talk more about the hardware specifications in the benchmark chapter. We chose this system because it has a great package repository support, including the Java Runtime Environment, needed to run the P2ABCE Services.
+
+For our IoT device, we will use LEDE, Linux Embedded Development Environment, a distribution born from OpenWrt, aimed for routers and embedded chips with low resources requirements. It offers the \texttt{ash} command interpreter, or \texttt{shell}, and the \texttt{opkg} package manager, that allows an easy installation of some libraries and tools needed during the early development.
+
+
+
+
+
+
+
+
+
+
+
+\subsection{PoC Delegation}
+
+As we explained in the design section, the delegation has two steps, the IoT device calling the P2ABCE server to offload the parsing of the XML data, and the P2ABCE server sending APDU Commands to the IoT smart card in the device.
+
+
+
+
+\subsubsection{PoC Delegation to the P2ABCE Server}
+
+
+Currently P2ABCE offers multiple REST web services to run different roles in P2ABCE system: User Service, Issuer Service, Verification Service, etc. Any third party application that integrates P2ABCE with their system can make use of these services or implement the functionality using the library written in Java, the tool that the REST services actually use.
+
+
+Our PoC machine, the Omega2, can make REST calls easily with the \texttt{curl} command, but other devices may use \ac{CoAP}, but in that case, the P2ABCE REST services should be adapted to offer CoAP support. The commands needed to delegate to the P2ABCE server would be the same that those defined now to operate with the REST services, but with the modifications needed to pass the parameters on how to communicate with the IoT smart card.
+
+In this PoC the only P2ABCE Service that needed to be modified was the User Service. We added the following REST call
+
+\begin{center}
+	\textit{/initIoTsmartcard/{issuerParametersUid}?host=\&port=}
+\end{center}
+
+where we communicate the P2ABCE server that an IoT Smart Card is accessible via \textit{host} and \textit{port}. Then a new \textit{HardwareSmartcard} object is stored in the P2ABC Engine, but instead of the \textit{javax.smartcardio} Oracle's \textit{CardTerminal} implementation, we use our own \textit{IoTsmartcardio} implementation for the \textit{HardwareSmartcard} constructor, that we will discuss in the following section.
+
 
 \hfil
 
-Currently P2ABCE offers multiple REST web services to run different roles in P2ABCE system: User Service, Issuer Service, Verification Service, etc. An application that integrates P2ABCE can make use of this services in the same machine or implement the functionality using the core components written in Java, the same ones the REST services use. Our PoC machine, the Omega2, can make REST calls easily, but other devices may use \ac{CoAP}, and in that case, the P2ABCE REST services should be adapted to offer CoAP support. The commands needed to delegate to the P2ABCE delegation server will be the same to operate with the REST services. This way, the first issue is solved.
+In a real deployment, we would offer a full library with an API for other processes that want to use the P2ABC Engine, which automatizes the boot of the IoT smart card and handles the security policies, like the one we presented in the deployment diagram \ref{fig:P2ABCE-IoT} of the \textit{P2ABCE IoT Toolkit}.
 
-The transmission of the messages will depend on the specific use cases, capabilities and resources available. If the delegation server is connected, for example, through RS-232 serial to the IoT device, it benefits from the same level of security as the physical device,  reducing the security considerations of the delegation channel to that of the devices security, the communication is simple, and not far away from the Arduino Yun idea of combining two devices, one more powerful but to use only when needed. But if the IoT device and the delegation server are apart, or more than one IoT device delegates to it, then the transmission must be secured. They could use 6LoWPAN to talk to each other (the delegation service could be deployed in the proxy) and then secure communications with existing solutions, like with pre-shared symmetric keys, certificates for authentication and authorization, etc., it depends on each particular deployment.
+Now we show some examples of the PoC \texttt{curl} commands, run in the device's terminal, or from a shell script for automation:
 
-At the end of the day, this is all about usual security in IoT. Many other studies focus on this matter, so we will assume it can be done, and focus on what's new, P2ABCE in IoT.
+\begin{lstlisting}[language=bash]
+$ curl -X POST --header 'Content-Type: text/xml' "http://$DelegationServerIP:9200/user/initIoTsmartcard/http%3A%2F%2Fticketcompany%2FMyFavoriteSoccerTeam%2Fissuance%3Aidemix?host=192.168.3.1&port=8888"
+
+$ curl -X POST --header 'Content-Type: text/xml' -d @firstIssuanceMessage.xml "http://$DelegationServerIP:9200/user/issuanceProtocolStep/" > issuanceReturn.xml
+\end{lstlisting}
+
+The IoT device will only manage XML as data files to exchange between the third party actor and the P2ABCE delegation service, attaching them in the body of the REST call. In the parameters of the first call we can see the IP and port where the IoT smart card will be listening.
+
+
+
+\subsubsection{APDU Dialogue Transmission}
+
+
+To transmit the APDU messages in our PoC we use a simple protocol, that we will refer as BIOSC (Basic Input Output Smart Card), consisting in one first byte for the instruction: 
+
+\hfil
+
+\begin{tabular}{|c|l|}
+	\hline
+	\texttt{0x01} & APDU Command or Response: Read a 2 bytes for the\\& length and then as many bytes as said length. \\
+	\hline
+	\texttt{0xff} & Finish connection: close the current TCP socket and\\& end the IoT smart card execution. \\
+	\hline
+\end{tabular}
+
+\hfil
+
+In the first instruction, we read two header bytes with the length of the APDU Command or Response to receive, followed by said APDU bytes. The message is sent over TCP for a reliable transmission (concept of session, packet retransmission, reordering, etc.). The second instruction serves for closing the TCP socket in the IoT device when the smart card is no longer needed.
+
+We lack any security (authentication or authorization) that a real system should implement. It is vital to authenticate the delegation service, to authorize it to make APDU Commands, and the same with the IoT device, to prevent attacks. But using this method for the transmission of the APDU messages, with only 3 bytes of overhead, helps us in the  benchmarks to measure the real performance of the system.
 
 
 \hfil
 
 
+The implementation of this simple protocol is done in Java and C, one for the P2ABCE server and the other one for the IoT smart card.
 
-
-
-To sum up, our IoT device will act as User (Prover or Verifier) keeping its secrets in a software smart card. When it starts an interaction with other actor of the P2ABCE system (Issuer, Verifier, etc.), the IoT device will delegate with a remote call (using REST in our PoC) to a P2ABCE delegation server, attaching the XML file and the necessary information for the server to send the APDUs to the software smart card (in our PoC using TCP sockets, giving the IP and listening port).
-
-
-
-\hfil
-
-
-This simple design keeps the benefit of a 100\% compatible P2ABCE deployment, and the integration of IoT devices to the P2ABCE ecosystem.
-
-In the future, more functionality currently delegated in the P2ABCE server can be implemented in the IoT device, if its resources allow it. For example, in a M2M environment, where an IoT device can act as User and Verifier, the verification consists on sending a Presentation Policy, and verifying the Presentation Token, which implies less logic than generating it as the User. Therefore, the implementation of the Verifier functionality would reduce significantly the need of a delegation server, but as we said, managing complex XML squemas is not something many IoT devices could do.
+% TODO : IoTsmartcardio
+% TODO : BIOSC.c
+%TODO : optional: diagrama secuencia de P2ABCE, pero si eso solo de la reimplementación de javax.smartcardio y su uso por HardwareSmartcard
 
 
 
 
 
+\subsection{IoT Smart Card Implementation}
+
+
+After many design decisions in the process to adapt the original ABC4Trust Card Lite code to pure C, working on a MIPS architecture, in this section, we present the current \ac{PoC} code, most important decisions and execution workflow in the form of sequence diagrams.
 
 
 
-\section{IoT Smart Card}
+\begin{figure}[bth]
+	\begin{center}
+		\includegraphics[width=\linewidth]{gfx/UML/sequenceBIOSC}
+	\end{center}
+	\caption{IoT Smart Card Sequence Diagram.}
+	\label{fig:sequenceBIOSC}
+\end{figure}
 
-After many design decisions in the process to adapt the original ABC4T Card Lite code to pure C, working over a more usual architecture machine, in this section, we present the current \ac{PoC} code, most important decisions, workflow execution, and future work.
 
-First, let's define what a \textit{more usual architecture} is. If we remember the MULTOS section, the framework gives an application a very specific memory layout and entry and output points of execution, that could be seen as a single process execution machine. Many IoT devices work like a computer, with multiple processes or threads, without pre-loaded data on startup (like the APDU MULTOS loads for the application), a non-volatile memory for data and code, maybe a basic file system in this memory, and RAM with the program's stack, heap, data and code.
-
-Our PoC is tested on a Linux system, and we will give instructions on how to adapt each part to work with other typical IoT systems.
-For example, other IoT devices may work like MULTOS and let access variables in non-volatile memory during execution, and in that case, the port should be changed according to these particularities.
 
 
 \hfil
 
+%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+
+
+
+
+
+
+
+
+%% DRAFT %%
 
 
 \subsection{Code structure}
@@ -205,10 +292,9 @@ For example, other IoT devices may work like MULTOS and let access variables in 
 
 We divide the project in three different sections with the objective of enhancing maintainability, improving future changes, ports, fixes, etc.
 
-The first section is what could be called as the core of the smart card, the second one the interface for the tools the core need and may depend on the platform, and finally third party libraries, that in may be empty if the interfaces implementation doesn't need any.
+The first section is what could be called as the core of the smart card, the second one the interface for those tools the core needs and may depend on the target's platform, and finally, the third party libraries, that may be empty if the interfaces implementation doesn't need any.
 
 
-In our PoC we used CMake to manage the project, due to the cross-compilation tools, integration with multiple IDEs and tests.
 
 
 %\begin{figure}[bth]
@@ -232,16 +318,19 @@ In our PoC we used CMake to manage the project, due to the cross-compilation too
 
 \paragraph{Core smart card}
 
-The smart card logic lies in this section, the concepts of APDU Commands, what instructions are defined in P2ABCE smart cards and how to process them and generate proper APDU Responses.
+The smart card logic lies in this section, the concepts of APDU Commands, what instructions are defined in P2ABCE smart cards, and how to process them and generate proper APDU Responses.
 
-Changes in the APDU protocol for P2ABCE must be done here, independently of the target platform.
+If the APDU protocol defined for P2ABCE smart cards changed, with the consequence of having to update all smart cards in use, the changes to adapt the IoT smart card should be applied here. This also implies that if the P2ABCE Java code changes their \texttt{Smartcard} interface, as long as it is backwards compatible with existing smart cards, the IoT smart card will still work as intended.
 
-After refactoring the original ABC4Trust Card's code, most of it fell in what we will call the core of the smart card.
+Most of the original ABC4Trust Card's code has been reused in this section, like all the variables and custom data type definitions, or the APDU Commands handling.
 
-All types and variable definitions and the APDU handling is done in this code.
-However, the ABC4Trust's code depended on the MULTOS C-API for the input/output of data, modular arithmetic, and even AES128 and SHA256 cryptography.
+However, the ABC4Trust's code heavily depended on the MULTOS C-API for the input/output of data, modular arithmetic, and AES128 and SHA256 cryptographic operations.
 
-A characteristic of MULTOS C-API is that every function name starts with \textit{multos}, but as we said, the \textit{main.h} file implemented equivalent functions to some available in \textit{multos.h}. Our first step was to replace the \textit{main.h} functions for the standard ones in the C-API. Then, we implemented, following the C-API documentation, the functions from \textit{multos.h} (only the used ones) changing their names from \textit{multosFoo()} to \textit{mFoo()} for readability and emphasize that they were no longer from MULTOS.
+A characteristic of MULTOS C-API is that every function name starts with ``\texttt{multos}'', so we implemented, following the C-API specification, the functions used, but changing their names from \texttt{multosFoo()} to \texttt{mFoo()} for readability and to emphasize that they were no longer MULTOS functions.
+
+The \texttt{main.h} file, from the original project, also implemented equivalent functions to some available in \texttt{multos.h}. We replaced them for the standard functions in the C-API, checking that the MEL code did the same as the documentation specified. This last detail is very important, because in \citep{vullers2013efficient} they noted that \texttt{ModularExponentiation} function dos not accept exponents larger than the modulus size, and they added \texttt{SpecialModularExponentiation}, dividing the exponentiation in two that MULTOS could perform. After this analysis, when those particularities appeared, we decided to adapt the reimplementation of the C-API.
+
+
 
 Future changes in the code may refactor it so there's no longer need for the MULTOS framework functions.
 
@@ -257,6 +346,7 @@ Taking a step forward, we make the core smart card totally independent of any li
 
 
 \paragraph{External utilities}
+% Podría haber implementaciones de librerías criptográficas en ensamblador de la plataforma, se incluyen aquí y la interfaz lo usa al implementar
 
 If the IoT system offers well tested libraries that could aid in the interfaces implementation, or we simply found a pure C implementation for the task, these third party libraries belong to this section.
 
@@ -267,11 +357,13 @@ For example, Atmel's ATAES132A \citep{ATAES132A}
 offers a serial chip for secure key storage, AES128 execution and random number generation. Another serial chip like ESP8266 offers WiFi connectivity, typically used with Arduino, and can also perform AES encryption. For random number generation, a technique used with Contiki devices is to read from sensors aleatory data and use it as seed. All these alternatives depend on the target device, but are all valid. The \textit{interfaces} and \textit{external utilities} sections allow for a clean and fast port of the code.
 
 
-\subsection{PoC Workflow}
-
 % PoC BIOSC : TCP sockets, JSON serialization
 
 % PoC IoT javax.smartcardio : protocolo de 2 bytes + APDU
+
+
+\subsection{PoC Workflow}
+
 
 % 1. Boot: deserialize sc status
 % 2. Listening: open tcp socket
@@ -287,38 +379,9 @@ To transmit the APDU messages in our PoC we use a simple protocol, consisting in
 
 We lack of any security (authentication and authorization) that a real system should implement. It is vital to authenticate the delegation service, to authorize it to make APDU Commands, and the same with the IoT device, to prevent attacks. This belongs to \textit{usual} security, as we already said, and for that reason it's not in the PoC.
 
-\paragraph{P2ABCE REST Delegation}
-
-
-The only P2ABCE Service that needed to be modified was the User Service. We added the REST call
-
-\begin{center}
-	\textit{/initIoTsmartcard/{issuerParametersUid}?host=\&port=}
-\end{center}
-
-where we communicate the P2ABCE server that a IoT Smart Card is accessible via \textit{host} and \textit{port}. Then a new \textit{HardwareSmartcard} object is stored in the P2ABC Engine, but instead of the \textit{javax.smartcardio} Oracle's \textit{CardTerminal} implementation, we use our \textit{IoTsmartcardio} implementation for the \textit{HardwareSmartcard} constructor.
-
-The rest of P2ABCE code is unchanged and will work as if a real smart card was in use. \textit{IoTsmartcardio} implementation will transmit the APDUs through the TCP socket with the format mentioned.
-
-
-\hfil
-
-Our test consists on the tutorial available in P2ABCE's repository. From the Omega2's terminal we run \textit{curl} commands to send REST petitions. For example:
-
-\begin{verbatim}
-$ curl -X POST --header 'Content-Type: text/xml'
-'http://localhost:9200/user/initIoTsmartcard/http%3A%2F%2
-Fticketcompany%2FMyFavoriteSoccerTeam%2Fissuance%3Aidemix
-?host=192.168.3.1&port=8888'
-\end{verbatim}
-
-The IoT device will only manage XML as data files to exchange between the third party actor and the P2ABCE delegation service, without parsing them.
-
-After a REST call to the User Service, the P2ABC Engine will talk to the IoT smart card process.
-
 \paragraph{APDU transmission with BIOSC}
 
-% TODO : diagrama del software
+
 
 Before sending the REST message, the Omega2 must be listening in the specified port. At start up, BIOSC reads from a JSON file the status of the smart card (credentials in the BLOB, private keys, PIN and PUK codes, etc.), then opens the TCP socket and listens in a loop.
 
@@ -355,15 +418,6 @@ The \textit{output\_large\_data} function is a tool used in MULTOS smart cards t
 A future change to the project may include support for Extended APDUs, avoiding the use of multiple GET RESPONSE. To do this, the \textit{output\_large\_data} function and the \textit{IoTsmartcardio} implementation of \textit{javax.smartcardio} must support the feature.
 
 
-% TODO -Sacar en mayor calidad
-\begin{figure}[bth]
-	\begin{center}
-		\includegraphics[width=\linewidth]{gfx/UML/sequenceBIOSC}
-	\end{center}
-	\caption{IoT Smart Card Sequence Diagram.}
-	\label{fig:sequenceBIOSC}
-\end{figure}
 
 
 
-%TODO : optional: diagrama secuencia de P2ABCE, pero si eso solo de la reimplementación de javax.smartcardio y su uso por HardwareSmartcard
