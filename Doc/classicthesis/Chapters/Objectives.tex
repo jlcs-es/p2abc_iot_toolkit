@@ -1,15 +1,8 @@
 %************************************************
-\chapter{Analysis and objectives}\label{ch:objectives}
+\chapter{Objectives and Analysis}\label{ch:objectives}
 %************************************************
 
-% descripción del proyecto: objetivos, metodología: pasos del diseño y desarrollo, ver figura 3.1 (elección de sensores: computing offloading), contexto (partimos de ABC4T: recordar P2ABCE y que se basa en tarjetas), entorno de desarrollo (meter elección del Omega2, LEDE, teoría de APDUs, código heredado) el sw, los tests p2abce puro, 
-
-
-%TODO resumir organización del capítulo
-% Incluir bibliografía: vanet, wiki
-
-
-In this chapter we describe the project objectives, and the methodology followed during its development. In section ... TODO
+In this chapter we describe the project objectives, and the methodology followed during its development. We continue then describing the privacy-preserving attribute based credentials and the ecosystem surrounding it, from the P2ABCE's perspective, as it is the starting point of our project. We finish with an introduction to all the technologies involved in our development, from P2ABCE's code, to how smart cards work.
 
 \section{Project description}
 
@@ -19,25 +12,50 @@ In a smart city project, citizens' data can be privatized and at the same time c
 
 \hfil
 
-% TODO: numerar objetivos: nombrarlos luego por el número cuando se consiguen, empiezan, en conclusiones...
-% TODO: no tan obvio que se han definido objetivos tras el proyecto.
 
-We will divide the project in various \textbf{objectives}, starting from the principal goal, dividing our work in different categories.
+We will divide the project in various objectives:
 
-\hfil
 
-\paragraph{Idemix and the IoT}
-This is our main objective, integrating IBM's privacy-preserving system in the IoT environment. 
+\begin{enumerate}
+	\item Idemix and the IoT
+	
+	This is our main objective, integrating IBM's privacy-preserving system in the IoT environment.
+	
+	\item Study of the Idemix ecosystem
+	
+	Study the state of the art of Idemix and the IoT, analysing the related projects and papers with similar approaches. Once we know as much as we can from the existing ecosystem, we will be able to deliver the most fitting solution to our project.
+	
+	\item Design of the IoT+Idemix solution
+	
+	A formal description of the IoT architecture that will use Idemix.
+	
+	
+	\item Implementation of a functional PoC
+	
+	\subitem Software objectives
+	
+	A maintainable, structured and extensible solution, from the IoT and original project perspectives, that is, the IoT solution must be interoperable with other non-IoT solutions, now and in the future, given new IoT systems or changes in the cryptographic protocols.
+	
+	\subitem Hardware objectives
+	
+	Be compatible with devices as constrained as possible, considering the multiple IoT platforms existing.
+	
+	
+	\item Validation of the PoC
+	
+	Deploy a \ac{PoC} in a real scenario, without the need of simulators, checking that it works as expected.
+	
+	\item Evaluation of performance
+	
+	Measure and compare the solution's performance against the existing ones.
+	
+	\item Integrate the IoT+Idemix as a security solution for other projects
+	
+	The IoT+Idemix project is a solution for the privacy threads in the IoT environment, and does not work on its own, but as part of other projects.
+	
+\end{enumerate}
 
-\paragraph{Analysis} Study the state of the art of Idemix and the IoT, analysing related projects, papers with similar approaches, and consider the best fitting solutions from where to begin.
 
-\paragraph{Design and implementation} After studying the existing works, we must give a formal solution to be implemented. This includes the theoretical architecture, the steps to take, the software to implement, the hardware to use, and any simplifications to leave as future work.
-
-Our \textbf{software} objectives include making it easily maintainable, structured and extensible, from the IoT and original project perspectives, that is, the IoT solution must be interoperable with other non-IoT solutions, now and in the future, with minimal effort, given new IoT systems or changes in the cryptographic protocols.
-
-Our \textbf{hardware} objective is to use devices as constrained as possible. But considering our early situation in the project, we will use IoT devices that ease testing and development, having in mind the other devices, and what specific steps we should take for them in the future.
-
-\paragraph{Validity and evaluation} Deploy a \ac{PoC} in a \textbf{real scenario}, without the need of simulators, checking it works as expected, and measuring its performance.
 
 
 
@@ -308,7 +326,7 @@ Originally, the Lc and Le bytes had only 1 byte, if present, restricting the pay
 
 The problem here, is that not all readers or smart cards support extended APDUs. Originally, to send more than 256 bytes of data in an APDU Command, a \textit{Put Data} instruction is defined, so the smart card stores the payload in a buffer, until other APDU Command indicates how to use it.
 
-To send more data in an APDU Response, the status bytes are set to: SW1=0x61 and SW2 to the remaining bytes to send. Because a smart card can't send APDU Commands, the card terminal must send a \textit{GET RESPONSE}, a special APDU Command, with Le set to the number of bytes specified in SW2. Iterating this process, the smart card can send as many bytes as it wants as Response.
+To send more data in an APDU Response, the status bytes are set to: SW1=0x61 and SW2 to the remaining bytes to send. Because a smart card can't send APDU Commands, the card terminal must send a \texttt{GET RESPONSE}, a special APDU Command, with Le set to the number of bytes specified in SW2. Iterating this process, the smart card can send as many bytes as it wants as Response.
 
 With the introduction of Extended APDUs, this technique is no longer needed.
 
@@ -363,11 +381,11 @@ Each application in MULTOS has access to a specific memory layout, divided in di
 The Code Space is where the application code is stored.
 The Data Space is divided in Static memory, Public memory and Dynamic memory.
 
-\textbf{Static memory} are the application variables declared after the specific \textit{\#pragma melstatic} compiler directive. These variables are stored in the non-volatile secure EEPROM, and any write is assured to be saved because they are not loaded into RAM.
+\textbf{Static memory} are the application variables declared after the specific \texttt{\#pragma melstatic} compiler directive. These variables are stored in the non-volatile secure EEPROM, and any write is assured to be saved because they are not loaded into RAM.
 
-\textbf{Public memory} can be seen as the input/output buffer for applications and MULTOS system. The APDU header appears at the top of Public, and command data at the bottom. The application writes then the APDU Response bytes in Public, at specific position (see \autoref{fig:multosPubMem}). To declare variables in this data space, the \textit{\#pragma melpublic} directive is available.
+\textbf{Public memory} can be seen as the input/output buffer for applications and MULTOS system. The APDU header appears at the top of Public, and command data at the bottom. The application writes then the APDU Response bytes in Public, at specific position (see \autoref{fig:multosPubMem}). To declare variables in this data space, the \texttt{\#pragma melpublic} directive is available.
 
-\textbf{Dynamic memory} works like usual program memory, with Session Data storing global variables and the Stack. The limited size of RAM in IoT devices and smart cards makes the use of dynamic memory not advisable. The compiler directive to use Session Data is \textit{\#pragma melsession}.
+\textbf{Dynamic memory} works like usual program memory, with Session Data storing global variables and the Stack. The limited size of RAM in IoT devices and smart cards makes the use of dynamic memory not advisable. The compiler directive to use Session Data is \texttt{\#pragma melsession}.
 
 
 \begin{figure}[bth]
@@ -465,4 +483,4 @@ These three libraries are used to implement different interfaces in the project,
 
 Finally, we use Docker to deploy the compilation environment. Our container includes CMake and the LEDE SDK \citep{ledeproject}, configured for the Omega2 target, the device chose for the PoC.
 
-The Dockerfiles and CMake cross-compilation toolchain can be found in \autoref{ch:docker}.
+

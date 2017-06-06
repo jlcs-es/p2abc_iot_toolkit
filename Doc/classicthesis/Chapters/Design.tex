@@ -2,8 +2,6 @@
 \chapter{Design and implementation}\label{ch:design}
 %************************************************
 
-%TODO resumir organización del capítulo
-
 % Estructura:
 % +Design
 %  -Architecture design: delegation, computation offloading, duality User/SC + Engine
@@ -226,7 +224,7 @@ To transmit the APDU messages in our PoC we use a simple protocol, that we will 
 
 \begin{tabular}{|c|l|}
 	\hline
-	\texttt{0x01} & APDU Command or Response: Read a 2 bytes for the\\& length and then as many bytes as said length. \\
+	\texttt{0x01} & APDU Command or Response: Read 2 bytes for the\\& length and then as many bytes as said length. \\
 	\hline
 	\texttt{0xff} & Finish connection: close the current TCP socket and\\& end the IoT smart card execution. \\
 	\hline
@@ -242,12 +240,20 @@ We lack any security (authentication or authorization) that a real system should
 \hfil
 
 
-The implementation of this simple protocol is done in Java and C, one for the P2ABCE server and the other one for the IoT smart card.
+The implementation of this simple protocol is done in both Java and C, one for the P2ABCE server and the other one for the IoT smart card.
 
-% TODO : IoTsmartcardio
-% TODO : BIOSC.c
+\hfil
+
+As we mentioned in the analysis of P2ABCE's code, the \texttt{HardwareSmartcard} class implements the \texttt{Smartcard} interface using the package of abstract classes \texttt{javax.smartcardio} to communicate with the physical smart cards. The Oracle JRE implements these package for the majority of smart card manufacturers. For our PoC, we implement the \texttt{javax.smartcardio} package so it transmits the APDUs with BIOSC, making the use of a physical or IoT smart card totally transparent to the \texttt{HardwareSmartcard} class, enhancing maintainability, and following the \textit{expert pattern} from the known GRASP guidelines.
+
 %TODO : optional: diagrama secuencia de P2ABCE, pero si eso solo de la reimplementación de javax.smartcardio y su uso por HardwareSmartcard
 
+\textbf{TODO} :  diagrama secuencia de la reimplementación de javax.smartcardio y su uso por HardwareSmartcard
+
+\hfil
+
+
+In the PoC IoT device, we implement in \texttt{BIOS.c} the \texttt{main()} function, that reads from a Json file the previous status of the smart card, and then opens the TCP socket in the $8888$ port, and loops listening for BIOSC transmissions until an $0xff$ is received. When an APDU Command is sent, it calls the APDU Handler, that we will talk about in the next section.
 
 
 
@@ -255,44 +261,19 @@ The implementation of this simple protocol is done in Java and C, one for the P2
 \subsection{IoT Smart Card Implementation}
 
 
-After many design decisions in the process to adapt the original ABC4Trust Card Lite code to pure C, working on a MIPS architecture, in this section, we present the current \ac{PoC} code, most important decisions and execution workflow in the form of sequence diagrams.
-
-
-
-\begin{figure}[bth]
-	\begin{center}
-		\includegraphics[width=\linewidth]{gfx/UML/sequenceBIOSC}
-	\end{center}
-	\caption{IoT Smart Card Sequence Diagram.}
-	\label{fig:sequenceBIOSC}
-\end{figure}
-
-
+After many design decisions in the process to adapt the original ABC4Trust Card Lite code to pure C, working on a MIPS architecture, in this section, we present the current \ac{PoC} code, most important decisions taken and the execution workflow in the form of sequence diagrams.
 
 
 \hfil
 
-%%%%%%%%%%%%%%%%%%%%%%%
 
 
-
-
-
-
-
-
-
-
-
-%% DRAFT %%
-
-
-\subsection{Code structure}
+\subsubsection{Code structure}
 
 
 We divide the project in three different sections with the objective of enhancing maintainability, improving future changes, ports, fixes, etc.
 
-The first section is what could be called as the core of the smart card, the second one the interface for those tools the core needs and may depend on the target's platform, and finally, the third party libraries, that may be empty if the interfaces implementation doesn't need any.
+In \autoref{fig:IoTCScomponents-bw} we show the project's structure. The first section is what could be called as the core of the smart card, the second one the interface for those tools the core needs and that may depend on the target's platform, and finally, the third party libraries, that may be empty if the interfaces implementation doesn't require any.
 
 
 
@@ -317,105 +298,188 @@ The first section is what could be called as the core of the smart card, the sec
 \hfil
 
 \paragraph{Core smart card}
+\hfil
 
-The smart card logic lies in this section, the concepts of APDU Commands, what instructions are defined in P2ABCE smart cards, and how to process them and generate proper APDU Responses.
+The smart card logic lies in this section, the concepts of APDU Commands, what instructions are defined for P2ABCE smart cards, and how to process them and generate proper APDU Responses.
 
-If the APDU protocol defined for P2ABCE smart cards changed, with the consequence of having to update all smart cards in use, the changes to adapt the IoT smart card should be applied here. This also implies that if the P2ABCE Java code changes their \texttt{Smartcard} interface, as long as it is backwards compatible with existing smart cards, the IoT smart card will still work as intended.
+If the APDU protocol defined for P2ABCE smart cards changed, with the consequence of having to update all smart cards in use, the changes to adapt the IoT smart card should be applied in this part of the code. This also implies that if the P2ABCE Java code changes their \texttt{Smartcard} interface, something more probable, the IoT smart card will still work as intended.
 
-Most of the original ABC4Trust Card's code has been reused in this section, like all the variables and custom data type definitions, or the APDU Commands handling.
+Most of the original ABC4Trust Card's code has been reused in this section, e.g., all the global variables and custom data type definitions, the APDU Command handling and auxiliary subroutines.
 
-However, the ABC4Trust's code heavily depended on the MULTOS C-API for the input/output of data, modular arithmetic, and AES128 and SHA256 cryptographic operations.
+However, the ABC4Trust's code heavily depended on the MULTOS platform for the input and output of data, modular arithmetic, memory management, and AES128 and SHA256 cryptographic operations. Therefore, we reimplement the used MULTOS functions following the documentation, adapting it in some cases.
 
-A characteristic of MULTOS C-API is that every function name starts with ``\texttt{multos}'', so we implemented, following the C-API specification, the functions used, but changing their names from \texttt{multosFoo()} to \texttt{mFoo()} for readability and to emphasize that they were no longer MULTOS functions.
+A characteristic of MULTOS C-API is that every function name starts with ``\texttt{multos}'', so we changing their names from \texttt{multosFoo()} to \texttt{mFoo()} for readability and to emphasize that they were no longer MULTOS functions.
 
-The \texttt{main.h} file, from the original project, also implemented equivalent functions to some available in \texttt{multos.h}. We replaced them for the standard functions in the C-API, checking that the MEL code did the same as the documentation specified. This last detail is very important, because in \citep{vullers2013efficient} they noted that \texttt{ModularExponentiation} function dos not accept exponents larger than the modulus size, and they added \texttt{SpecialModularExponentiation}, dividing the exponentiation in two that MULTOS could perform. After this analysis, when those particularities appeared, we decided to adapt the reimplementation of the C-API.
+The \texttt{main.h} file, from the original ABC4Trust project, also implemented some functions that were equivalent to the ones available in \texttt{multos.h}. We replaced them for the standard functions in the C-API, checking that the MEL code did the same as the documentation specified. This last detail is very important, because in \citep{vullers2013efficient} they noted that MULTOS' \texttt{ModularExponentiation} function does not accept exponents larger than the modulus size, so they implemented \texttt{SpecialModularExponentiation}, dividing the exponentiation in two that MULTOS could perform. After this analysis, when those particularities appeared, our reimplementation of the MULTOS API accepts the \textit{expanded functionality}.
 
+\hfil
 
+Because of the inherited code, many particularities of the internals of the MULTOS platform had to be addressed. 
 
-Future changes in the code may refactor it so there's no longer need for the MULTOS framework functions.
-
-
-\paragraph{Interfaces}
-
-To implement MULTOS functions, we needed to use some libraries, so we defined a facade to isolate the implementation of the core smart card from our different options, that could vary depending on the hardware or the system used by the IoT device.
-
-The use of a facade lets us, for example, change the implementation of modular arithmetic with a hardware optimized version, or a future more lightweight library, or our very own software implementation using the same data types that the core uses, minimizing the data transformations needed.
-
-Taking a step forward, we make the core smart card totally independent of any library, only on our interfaces. This means that typical C libraries, like the standard \textit{stdlib.h}, or  \textit{string.h} are also behind the facade, in case some IoT system doesn't support them. The main goal we go after with this decision is that future developers adapting the code to a specific platform need to make no change to the \textit{core smart card}'s code, only to the interfaces implementation.
+One was the different memory zones, where the variables in \texttt{static} were read and written directly from the secure EEPROM, defining the status of the smart card between executions. We keep those variables in RAM, but save them in a Json file, deserializing them at the smart card boot up, and serializing always before an APDU Response is sent. From the MULTOS documentation, the \texttt{static} variables are read and written atomically, and if power source is lost during any process, memory won't get corrupted. This also means that if a MULTOS smart card sends an APDU Response, every variable that had to change, is saved in the EEPROM. Our PoC uses Json for human readability during debugging, but a real deployment should apply secure reads and writes on the file, preventing data corruption and undesired access, for example, ciphering the file with a key derived from the smart card PIN. It is also desirable another data serialization method, reducing the size of the file to store in memory constrained devices.
 
 
+Another of the mentioned particularities is that the MULTOS compiler does not apply padding between variables in the data structures. For example, in an X86 machine, where a \texttt{short} is stored in 2 bytes, in the following code\footnote{From \url{https://en.wikipedia.org/wiki/Data_structure_alignment}}
 
-\paragraph{External utilities}
-% Podría haber implementaciones de librerías criptográficas en ensamblador de la plataforma, se incluyen aquí y la interfaz lo usa al implementar
+\begin{lstlisting}[language=C]
+	struct MyData
+	{
+		short Data1;
+		short Data2;
+		short Data3;
+	};
+\end{lstlisting}
 
-If the IoT system offers well tested libraries that could aid in the interfaces implementation, or we simply found a pure C implementation for the task, these third party libraries belong to this section.
+each member of the data structure would be 2-byte aligned. Data1 would be at offset 0, Data2 at offset 2, and Data3 at offset 4. The size of this structure would be 6 bytes. But if we defined the following structure
 
-In our PoC, we use two ANSI C libraries, for base64 and JSON, and two shared libraries available in as packages in LEDE, GMPLib and OpenSSL. The last two libraries offer more functionality than we need, hence, it's desired in a production code to implement \textit{Modular Arithmetic} and \textit{Cryptography} interfaces with more lightweight alternatives.
+\begin{lstlisting}[language=C]
+	struct MixedData
+	{
+		char Data1;
+		short Data2;
+		int Data3;
+		char Data4;
+	};
+\end{lstlisting}
+
+where a \texttt{char} is 1 byte, and an \texttt{int} uses 4 bytes, although the total bytes used are 8 bytes, the compiler will align them in memory adding padding, like if we defined the following:
+
+\begin{lstlisting}[language=C]
+struct MixedData  /* After compilation in 32-bit x86 machine */
+{
+	char Data1; /* 1 byte */
+	char Padding1[1]; /* 1 byte for the following 'short' to be aligned on a 2 byte boundary
+	assuming that the address where structure begins is an even number */
+	short Data2; /* 2 bytes */
+	int Data3;  /* 4 bytes - largest structure member */
+	char Data4; /* 1 byte */
+	char Padding2[3]; /* 3 bytes to make total size of the structure 12 bytes */
+};
+\end{lstlisting}
+
+
+
+\hfil
+
+
+In MULTOS, to reduce the memory usage, there is no padding, and this affects the inherited ABC4Trust's code because of the use of \texttt{memcpy} to copy zones of memory from one address to another. The problem is the code copies multiple variables in one \texttt{memcpy} call, because, for example, the APDU Command payload includes multiple data, and instead of copying one variable at a time, the \texttt{struct} is defined with the same order and copies everything at once.
+
+An example taken from the parsing of instruction \texttt{SET\_PROVER}:
+
+\begin{lstlisting}[language=C,frame=tblr]
+typedef struct
+{
+	BYTE prover_id;
+	unsigned int ksize;
+	unsigned int csize;
+	BYTE kx[MAX_SMALLINT_SIZE];
+	BYTE c[HASH_SIZE];
+	BYTE proofsession[PROOFSESSION_SIZE];
+	BYTE proofstatus;
+	BYTE cred_ids[NUM_CREDS];
+	BYTE cred_ids_size; // also called 't' in the documentation
+	BYTE exists;
+} PROVER;
+/*****/
+PROVER provers[NUM_PROVERS];
+
+/*****/
+case INS_SET_PROVER:
+  // [...]
+  memcpy(&(provers[temp_prover_id-1].prover_id), &(apdu_data.set_prover_in.prover_id), 5); // under the hood, this also initializes ksize and csize
+\end{lstlisting}
+This is the only case where a comment showcases that it is copying more than one byte.
+
+The temporal solution is to use \texttt{struct \_\_attribute\_\_((\_\_packed\_\_))} to ask a GCC compiler to not use padding in the structs, but this is not standard, neither a good practice. A deeper refactorization of the code is needed where the hidden copies of variables are made explicit, letting the compiler manage the memory layout.
+
+
+\hfil
+
+An internal alarm should always warn us when we see raw memory copy from serialized data, that is, the APDU Payload. We mentioned in the MULTOS introduction that the platform is Big Endian. The serialized data is also typically represented in Big Endian, and our APDU Payloads do so. In our code we added a new Subroutine to check whether the device is Big or Little Endian, and to rectify the Endianness from those variables, with 2 or more bytes (the only ones affected by the Endianness), copied from or written to APDU Payloads.
+
+
+\hfil
+
+
+Finally, we must talk about the \texttt{multosExit} function. In a MULTOS application, to finish the execution and send the APDU Response, the programmer can call in any moment to \texttt{multosExit}, and the MULTOS OS will continue the execution, not returning to the application again.
+
+Think about how we all have, at least once, used an \texttt{if} and \texttt{return} to avoid the \texttt{else}, like in this example:
+
+\begin{lstlisting}[language=C]
+if(condition)
+	return a;
+return b;
+\end{lstlisting}
+
+
+The use of \texttt{multosExit} in ABC4Trust code is similar, but used in almost every function. This leads to a sequence execution with many possible interruptions, leaving a full stack behind with \textit{un-returned} function calls, i.e., parameters stored in memory after a function call that never returns. In MULTOS, this memory won't affect future executions, because with the next APDU Command, the stack will be loaded with the clean application, and the Session memory stays untouched between APDU Commands, during an APDU Dialogue. 
+
+To adapt the code, the reimplemented \texttt{mExit} function can not end the program execution, because we would lose the variables in RAM needed during the APDU Dialogue, as well as that the TCP socket would close. The solution is to refactor every use of \texttt{multosExit} in a way that, if it is called from a Subroutine, the function returns a success or error code, and the only functions that can call \texttt{mExit} are the ones handling an specific instruction.
+
+Nevertheless, there is one exception, the \texttt{output\_large\_data()} Subroutine, which is a tool to send large data payloads without Extended APDU support. We talked about this in \ref{subsec:APDU}, mentioning the special instruction \texttt{GET RESPONSE}.
+
+Summarizing, every Subroutine must return from its execution, as well as every instruction handler, which must call either \texttt{mExit} or \texttt{output\_large\_data()} before returning. After the instruction has been handled, the execution returns to the listening loop of BIOSC.
+
+
+
+\paragraph{Interfaces}\hfil
+
+To reimplement some of the MULTOS functions, we needed to use some libraries, so we defined a facade to isolate the implementation of the core smart card from our different options, that could vary depending on the hardware or the system used by the IoT device.
+
+The use of a facade lets us, for example, change the implementation of modular arithmetic with a hardware optimized version, or a future more lightweight library, or our very own software implementation using the same data types that the core uses, minimizing the data usage.
+
+Taking a step forward, we make the core smart card totally independent of any library, only dependant of our interfaces. This means that typical C libraries, like the standard \textit{stdlib.h}, or  \textit{string.h} are also behind the facade, in case some IoT system doesn't support them. The main goal we go after with this decision is that future developers adapting the code to a specific platform need to make no change to the \textit{core smart card}'s code, only to the interfaces implementation.
+
+The interfaces defined can be organized in 5 groups (see \autoref{fig:IoTCScomponents-bw}), depending on their purpose: Modular Arithmetic, Cryptography, Memory Management, Serialization, APDU Parsing.
+
+
+\paragraph{External utilities}\hfil
+
+If the IoT system offers well tested libraries that could aid in the interfaces implementation, for example, a assembly optimized code for the AES128 and SHA256 operations, these third party libraries belong to this section.
+
+In our PoC, we use two ANSI C libraries, for base64 and JSON, and two shared libraries available in as packages in LEDE, GMPLib and OpenSSL. These libraries use dynamic memory and offer more functionality than we need, although they are a good tool in this PoC, future versions should use more lightweight solutions.
 
 For example, Atmel's ATAES132A \citep{ATAES132A}
 \marginpar{\includegraphics[width=0.9\linewidth]{gfx/atmel} \\ Atmel's cryptography chips.}
-offers a serial chip for secure key storage, AES128 execution and random number generation. Another serial chip like ESP8266 offers WiFi connectivity, typically used with Arduino, and can also perform AES encryption. For random number generation, a technique used with Contiki devices is to read from sensors aleatory data and use it as seed. All these alternatives depend on the target device, but are all valid. The \textit{interfaces} and \textit{external utilities} sections allow for a clean and fast port of the code.
+offers a serial chip for secure key storage, AES128 execution and random number generation. Another serial chip like ESP8266 offers WiFi connectivity, typically used with Arduino, and can also perform AES encryption. For random number generation, a technique used with Contiki devices is to read from sensors aleatory data and use it as seed.
 
+All these alternatives depend on the target device, but are all valid, and would substitute OpenSSL with only a Serial communication library, so we can talk to the dedicated chips.
 
-% PoC BIOSC : TCP sockets, JSON serialization
+\hfil
 
-% PoC IoT javax.smartcardio : protocolo de 2 bytes + APDU
-
-
-\subsection{PoC Workflow}
-
-
-% 1. Boot: deserialize sc status
-% 2. Listening: open tcp socket
-% 3. The IoT device delegates on the P2ABCE for some task and sends the IP and Port of the IoT Smart Card.
-% 4. An APDU Command arrives : read in 2 bytes the length of the apdu and 
-
-
-In a real deployment, we would offer a full library with an API to other processes to delegate on the P2ABC Engine, that automatizes the listening and security, that we presented in the deployment diagram \textbf{TODO:ref-img} as the \textit{P2ABCE IoT Toolkit}.
-
-But to test the IoT smart card, we use the \textit{curl} command for REST delegation calls and the BIOSC (Basic Input Output Smart Card) for APDU communication.
-
-To transmit the APDU messages in our PoC we use a simple protocol, consisting in one first byte for the instruction: receive an APDU Command or close the connection. In the first case, then we read two header bytes with the length of the APDU Command or Response to receive, followed by those APDU bytes. The message is sent over TCP for a reliable transmission (concept of session, packet retransmission, reordering, etc.).
-
-We lack of any security (authentication and authorization) that a real system should implement. It is vital to authenticate the delegation service, to authorize it to make APDU Commands, and the same with the IoT device, to prevent attacks. This belongs to \textit{usual} security, as we already said, and for that reason it's not in the PoC.
-
-\paragraph{APDU transmission with BIOSC}
+The \textit{interfaces} and \textit{external utilities} sections  allow that the project is easily ported to specific targets without modifying the smart card logic.
 
 
 
-Before sending the REST message, the Omega2 must be listening in the specified port. At start up, BIOSC reads from a JSON file the status of the smart card (credentials in the BLOB, private keys, PIN and PUK codes, etc.), then opens the TCP socket and listens in a loop.
+\subsubsection{Execution workflow}
 
-When the delegation server sends an APDU Command following the simple protocol, BIOSC stores in a byte array the APDU Command bytes and calls the \textit{handle\_APDU} function in \textit{Core Smart Card}.
+The sequence diagram from \autoref{fig:sequenceBIOSC} shows the execution of the PoC IoT smart card.
 
 
-The \textit{APDU\_handler} will parse the APDU bytes and check both CLA and INS bytes. For each possible INS the is a function that must always finish calling either \textit{mExit()} or \textit{output\_large\_data()}.
 
-The \textit{mExit} function is the reimplementation of MULTOS C-API exit functionality, that finishes the application execution returning to the MULTOS OS, that will send the APDU Response bytes to the terminal. This led in the original ABC4Trust Card's code to some tricky situations. Imagine a function that ends with an if-else expression. Many times we save a line writing something like
+\begin{figure}[bth]
+	\begin{center}
+		\includegraphics[width=\linewidth]{gfx/UML/sequenceBIOSC}
+	\end{center}
+	\caption{IoT Smart Card Sequence Diagram.}
+	\label{fig:sequenceBIOSC}
+\end{figure}
 
-\begin{verbatim}
-if(condition)
-return a;
-return b;
-\end{verbatim}
 
-instead of the complete
 
-\begin{verbatim}
-if(condition)
-return a;
-else
-return b;
-\end{verbatim}
+The program starts with the \texttt{main} function in BIOSC, that deserializes the status from the Json file, and listens on a loop for APDU Commands from the delegation server.
 
-This is a swift example of what the \textit{multosExit} function led to, because it is called in both the \textit{switch-case} processing the APDU instruction, and the \textit{Subroutines}. For example, the PIN code check was programmed in a way every reason to fail finished the application execution, with different error codes. Another example, checking if a credential is stored, if not, fail and exit inside the \textit{readBlob} subroutine.
+Every time an APDU Command arrives, it calls the function \texttt{handle\_APDU()} with the raw APDU bytes. The Handler calls the APDU I/O interface to parse the bytes, storing in global variables the APDU structure. Using a \texttt{switch-case} expression on the \texttt{INS} byte, the Handler calls an \textit{Instruction handler} function.
 
-In our standard architecture machine, if we call a subroutine, it must end, and return the control to the handling function, and so the \textit{APDU\_handler} must return to the listening loop of BIOSC.
+Inside this function, it may call multiple functions from the Subroutines, that may call MULTOS C-API functions, Which in turn may use an interface to perform its functionality.
 
-Having all that in count, the \textit{mExit} function is not implemented as the documentation specifies, but only saves the smart card status serializing it in the JSON file again, and once it's saved, parses the APDU Response and sends it to the socket.
 
-The \textit{output\_large\_data} function is a tool used in MULTOS smart cards that don't support Extended APDUs. The APDU Command handler saves in a buffer the data to send, and its size. Then, \textit{output\_large\_data} will manage the buffer expecting future GET RESPONSE commands from the P2ABCE server.
+As we mentioned, every instruction handler must end, before the \texttt{return;} expression, with \texttt{mExit} or  \texttt{output\_large\_data()}, that will use \texttt{mExit}. This reimplemented MULTOS function will save the current status of the smart card, with the help of the serialization interface, and once the file is saved, it outputs the APDU Response back to the delegation server.
 
-A future change to the project may include support for Extended APDUs, avoiding the use of multiple GET RESPONSE. To do this, the \textit{output\_large\_data} function and the \textit{IoTsmartcardio} implementation of \textit{javax.smartcardio} must support the feature.
+After returning from \texttt{mExit}, the instruction handler and the APDU handler functions, the program listens again from the socket, until an $0xff$ byte is received.
+
+
+
 
 
 

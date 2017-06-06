@@ -10,7 +10,7 @@ First, we shall describe the example Attribute Based Credential system in use. T
 
 \subsection{P2ABCE setting}
 
-To test the correct execution of the \textit{IoT smart card}, we will use the ABC system from the tutorial in the P2ABCE Wiki \citep{p2abcurlwiki}. It is based on a soccer club, which wishes to issue VIP-tickets for a match. The VIP-member number in the ticket is inspectable for a lottery, ie. after the game, a random presentation token is inspected and the winning member is notified.
+To test the correct execution of the \textit{IoT smart card}, we will use the ABC system from the tutorial in the P2ABCE Wiki\footnote{\url{https://github.com/p2abcengine/p2abcengine/wiki/}}. It is based on a soccer club, which wishes to issue VIP-tickets for a match. The VIP-member number in the ticket is inspectable for a lottery, ie. after the game, a random presentation token is inspected and the winning member is notified.
 
 First the various entities are \textbf{setup}, where several artifacts are generated and distributed. Then a ticket credential containing the following attributes is issued:
 
@@ -111,7 +111,7 @@ A downside of using LEDE and the Omega2 is the lack of hardware acceleration for
 
 \paragraph{The network} In our third scenario, the Raspberry Pi 3 and the Omega2 will talk to each other over TCP. This implies possible network delays depending on the quality of the connection. The Raspberry Pi 3 is connected over Ethernet to a switch with WiFi access point. The Omega2 is connected over WiFi n to said AP. To ensure the delay wasn't significant, we measured 6000 APDU messages, and the results show that the mean transmission time is less than half a millisecond per APDU. As we will see in the results section, this network time is negligible.
 
-\paragraph{Future work for tests} The lack of a physical MULTOS smart card precludes us to load and test the ABC4Trust Card Lite's code and measure the time P2ABCE would need when using the \textit{HardwareSmartcard} class. This would be really interesting because for a single method from the \textit{Smartcard} interface, \textit{HardwareSmartcard} implementation needs to send multiple APDU Commands, but \textit{SoftwareSmartcard} can perform the operations immediately, with the full computer's resources.
+\paragraph{Future work for tests} The lack of a physical MULTOS smart card precludes us to load and test the ABC4Trust Card Lite's code and measure the time P2ABCE would need when using the \textit{HardwareSmartcard} class. This would be really interesting because for a single method from the \textit{Smartcard} interface, \textit{HardwareSmartcard} implementation needs to send multiple APDU Commands, but \textit{SoftwareSmartcard} can perform the operations immediately, with the full computer's resources. Also, physical smart cards benefit from hardware acceleration in most of the cryptographic operations, unlike our software implementations in the PoC.
 
 
 
@@ -311,33 +311,3 @@ With all that said, the mean of the maximum memory usage measured is $6569.6$ kb
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%
-
-
-% Consideraciones futuras: implementar directamente Smartcard interface vs seguir usando APDUs:  minimizan uso de red, facilitan protocolo de comunicación de las APDUs, son estándar, mejoran el mantenimiento del código: P2ABCE puede cambiar las interfaces, pero mantendrá compatibilidad con las smartcards, si implementamos Smartcard.java por cada cambio en la interfaz deberemos actualizar cada IoT smart card.

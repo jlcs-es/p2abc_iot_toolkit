@@ -41,3 +41,17 @@ Although there are many other techniques for the delegation server to send comma
 %For example, other IoT devices may work like MULTOS and let access variables in non-volatile memory during execution, and in that case, the port should be changed according to these particularities.
 
 %In the future, more functionality currently delegated in the P2ABCE server can be implemented in the IoT device, if its resources allow it. For example, in a M2M environment, where an IoT device can act as User and Verifier, the verification consists on sending a Presentation Policy, and verifying the Presentation Token, which implies less logic than generating it as the User. Therefore, the implementation of the Verifier functionality would reduce significantly the need of a delegation server, but as we said, managing complex XML squemas is not something many IoT devices could do.
+
+
+
+% La reimplementación de multos en el futuro las funciones que usan a MULTOS deberían llamar directamente a las interfaces, dejando pocas funciones como mExit().
+
+%A future change to the project may include support for Extended APDUs, avoiding the use of multiple GET RESPONSE. To do this, the \textit{output\_large\_data} function and the \textit{IoTsmartcardio} implementation of \textit{javax.smartcardio} must support the feature.
+
+
+
+% Último objetivo: FIWARE
+
+
+
+% Consideraciones futuras: implementar directamente Smartcard interface vs seguir usando APDUs:  minimizan uso de red, facilitan protocolo de comunicación de las APDUs, son estándar, mejoran el mantenimiento del código: P2ABCE puede cambiar las interfaces, pero mantendrá compatibilidad con las smartcards, si implementamos Smartcard.java por cada cambio en la interfaz deberemos actualizar cada IoT smart card.
