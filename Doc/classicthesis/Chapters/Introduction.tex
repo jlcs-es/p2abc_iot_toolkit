@@ -4,7 +4,8 @@
 
 The \ac{IoT} is a term with a wide range of interpretations \citep{Atzori20102787}, breafly, we can think of it as a set of devices, mainly resource constrained, that are interconnected between them in order to achieve a goal. For example, a network of lampposts with proximity sensors that talk to each other so they light up part of the street when a passerby walks by, but save energy when not; greenhouses with automated irrigation to balance costs and quality vegetables; or cars exchanging traffic data to reduce city pollution from traffic jams or avoid accidents.
 
-Many of this objectives require the use of a great amount of data, and thanks to organizations like \href{https://wikileaks.org/}{WikiLeaks}, people are aware of the implications of their data on the Internet, demanding more security and privacy for it. This includes not only the data shared with others, where one must trust they will keep it safe, but it's also the data collected about us and that we don't have direct control over it. The attack Sony suffered in 2011 to PSN \citep{PSN2011} is an example of the trust people had in Sony to store their billing information, and because the security of that information depended on both them and Sony, people found themselves compromised unable to do anything about it. 
+Many of this objectives require the use of a great amount of data, and thanks to organizations like \href{https://wikileaks.org/}{WikiLeaks}, people are aware of the implications of their data on the Internet, demanding more security and privacy for it. This includes not only the data shared with others, where one must trust they will keep it safe, but it's also the data collected about us and that we don't have direct control over it. The attack Sony suffered in 2011 to PSN\footnote{2011 PlayStation Network outage - 
+\url{https://en.wikipedia.org/wiki/2011_PlayStation_Network_outage}} is an example of the trust people had in Sony to store their billing information, and because the security of that information depended on both them and Sony, people found themselves compromised unable to do anything about it. 
 
 With the proliferation of IoT devices gathering as much information as they can with their sensors, the amount of data gathered about anyone can be immense. And IoT has proved to not address neither security nor privacy, with recent events like the Mirai botnet DDoS attack on October 2016, considered the biggest DDoS in history \citep{jeyanthi:2017}, or the multiple vulnerabilities affecting house devices, like baby monitors \citep{rapid7babycam}.
 
@@ -58,7 +59,7 @@ Based on ZKP properties, IBM has developed the Identity Mixer\footnote{Identity 
 	\textit{``If your personal data is never collected, it cannot be stolen.''}
 \end{center}
 
-The goal of this project is to integrate Idemix with the IoT. It will be done using the ABC4Trust's \ac{P2ABCE}, a framework that defines a common architecture, policy language and data artifacts for an attribute based ecosystem, cryptographically based on either IBM's Idemix or Microsoft's U-Prove \citep{p2abcurl}. This gives us a standardized language to exchange Idemix's messages between IoT devices and any other P2ABCE actor.
+The goal of this project is to integrate Idemix with the IoT. It will be done using the ABC4Trust's \ac{P2ABCE}, a framework that defines a common architecture, policy language and data artifacts for an attribute based ecosystem, cryptographically based on either IBM's Idemix or Microsoft's U-Prove \footnote{P2ABCEngine \url{https://github.com/p2abcengine/p2abcengine}}. This gives us a standardized language to exchange Idemix's messages between IoT devices and any other P2ABCE actor.
 
 \hfil
 

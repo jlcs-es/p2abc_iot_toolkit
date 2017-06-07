@@ -4,7 +4,7 @@
 
 In this chapter we describe the project objectives, and the methodology followed during its development. We continue then describing the privacy-preserving attribute based credentials and the ecosystem surrounding it, from the P2ABCE's perspective, as it is the starting point of our project. We finish with an introduction to all the technologies involved in our development, from P2ABCE's code, to how smart cards work.
 
-\section{Project description}
+\section{Project description}\label{objectives:section}
 
 The purpose of this project is the integration of IBM's privacy preserving solution, Idemix, in the environment of the Internet of Things. The objective is to design a general solution for the existing IoT devices and systems, without compromising any feature of Idemix, and provide a working PoC in a real IoT environment, even though it isn't the most constrained scenario. The project is aimed to be used in privacy-preserving environments, providing security for IoT, controlling what data is being disclosed and to whom.
 
@@ -173,7 +173,7 @@ To sum up, an attribute-based credential contains attribute-value pairs that are
 
 \hfil
 
-In the P2ABCE repository \citep{p2abcurl} there is available the project's code, divided in two solutions: a complete P2ABCE implementation in Java and a MULTOS smart card implementation as PoC for the project.
+In the P2ABCE repository\footnote{\url{https://github.com/p2abcengine/p2abcengine}} there is available the project's code, divided in two solutions: a complete P2ABCE implementation in Java and a MULTOS smart card implementation as PoC for the project.
 
 \subsection{P2ABCE Code Structure and REST Services}
 
@@ -337,7 +337,7 @@ With the introduction of Extended APDUs, this technique is no longer needed.
 
 \subsection{MULTOS}
 
-MULTOS is a multi-application smart card operative system, which provides a custom developing environment, with rich documentation \citep{MultosTechLib}. MULTOS smart cards communicate like any other smart card following the standard, but internally offers a very specific architecture, affecting the way one must code applications for it.
+MULTOS is a multi-application smart card operative system, which provides a custom developing environment, with rich documentation\footnote{MULTOS technical library - \url{http://www.multos.com/developer_centre/technical_library/}}. MULTOS smart cards communicate like any other smart card following the standard, but internally offers a very specific architecture, affecting the way one must code applications for it.
 
 In this section we will present the main characteristics of a MULTOS smart card that shaped the ABC4Trust Card Lite code and that we had to be aware of when adapting it to IoT devices.
 
@@ -402,7 +402,7 @@ The Data Space is divided in Static memory, Public memory and Dynamic memory.
 
 With regards to primitive types, to avoid confusion with their sizes, MULTOS defines and uses the following data types specified in \autoref{fig:multosDataTypes}. It's important to notice that MULTOS is Big Endian
 \marginpar{\includegraphics[width=\linewidth]{gfx/Big-Endian}\\Big-Endian, Wikipedia}
-and when storing structures there is no padding between defined variables, unlike modern compilers that perform data structure alignment \citep{dataStructAlign} for performance.
+and when storing structures there is no padding between defined variables, unlike modern compilers that perform data structure alignment \footnote{\url{https://en.wikipedia.org/wiki/Data_structure_alignment}} for performance.
 
 \begin{figure}[bth]
 	\begin{center}
@@ -417,7 +417,7 @@ and when storing structures there is no padding between defined variables, unlik
 
 A collection of more than a hundred functions are provided for arithmetic, cryptography, memory and smart card operations. The \textit{multos.h} interface provides access to these functions, that ultimately call their respective primitive instructions in assembly code. The primitive instructions are but a system call with an operation code, loading data in the needed registers. Therefore,  no implementation for these tools is available, nor in C, nor in assembly code.
 
-Nevertheless, the C-API documentation \citep{MultosTechLib} provides rich description for each function.
+Nevertheless, the C-API documentation\footnote{\url{http://www.multos.com/developer_centre/technical_library/}} provides rich description for each function.
 
 
 
@@ -433,7 +433,7 @@ For almost every IoT device in the market, there exists a C compiler and many fr
 Starting a big project development for \ac{IoT}, aiming the most constrained devices may not be a good idea. The lack of usual OS tools, like POSIX, threads, or minimum I/O, like a terminal, can make debugging a tedious task. With good programming practices, one can start from the top and slowly end with more constrained devices and reliable code.
 
 
-For this reason, the current \ac{PoC} is developed on LEDE, Linux Embedded Development Environment \citep{ledeproject}, using the Onion Omega2 development board. Although the Omega2 uses LEDE, its microcontroller is also listed as compatible with ThreadX OS \citep{THREADX}, a Real-Time Operative System for embedded devices, therefore, the performance measured in our PoC can be relevant to real scenarios with similar hardware.
+For this reason, the current \ac{PoC} is developed on LEDE\footnote{Linux Embedded Development Environment - \url{https://lede-project.org/}} using the Onion Omega2 development board. Although the Omega2 uses LEDE, its microcontroller is also listed as compatible with ThreadX\footnote{THREADX Real-Time Operative System for embedded devices - \url{http://rtos.com/products/threadx/}}, therefore, the performance measured in our PoC can be relevant to real scenarios with similar hardware.
 
 The PoC will take advantage of the Linux system using mainly files and sockets like in any other Linux desktop distribution, so we can focus on the project itself rather than the specific platform APIs for storage and connectivity.
 

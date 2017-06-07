@@ -439,7 +439,7 @@ If the IoT system offers well tested libraries that could aid in the interfaces 
 
 In our PoC, we use two ANSI C libraries, for base64 and JSON, and two shared libraries available in as packages in LEDE, GMPLib and OpenSSL. These libraries use dynamic memory and offer more functionality than we need, although they are a good tool in this PoC, future versions should use more lightweight solutions.
 
-For example, Atmel's ATAES132A \citep{ATAES132A}
+For example, Atmel's ATAES132A\footnote{ATAES132A 32K AES Serial EEPROM  Datasheet - \url{http://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-8914-CryptoAuth-ATAES132A-Datasheet.pdf}}
 \marginpar{\includegraphics[width=0.9\linewidth]{gfx/atmel} \\ Atmel's cryptography chips.}
 offers a serial chip for secure key storage, AES128 execution and random number generation. Another serial chip like ESP8266 offers WiFi connectivity, typically used with Arduino, and can also perform AES encryption. For random number generation, a technique used with Contiki devices is to read from sensors aleatory data and use it as seed.
 
