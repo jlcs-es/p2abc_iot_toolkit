@@ -2,7 +2,7 @@
 \chapter{Introduction}\label{ch:introduction}
 %************************************************
 
-The \ac{IoT} is a term with a wide range of interpretations \citep{Atzori20102787}, breafly, we can think of it as a set of devices, mainly resource constrained, that are interconnected between them in order to achieve a goal. For example, a network of lampposts with proximity sensors that talk to each other so they light up part of the street when a passerby walks by, but save energy when not; greenhouses with automated irrigation to balance costs and quality vegetables; or cars exchanging traffic data to reduce city pollution from traffic jams or avoid accidents.
+The \ac{IoT} is a term with a wide range of interpretations \citep{Atzori20102787}, breafly, we can think of it as billions of devices, mainly resource constrained, that are interconnected between them, and the Internet, in order to achieve a goal. For example, a network of lampposts with proximity sensors that talk to each other so they light up part of the street when a passerby walks by, but save energy when not; greenhouses with automated irrigation to balance costs and quality vegetables; or cars exchanging traffic data to reduce city pollution from traffic jams or avoid accidents.
 
 Many of this objectives require the use of a great amount of data, and thanks to organizations like \href{https://wikileaks.org/}{WikiLeaks}, people are aware of the implications of their data on the Internet, demanding more security and privacy for it. This includes not only the data shared with others, where one must trust they will keep it safe, but it's also the data collected about us and that we don't have direct control over it. The attack Sony suffered in 2011 to PSN\footnote{2011 PlayStation Network outage - 
 \url{https://en.wikipedia.org/wiki/2011_PlayStation_Network_outage}} is an example of the trust people had in Sony to store their billing information, and because the security of that information depended on both them and Sony, people found themselves compromised unable to do anything about it. 
@@ -19,8 +19,8 @@ Stronger even, apart from showing the exact value of an attribute, the User can 
 Verifier that some complex predicate over the attributes holds, e.g. that her birth date was more than 18 years ago, without revealing the real date.
 
 
-With usual symmetric and asymmetric cryptography it seems impossible to create such credentials, without an explosion of signatures over every possible combination. Thats why current solutions rely on  \acp{ZKP}
-\marginpar{To read more about ZKPs, refer to my Mathematics thesis \citep{tfgmates}.}
+With usual symmetric and asymmetric cryptography it seems impossible to create such credentials, without an explosion of signatures over every possible combination. For this reason, current solutions rely on  \acp{ZKP}
+\marginpar{To read more about ZKPs, refer to my Mathematics thesis \citep{tfgmates}}
 , cryptographic methods that allow to proof knowledge of some data without disclosing it.
 
 To understand how ZKPs work, in 1990 Guillou, Quisquater and Berson published in \textit{How to Explain Zero-Knowledge Protocols to Your Children} \citep{ZKPcave:story} a story about how Ali Baba proved that he knew the magic words to open the cave, but without revealing those words to anyone. Here we present a brief version highlighting the properties of ZKPs.
@@ -59,7 +59,14 @@ Based on ZKP properties, IBM has developed the Identity Mixer\footnote{Identity 
 	\textit{``If your personal data is never collected, it cannot be stolen.''}
 \end{center}
 
-The goal of this project is to integrate Idemix with the IoT. It will be done using the ABC4Trust's \ac{P2ABCE}, a framework that defines a common architecture, policy language and data artifacts for an attribute based ecosystem, cryptographically based on either IBM's Idemix or Microsoft's U-Prove \footnote{P2ABCEngine \url{https://github.com/p2abcengine/p2abcengine}}. This gives us a standardized language to exchange Idemix's messages between IoT devices and any other P2ABCE actor.
+%%%
+So far, Idemix or privacy-ABCs have been successfully applied to deal with traditional Internet scenarios, in which users can authenticate and prove their attributes against Service provider. However, due to the reduced computational capabilities of certain IoT devices, it has not been yet considered for IoT scenarios. As we study in the state of the art chapter, current implementations are based on Java, which requires high computational and memory resources to be executed, and to the best of our knowledge, this is the first proposal that tries to apply an IoT solution for privacy-preserving authentication and authorization, based on Anonymous credential Systems, like Idemix.
+%%5
+
+
+The goal of this project is to integrate Idemix with the IoT. It will be done using the ABC4Trust's \acf{P2ABCE}, a framework that defines a common architecture, policy language and data artifacts for an attribute based ecosystem, cryptographically based on either IBM's Idemix or Microsoft's U-Prove \footnote{P2ABCEngine \url{https://github.com/p2abcengine/p2abcengine}}. This gives us a standardized language to exchange Idemix's messages between IoT devices and any other P2ABCE actor.
+
+Once the IoT devices can execute Idemix, the new step is to take advantage of it in other deployments. In a smart building, different privacy policies could protect sensitive data, like how many people there are, and their identities, where a thermostat would only need to know if the amount of people is between some boundaries, but in case of emergency, the police department could request all the information available. We think that the first approach to achieve these ideas is first to integrate Idemix in known IoT identity systems, like FIWARE project. 
 
 \hfil
 

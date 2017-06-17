@@ -8,7 +8,7 @@
 % 
 
 
-In this chapter we will describe the process for defining how a constrained IoT device may be integrated in a system like P2ABCE. We will also describe the PoC implementation carried out to test a realistic deployment.
+In this chapter we describe the design of our proposal to integrate IoT constrained devices as part of the privacy preserving system P2ABCE. The ultimate goal is to enable constrained IoT devices to play the Idemix User role, interacting autonomously in order to authenticate and demonstrate their credential attributes in a privacy-preserving fashion.
 
 \section{Design}
 
@@ -43,7 +43,7 @@ Therefore, the IoT device now has a \textbf{duality} in its functions, because i
 	\begin{center}
 		\includegraphics[width=\linewidth]{gfx/P2ABCE-IoT-bw}
 	\end{center}
-	\caption{IoT in P2ABCE Architecture.}
+	\caption{Proposed high level Architecture for integrating IoT devices in P2ABCE.}
 	\label{fig:P2ABCE-IoT}
 \end{figure}
 
@@ -64,7 +64,7 @@ The system will be compounded by the IoT device, the P2ABCE delegation server an
 	
 	\item \textbf{IoT device}
 	
-	In \autoref{fig:P2ABCE-IoT} the IoT device is represented with two interfaces, physical or virtual. One allows external communications to other machines, including other P2ABCE actors, that could be on the Internet, a corporate LAN, a M2M overlay network, etc. Through this interface, the P2ABCE XML messages are exchanged as in any other deployment. This allows an IoT device to interact with other actors without special adaptations to the protocol. The other interface allows a secure communication with the delegation server. Both the delegation messages and the APDU Dialogue are transmitted over this interface, making it a point of attack to the system, and we will talk about its security in the delegation process.
+	In \autoref{fig:P2ABCE-IoT} shows our proposed architecture, in which the IoT device is represented with two interfaces, physical or virtual. One allows external communications to other machines, including other P2ABCE actors, that could be on the Internet, a corporate LAN, a M2M overlay network, etc. Through this interface, the P2ABCE XML messages are exchanged as in any other deployment. This allows an IoT device to interact with other actors without special adaptations to the protocol. The other interface allows a secure communication with the delegation server. Both the delegation messages and the APDU Dialogue are transmitted over this interface, making it a point of attack to the system, and we will talk about its security in the delegation process.
 	
 	The scheme also shows the \textit{P2ABCE IoT Toolkit}. This piece of software includes the IoT Smart Card, and the API for other processes that want to use the P2ABCE system.
 	
@@ -97,8 +97,7 @@ Here we describe the computation offloading carried out by the IoT device.  In \
 \begin{enumerate}
 	\item Communication with P2ABCE actor.
 	
-	The IoT device starts an interaction with another actor, e.g. an Issuer or Verifier, receiving a P2ABCE XML file.
-	
+	The IoT device, acting as a User, starts an interaction with another actor, e.g., against an Issuer to obtain a signed credential, or against a Verifier to demonstrate certain property of its attributes in a privacy-preserving way.
 	
 	\item Delegation to the P2ABCE Server.
 	
@@ -106,7 +105,22 @@ Here we describe the computation offloading carried out by the IoT device.  In \
 	
 	\item APDU Dialogue (if necessary).
 	
-	The server may need to send APDU Commands to the IoT smart card to read the credential information or perform cryptographic operations involving private keys.
+	The server may need to send APDU Commands to the IoT smart card to read the credential information or perform cryptographic operations involving private keys, necessarily stored inside the IoT device.
+	
+	These APDU Commands include a list of 70 different instructions, identified by the APDU INS byte. Some of them manage the smart card, like changing the PIN code, and many are P2ABCE specific, like storing the system cryptographic parameters. Some examples:
+	
+	\begin{tabular}{|c|l|}
+		\hline
+		INS & Description \\
+		\hline
+		\texttt{0x52} & \texttt{SET\_CREDENTIAL} \\ & Sets a new credential inside the smart card.\\
+		\texttt{0x5A} & \texttt{GET\_CREDENTIAL\_PUBLIC\_KEY} \\ & Returns a stored credential's public key.\\
+		\texttt{0x60} & \texttt{GET\_PRESENTATION\_COMMITMENT} \\ & First cryptographic operation during Proving.\\
+		\texttt{0x62} & \texttt{GET\_PRESENTATION\_RESPONSE} \\ & Second cryptographic operation during Proving.\\
+		\hline		
+	\end{tabular}
+
+	\hfil
 	
 	\item Server response.
 	
@@ -118,7 +132,7 @@ Here we describe the computation offloading carried out by the IoT device.  In \
 	\begin{center}
 		\includegraphics[width=\linewidth]{gfx/UML/DelegationProving}
 	\end{center}
-	\caption{IoT Delegation in P2ABCE for Proving.}
+	\caption{Designed interactions exchanged during the IoT delegation for P2ABCE Proving operation.}
 	\label{fig:DelegationProving}
 \end{figure}
 
@@ -190,13 +204,11 @@ Currently P2ABCE offers multiple REST web services to run different roles in P2A
 
 Our PoC machine, the Omega2, can make REST calls easily with the \texttt{curl} command, but other devices may use \ac{CoAP}, but in that case, the P2ABCE REST services should be adapted to offer CoAP support. The commands needed to delegate to the P2ABCE server would be the same that those defined now to operate with the REST services, but with the modifications needed to pass the parameters on how to communicate with the IoT smart card.
 
-In this PoC the only P2ABCE Service that needed to be modified was the User Service. We added the following REST call
-
+In this PoC, only the P2ABCE's User Service needed to be modified, because this is the role the IoT device plays. We added the following REST call:
 \begin{center}
 	\textit{/initIoTsmartcard/{issuerParametersUid}?host=\&port=}
 \end{center}
-
-where we communicate the P2ABCE server that an IoT Smart Card is accessible via \textit{host} and \textit{port}. Then a new \textit{HardwareSmartcard} object is stored in the P2ABC Engine, but instead of the \textit{javax.smartcardio} Oracle's \textit{CardTerminal} implementation, we use our own \textit{IoTsmartcardio} implementation for the \textit{HardwareSmartcard} constructor, that we will discuss in the following section.
+where we communicate the P2ABCE server that an IoT Smart Card is accessible via the IP address \textit{host} and TCP port \textit{port}. Then a new \textit{HardwareSmartcard} object is stored in the P2ABC Engine, but instead of the \textit{javax.smartcardio} Oracle's \textit{CardTerminal} implementation, we use our own \textit{IoTsmartcardio} implementation for the \textit{HardwareSmartcard} constructor, that we will discuss in the following section.
 
 
 \hfil
@@ -240,15 +252,15 @@ We lack any security (authentication or authorization) that a real system should
 \hfil
 
 
-The implementation of this simple protocol is done in both Java and C, one for the P2ABCE server and the other one for the IoT smart card.
+The implementation of this simple protocol is done in Java for the P2abce delegation server and in C for the IoT smart card device.
+
+
 
 \hfil
 
 As we mentioned in the analysis of P2ABCE's code, the \texttt{HardwareSmartcard} class implements the \texttt{Smartcard} interface using the package of abstract classes \texttt{javax.smartcardio} to communicate with the physical smart cards. The Oracle JRE implements these package for the majority of smart card manufacturers. For our PoC, we implement the \texttt{javax.smartcardio} package so it transmits the APDUs with BIOSC, making the use of a physical or IoT smart card totally transparent to the \texttt{HardwareSmartcard} class, enhancing maintainability, and following the \textit{expert pattern} from the known GRASP guidelines.
 
 %TODO : optional: diagrama secuencia de P2ABCE, pero si eso solo de la reimplementación de javax.smartcardio y su uso por HardwareSmartcard
-
-\textbf{TODO} :  diagrama secuencia de la reimplementación de javax.smartcardio y su uso por HardwareSmartcard
 
 \hfil
 
@@ -310,7 +322,7 @@ However, the ABC4Trust's code heavily depended on the MULTOS platform for the in
 
 A characteristic of MULTOS C-API is that every function name starts with ``\texttt{multos}'', so we changing their names from \texttt{multosFoo()} to \texttt{mFoo()} for readability and to emphasize that they were no longer MULTOS functions.
 
-The \texttt{main.h} file, from the original ABC4Trust project, also implemented some functions that were equivalent to the ones available in \texttt{multos.h}. We replaced them for the standard functions in the C-API, checking that the MEL code did the same as the documentation specified. This last detail is very important, because in \citep{vullers2013efficient} they noted that MULTOS' \texttt{ModularExponentiation} function does not accept exponents larger than the modulus size, so they implemented \texttt{SpecialModularExponentiation}, dividing the exponentiation in two that MULTOS could perform. After this analysis, when those particularities appeared, our reimplementation of the MULTOS API accepts the \textit{expanded functionality}.
+The \texttt{main.h} file, from the original ABC4Trust project, also implemented some functions that were equivalent to the ones available in \texttt{multos.h}. We replaced them for the standard functions in the C-API, checking that the MEL code did the same as the documentation specified. This last detail is very important, because in \citep{vullers2013efficient} they noted that MULTOS' \texttt{ModularExponentiation} function does not accept exponents larger than the modulus size, so they implemented \texttt{SpecialModularExponentiation}, dividing the exponentiation in two that MULTOS could perform. After this analysis, when those particularities appeared, our reimplementation of the MULTOS API accepts the \textit{expanded functionality}. In total, we reduced to eighteen the number of MULTOS functions to reimplement, and with future refactoring this number may decrease.
 
 \hfil
 

@@ -15,19 +15,20 @@ In a smart city project, citizens' data can be privatized and at the same time c
 
 We will divide the project in various objectives:
 
+The main objective of this thesis is to integrate IBM’s privacy-preserving Attribute Based System in the IoT environment. The idea is to enable IoT constrained devices to act as a autonomous entities that can authenticate and prove their attributes against a verifier entity using the Idemix protocol, thereby, allowing a privacy-preserving IdM solution for IoT.
+
+This general objective, can be split in 6 main subobjectives: 
+
+
 
 \begin{enumerate}
-	\item Idemix and the IoT
-	
-	This is our main objective, integrating IBM's privacy-preserving system in the IoT environment.
-	
 	\item Study of the Idemix ecosystem
 	
 	Study the state of the art of Idemix and the IoT, analysing the related projects and papers with similar approaches. Once we know as much as we can from the existing ecosystem, we will be able to deliver the most fitting solution to our project.
 	
 	\item Design of the IoT+Idemix solution
 	
-	A formal description of the IoT architecture that will use Idemix.
+	A formal description of the IoT architecture that will that will allow to integrate Idemix in IoT scenarios.
 	
 	
 	\item Implementation of a functional PoC
@@ -38,7 +39,7 @@ We will divide the project in various objectives:
 	
 	\subitem Hardware objectives
 	
-	Be compatible with devices as constrained as possible, considering the multiple IoT platforms existing.
+	The implemented software needs to be optimized to be deployable in IoT devices as constrained as possible, and consider the multiple IoT platforms in existence.
 	
 	
 	\item Validation of the PoC
@@ -47,7 +48,7 @@ We will divide the project in various objectives:
 	
 	\item Evaluation of performance
 	
-	Measure and compare the solution's performance against the existing ones.
+	This evaluation will allow to validate the feasibility of our solution and its implementation.
 	
 	\item Integrate the IoT+Idemix as a security solution for other projects
 	
@@ -61,9 +62,9 @@ We will divide the project in various objectives:
 
 \section{Methodology}
 
-Giving the vast range of IoT devices, a one-for-all solution must take in consideration multiple requirements and limitations. We will break down the original system, Idemix and P2ABCE, analyze every part of it and categorize them. We will consider what components are mandatory to be executed in the target device that wants to act as User of Verifier, and which components the devices would actually be able to execute.
+Giving the vast range of IoT devices, a one-for-all solution must take in consideration multiple requirements and limitations. We will break down the original system, Idemix and P2ABCE, analyse every part of it and categorize them. We will consider what components are mandatory to be executed in the target device, and which components the devices would actually be able to execute. Given the mathematical base of the Idemix protocol and the complexity of the P2ABCE architecture and code, this may be the most challenging step, because it determines how the rest of the project will be developed.
 
-Devices with equivalent processing power to smart phones are capable of running the current Java implementations of P2ABCE with Idemix, but the most constrained IoT devices can not handle the entire system, only the mandatory cryptographic operations.
+Devices with equivalent processing power to smart phones are currently capable of running the Java implementations of P2ABCE with Idemix, but the most constrained IoT devices can not handle the entire system, only the mandatory cryptographic calculations, that is, the operations required to keep secured the privacy information in the device, their keys and certificates.
 
 Using the technique known as \textit{Computation Offloading} we can design an IoT architecture where the most constrained targets can keep their private keys and certificates secure within the device, and act as any other actor in the P2ABCE system. Studying the original P2ABCE architecture and implementations we will identify the key operations to be executed in the constrained device, and how to communicate efficiently during the delegation.
 
@@ -121,7 +122,27 @@ The roles are:
 	
 \end{itemize}
 
-Zero-knowledge proofs used in Idemix allow a user to prove ownership of a credential without
+In our work, we aim at making IoT constrained devices capable to act as a User or Verifier in the P2ABCE architecture, given, for example, a M2M (Machine to Machine) setup, a device could identify itself to others (User), and ask for the respective cryptographic evidence to its peer (Verifier).
+
+
+The key operations of Idemix are the Issuance and Proving, but there are also others like the revocation of credentials, update of attribute values or inspection of a prove. We consider that the cryptographic details of Idemix are out of the scope of this thesis, and can be consulted in \citep{idemixSpec}, but we will give a brief introduction of the Issuance and Proving interactions. Also, for those who want a little more information about the mathematical operations performed, without the deep explanations from the Idemix specification, we recommend to read the section 3.2 from \citep{vullers2013efficient}.
+
+
+\hfil
+
+The \textbf{Issuance} protocol consists on an interactive Camenisch - Lysyanskaya signature, that is, unlike usual signatures, where the Issuer alone hashes the credential (implying she knows all the values in it) and ciphers the digest, in this signature, the signing is performed between both actors.
+
+This is possible given the nature of the CL signature, where the values of the parameters act as exponents of some public bases, and the use of ZKPs assure each party performs the correct calculations, avoiding malicious users. The User will perform the exponentiation with her secret key and some hidden attributes (the Issuer won't know their true value, only that they have some property, through a ZKP). The User then sends this new value and a ZKP that she indeed knows the exponents (the hidden values in the credential) for the public bases, without revealing said exponents. The Verifier performs the same exponentiation with the public attributes (not hidden by the User), and using her secret key, finishes the signature. The User then receives a valid CL signature for the credential, and no one except her knows the secret key and hidden values, thanks to the ZKPs.
+
+The \textbf{Proving} protocol is simpler than the Issuance. It is usually performed in a three step protocol. First, the Verifier generates a nonce for the current interaction. Then, the User performs a non-interactive Zero-Knowledge Proof of any predicate she wants to proof. This is performed doing various ZKPs in parallel, using the same nonce from the Verifier. After the non-interactive ZKP is performed, the User sends it to the Verifier, which needs less calculations to verify the predicate, and learns nothing more than that the predicate itself is true, that is the nature of Zero-Knowledge Proofs.
+
+Although we see both protocols are interactive, with at least 3 messages each, we mention \textit{non-interactive} ZKPs. If we recall the cave story, Victor needed to repeat the experiment many times before believing that Peggy knew the secret. Here, using the Fiat-Shamir heuristic and the Verifier nonce, the Verifier challenges (in the story, the path to return from) are substituted by a Hash function, e.g. SHA256, performed over some values. The User can't anticipate the digest result, so the Verifier trusts the Zero-Knowledge Proof, even when she doesn't choose the challenge. The Fiat-Shamir heuristic significantly increases the performance of these protocols, reducing the number of messages exchanged.
+
+
+
+\hfil
+
+As we have seen, Zero-Knowledge Proofs used in Idemix allow a user to prove ownership of a credential without
 revealing the credential itself. Since the verifier does not see the credential, verification
 instances are unlinkable and they also cannot be related to the issuing procedure. The privacy of users is protected by these unlinkability properties, even if the credential issuer and all verifiers collude. We can identify the following key features of the Idemix system \citep{vanet}:
 
@@ -173,15 +194,19 @@ To sum up, an attribute-based credential contains attribute-value pairs that are
 
 \hfil
 
-In the P2ABCE repository\footnote{\url{https://github.com/p2abcengine/p2abcengine}} there is available the project's code, divided in two solutions: a complete P2ABCE implementation in Java and a MULTOS smart card implementation as PoC for the project.
+
 
 \subsection{P2ABCE Code Structure and REST Services}
 
-The Java code is managed by a Maven project, structured using various known design patterns, but not of our interest. The part we are actually interested in are the \textit{REST Services} and their use of the \textit{Components} classes, where the smart card's logic and use are defined.
 
-P2ABCE project is based on the concept of smart cards, virtual or physical, to store the credentials. An interface is defined to communicate with these smart cards, and then different implementations allow to use either \textit{Software Smartcards} or \textit{Hardware Smartcards}. 
+In the P2ABCE repository\footnote{\url{https://github.com/p2abcengine/p2abcengine}} there is available the project's code, divided in two solutions: a complete P2ABCE implementation in Java and a MULTOS smart card implementation as PoC for the project.
 
-The \textit{SoftwareSmartcard} class implements the interface in Java, suitable for applications using P2ABCE self-storing digital smart cards, like a virtual wallet.
+
+The Java code is managed by a Maven project, structured using various known design patterns, but this code is not our main target, as it won't be executed in the device. The part we are actually interested in are the \textit{REST Services} and their use of the \textit{Components} classes, where the smart card's logic and use are defined.
+
+P2ABCE project is based on the concept of smart cards, virtual or physical, to store the Idemix credentials and keys. An interface is defined to communicate with these smart cards, and then different implementations allow to use either \textit{Software Smartcards} or \textit{Hardware Smartcards}. 
+
+The \textit{SoftwareSmartcard} class implements the interface in Java, suitable for applications using P2ABCE self-storing digital smart cards, like a virtual wallet. This implementation is useful, for instance, to be deployed in more capable IoT devices (that can run Java) such as smartphones or smartwatches.
 
 The \textit{HardwareSmartcard} class uses the standard APDU messages (\ref{subsec:APDU}) to interact with smartcards. P2ABCE defines the necessary APDU instructions for the smart card needed to implement each method of the interface. It relies on \texttt{javax.smartcardio} abstract classes (implemented by Oracle in their JRE) to communicate the smart card reader and the smart card. This way, it doesn't matter what manufacturer issues the smartcard, or if it's an Android device with NFC, if they support the APDU instructions, P2ABCE will work with them.
 
@@ -196,10 +221,11 @@ The \textit{HardwareSmartcard} class uses the standard APDU messages (\ref{subse
 
 \hfil
 
-The project also provides a set of REST services to control each role of the P2ABCE systeam (User, Issuer, Verifier, Inspector, etc.). The methods implemented include the creation of \textit{Software} smart cards within the User Service, and store them in a data base for future REST calls that may need them.
+The project also provides a set of REST services to control each role of the P2ABCE project (User, Issuer, Verifier, Inspector, etc.). The methods implemented include the creation of \textit{Software} smart cards within the User Service, and store them in a data base for future REST calls that may need them.
 
-The services receive parameters like the length of the cryptographic keys, IDs, or XML files to parse. The REST API is not meant for a User Service to communicate with an Issuer Service, for example, but for the User actor to call the Engine through the User Service, to perform specific actions, and then the Service returns the response XML. Those XML files are the way to communicate two different actors. The transmission method to exchange the XML depends on the specific scenario.
+The services receive parameters like the length of the cryptographic keys, IDs, or XML files to parse. The REST API is not meant for a User Service to communicate with an Issuer Service or Verifier, but for the User actor to call the P2ABC Engine through the User Service, to perform specific actions (execute the User side of the Idemix issuance and proving protocols), and then this Service returns the Response XML. Those XML files are the way to communicate two different actors (e.g. User and Verifier). The transmission method to exchange the XML depends on the specific scenario.
 
+This Services as \textit{tools} for the actors are only present in the P2ABCE project, not part of the Idemix or U-Prove engines. They are useful in a desktop environment, where we have a User Service in the background, and many programs, browser plugins, etc., make use of the Engine through the REST interface, reducing the number of P2ABCE entities in execution.
 
 
 \subsection{ABC4Trust Card Lite}
@@ -214,7 +240,7 @@ The card stores the user's private key $x$ and any \ac{BLOB} that the P2ABCE may
 	\begin{center}
 		\includegraphics[width=\linewidth]{gfx/ABC4TCardLite}
 	\end{center}
-	\caption{ABC4Trust Card Lite}
+	\caption{ABC4Trust Card Lite. \textit{Image from ABC4Trust EU Project.}}
 	\label{fig:ABC4TCardLite}
 \end{figure}
 
@@ -222,31 +248,35 @@ The cryptographic operations performed by the smartcard are the modular exponent
 
 \hfil
 
-The code is available from the P2ABCE's repository and has some good and bad points to have in count:
+The code is available from the P2ABCE's repository and has some good and bad points to take into account:
 
-The best asset of this code is that it's written in C aiming to a very constrained device, with very limited memory and similar computational power to many other IoT devices.
+The best asset of this code is that it is written in C aiming to a very constrained device, with very limited memory and similar computational power to many other IoT devices.
 
-The code uses some good practices when programming for constrained devices, also explained in the first implementation of Idemix in smart cards \citep{vullers2013efficient}. Aside the implementation in assembly code of some operations to accelerate the execution, most techniques aim to reduce the memory usage. They define \texttt{union} data types to join variables never used at the same time, so they can be stored on the same data location. Instead of function parameters, most variables are made global, reducing the space on the stack used when calling other functions. If parameters are needed, they are pointers to shared buffers with fixed sizes, avoiding the use of any dynamic memory allocation.
+The code uses some good practices when programming for constrained devices, also explained in the first implementation of Idemix in smart cards \citep{vullers2013efficient}. Aside the implementation in assembly code of some operations to accelerate the execution, most techniques aim to reduce the memory usage. They define \texttt{union} data types to join variables never used at the same time, so they can be stored on the same data location. Instead of function parameters, most variables are made global, reducing the space on the stack used when calling other functions. If parameters are needed, there are pointers to shared buffers with fixed sizes, avoiding the use of any dynamic memory allocation.
 
 
-Although, among the many drawbacks, we could highlight the \textit{awful} coding style, the strong dependency on MULTOS framework and many bugs found. 
+On the other side, among the many \textbf{drawbacks}, we could highlight the \textit{awful} coding style, the strong dependency on MULTOS framework and the fact that many bugs were found during our work.
 
-The code is structured in two files, \textit{main.h} and \textit{main.c}, with around $550$ and $5200$ lines of code, respectively.
+The MULTOS C subroutines are an interface to hardware implementations for the smart cards, and it implies the ported code must be rewritten to an interoperable C code, not dependant on MULTOS specific functions.
 
-The file \textit{main.h} is mostly a reimplementation in assembly MEL code of some MULTOS functionality already offered by their API.
+The code is also affected by the MULTOS architecture, breaking many execution sequences, that is, the running application can stop at any point, not returning from a function. The MULTOS OS will read the public memory to generate a Response APDU and then clean the stack memory, but our standard C application must return from every function, freeing the used memory, minimizing possible errors from bad memory management. As we will see in the next chapter, the sequence diagram shows how any execution should perform, returning to the caller, not finishing the process when an error happens.
 
-The \textit{main.c} consists on nearly $600$ lines of variables and data structures declarations; followed by the \textit{main()} function, a $2600$ lines long \textit{switch-case} expression, with practically no comments; and to conclude, the implementation of thirty functions called \textit{Subroutines} at the end of the file, around other $2000$ lines of code.
+Although we mentioned the use of pointers as a way to reduce memory usage, we all agree that pointers are \textit{double–edged swords}, and a code with such an intense use of them is prone to undetectable errors before runtime.
+
+The code is structured in two files, \textit{main.h} and \textit{main.c}, with around $550$ and $5200$ lines of code, respectively. The file \textit{main.h} is mostly a reimplementation in assembly MEL code of some MULTOS functionality already offered by their API.
+
+The \textit{main.c} consists on nearly $600$ lines of variables and data structures declarations; followed by the \textit{main()} function, a $2600$ lines long \textit{switch-case} expression, that handles every APDU instruction, with practically no comments; and to conclude, the implementation of thirty functions called \textit{Subroutines} at the end of the file, with around other $2000$ lines of code.
 
 \hfil
 
 At this stage, we have two options to implement our IoT device compatible with P2ABCE:
 
 \begin{itemize}
-	\item Implement in C the \textit{Smartcard} interface used by P2ABCE architecture, and use some communication protocol to remotelly call the methods from the machine running the P2ABC Engine.
+	\item Implement in C the \texttt{Smartcard} interface used by P2ABCE architecture, like the \texttt{SoftwareSmartcard} class, and use some communication protocol to remotely call the methods from the machine running the P2ABC Engine.
 	\item Present the IoT device as a hardware smart card, using the APDU protocol (already defined, standard and with minimal overload). Providing a \textit{javax.smartcardio} ``IoT implementation'' to communicate with the IoT device through a transmission protocol, making the already existing \textit{HardwareSmartcard} class compatible with the new \textit{IoTSmartcard} running in the IoT device.
 \end{itemize}
 
-Even with the problematic to maintain or even understand the code of ABC4Trust Card Lite, once one studies MULTOS framework in deep and applies many refactoring techniques to the code, it becomes the best starting point for the IoT version, making us opt for the second option.
+Even with the problematic to maintain or even understand the code of ABC4Trust Card Lite, once one studies MULTOS framework in deep, applies many refactoring techniques to the code, consider the applied optimizations for constrained devices, and the APDU protocol compatibility to work with \texttt{HardwareSmartcard} as any other smart card, it becomes the best starting point for the IoT version, making us opt for the second option.
 
 
 
@@ -254,7 +284,9 @@ Even with the problematic to maintain or even understand the code of ABC4Trust C
 
 \section{Preliminaries about smart cards}
 
-In this section we will introduce a brief description of the APDU standard protocol, and the MULTOS framework used by the ABC4Trust Card Lite.
+We have decided to extend this chapter in order to explain the basis of smart card technologies, instead of only referencing the corresponding documentation, involving the reader to make the effort of understanding a system that is more complex than what we actually need to know at this point.
+
+This section is a summary of the smart card's communication protocol, the MULTOS ecosystem, and, therefore, the inherited ABC4Trust Card Lite code, and how our IoT solution will work in the inside, acting as a smart card, a port from a (poorly coded) MULTOS application.
 
 
 \subsection{Smart Card Communication Protocol}\label{subsec:APDU}
@@ -361,7 +393,7 @@ The transmission and communication process is done by MULTOS core, and it then s
 Now the developer is in charge of checking what instruction was sent, handle it with regard to his domain logic,  write in the specific data space the APDU Response bytes, and call \texttt{multosExit()}, a MULTOS API function that will be in charge to send the APDU Response.
 In summary, our application starts with all data loaded in memory and exits without worrying how the answer is sent back.
 
-As we can see, MULTOS is a comfortable framework to develop smart card applications, and now we must adapt and implement it for our IoT devices, if we want to port ABC4Trust Card Lite's code.
+As it can be sees, MULTOS is a comfortable framework to develop smart card applications, and now we must adapt and implement it for our IoT devices, if we want to port ABC4Trust Card Lite's code.
 
 
 
@@ -415,10 +447,11 @@ and when storing structures there is no padding between defined variables, unlik
 
 \paragraph{MULTOS Standard C-API}
 
-A collection of more than a hundred functions are provided for arithmetic, cryptography, memory and smart card operations. The \textit{multos.h} interface provides access to these functions, that ultimately call their respective primitive instructions in assembly code. The primitive instructions are but a system call with an operation code, loading data in the needed registers. Therefore,  no implementation for these tools is available, nor in C, nor in assembly code.
+A collection of more than a hundred functions are provided for arithmetic, cryptography, memory and smart card operations. The \textit{multos.h} interface provides access to these functions, that ultimately call their respective primitive instructions in assembly code. The primitive instructions are but a system call with an operation code, loading data in the needed registers, and hardware implemented functionality. Therefore,  no implementation for these tools is available, nor in C, nor in assembly code.
 
 Nevertheless, the C-API documentation\footnote{\url{http://www.multos.com/developer_centre/technical_library/}} provides rich description for each function.
 
+Following this documentation, we will have to reimplement in C the same or extended functionality, trying to be as efficient as the hardware implementations in MULTOS smart cards. For example, the cryptographic operations are common in smart cards and therefore hardware supported, but a constrained IoT device does not usually include a cryptographic chip or specialized processor instructions.
 
 
 
@@ -440,7 +473,7 @@ The PoC will take advantage of the Linux system using mainly files and sockets l
 
 \hfil
 
-The project development is divided between the IoT device code and the P2ABCE services. To ease the setup of new developing machines, we will use Docker to deploy containers ready to compile the code.
+The project development is divided between the IoT device code and the P2ABCE services. To ease the setup of new developing machines, we will use Docker\footnote{\url{https://www.docker.com/what-docker}} to deploy two containers, one ready to cross-compile our IoT project's C code, and the other container will compile the P2ABCE's Java code.
 
 \hfil
 
