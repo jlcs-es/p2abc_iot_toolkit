@@ -335,3 +335,27 @@ With all that said, the mean of the maximum memory usage measured is $6569.6$ kb
 
 
 
+
+\section{Validation conclusions}
+
+Below \autoref{totaltime} sums up the time in seconds used in each step of the test for the Omega2 and Raspberry Pi 3 setup.
+
+The first step, \textit{System Setup} is done only once when the system is being deployed, and the \textit{IoT Smart Card Setup} only once per device.
+
+Because a device can have more than one credential, the Issuance step is significant when we issue multiple credentials over the device's lifetime. We recall that our tests used a credential with five attributes and key sizes of 1024 bits.
+
+Finally, the Proving step is expected to be the most performed calculation by the IoT device. The fact that it lasts over half a minute implies that we should not use this PoC for \textit{real-time} applications yet, usually used in critical secure systems. Nevertheless, for many other IoT applications, the fact this operation can be performed multiple times per hour, presents an useful tool for privacy, e.g. the thermostat system mentioned in the smart building, which can pool data from the sensors every few minutes.
+
+
+\begin{table}[!ht]
+	\begin{center}
+		\begin{tabular}{|r|r|r|r|}
+		\hline
+		System & IoT Smart  & Issue  & Prove Presen-\\
+		Setup & Card Setup & credential & tation Policy\\ \hline
+		3.77 s & 19.19 s & 36.48 s & 32.84 s \\ \hline
+	\end{tabular}
+	\end{center}
+\caption{Total time spent for each step in the Omega2+RPi3 setup.}
+\label{totaltime}
+\end{table}

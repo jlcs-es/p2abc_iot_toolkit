@@ -494,6 +494,13 @@ After returning from \texttt{mExit}, the instruction handler and the APDU handle
 
 
 
+\section{Design and implementation conclusions}
+
+During this design and implementation process we had to study multiple technologies, including the ones mentioned in the state of the art, regarding Idemix, and those related to the IoT, we studied many systems (e.g. Contiki, Arduino) and hardware (e.g. MSP430, ESP8266), and after this, we had to take many decisions during development.
+
+The design is open in those aspects that depend on each specific project's requisites, and closed on the aspects involving the P2ABCE's core logic.
+
+However, the PoC had to make more concessions when implementing the cryptographic and modular arithmetic logic. But those are parts of the code that are more prone to be changed when developing for a new system. The core logic of the PoC is preserved as it is in every system and device.
 
 
-
+Even with the many points of future work left, we think we achieved the most extensible solution for Idemix+IoT at the time, our main objective of the project.

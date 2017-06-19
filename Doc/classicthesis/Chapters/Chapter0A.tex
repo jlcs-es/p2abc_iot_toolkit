@@ -14,7 +14,7 @@ In this appendix we provide 3 sequence diagrams highlighting the APDU Commands e
 
 The first one is the setup of the IoT smart card, storing the system parameters needed to work in the deployed P2ABCE system. The first Command is called \texttt{isAndroid} because the \texttt{HardwareSmartcard} class distinguishes Android phones acting as smart cards from MULTOS smart cards, in order to use Extended APDUs. Then configures the smart card, setting the PIN (``\texttt{1234}'' by default) and PUK. Finally, it copies the cryptographic system parameters to the smart card with multiple \texttt{SET} instructions.
 
-The second image shows the issuance of the credential, divided in the three REST calls needed during the delegation. If we recall Idemix's issuance protocol, the User performed, during his first step, an exponentiation with his secret key and a ZKP, which can be identified by the \texttt{COMMITMENT} and \texttt{ISSUANCE RESPONSE} commands. During the second step, the User only has to verify the Issuer's ZKP and store the credential if the signature is valid. Because the P2ABC Engine can perform Verification of ZKP without the need of secret keys stored in the smart card, the APDU Commands in this phase are only for storing the credential information inside the IoT smart card's BLOB\footnote{(\textbf{B}inary \textbf{L}arge \textbf{Ob}jects} database, with the \texttt{STORE BLOB} instruction. 
+The second image shows the issuance of the credential, divided in the three REST calls needed during the delegation. If we recall Idemix's issuance protocol, the User performed, during his first step, an exponentiation with his secret key and a ZKP, which can be identified by the \texttt{COMMITMENT} and \texttt{ISSUANCE RESPONSE} commands. During the second step, the User only has to verify the Issuer's ZKP and store the credential if the signature is valid. Because the P2ABC Engine can perform Verification of ZKP without the need of secret keys stored in the smart card, the APDU Commands in this phase are only for storing the credential information inside the IoT smart card's BLOB\footnote{\textbf{B}inary \textbf{L}arge \textbf{Ob}jects} database, with the \texttt{STORE BLOB} instruction. 
 
 
 The last diagram represents the proving for the Presentation Policy received from a Verifier, using two REST calls. During the first REST call, the Service stores data for the proving in the smart card, but before starting the proving itself, the device must choose an identity for the proving. This is done with the Identity Service, that in the PoC chooses the first identity available. After this, the second REST call starts the proving, creating the \textit{commitment} and \textit{responses} that integrate any ZKP, and depends on the device's secret keys\footnote{We, again, refer the reader who wants to know more about ZKPs to \citep{tfgmates}.}.
@@ -46,7 +46,12 @@ The last diagram represents the proving for the Presentation Policy received fro
 
 
 
-\chapter{Attached code structure}\label{ch:code}
+\chapter{Paper proposal for JCR Magazine}\label{ch:JCR}
+
+a
+
+
+\chapter{Project's code structure}\label{ch:code}
 
 Given the size of the project, we identify four main directory structures to arrange the code.
 
