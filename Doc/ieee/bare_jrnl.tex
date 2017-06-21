@@ -1204,51 +1204,19 @@ Finally, we are very thankful to IBM's grant for the \textit{Privacy Preserving 
 \subsection{Future work}
 
 
-Due to the nature of the project, there exist many options to continue researching in this area. We list below a collection of the tasks we couldn't accomplish but would have been our next steps:
+Due to the nature of the project, there exist many options to continue researching in this area.
 
-\begin{itemize}
-	\item Second PoC for more constrained systems
-	
-	We have already developed a working PoC for Linux based systems, and from our objective of using the most constrained devices available, we can follow an iterative process, building for devices a little more constrained than the last one. The next natural step, after building with LEDE/OpenWrt, would be aiming for Arduino.
-	
-	\item Implement more P2ABCE functionality in the device
-	
-	If instead of aiming for more constrained devices, we work with similar devices to the Omega2, the computational power of the device could assume all the functionality of P2ABCE, at least for some roles. In a M2M (machine to machine) environment, the devices could act as Provers and Verifiers in the same interaction, and the verifying logic could be implemented entirely in the device (generate a Presentation Policy and checking a prove in a Presentation Token is valid), reducing the need of a delegation server.
-	
-	
-	\item Use cryptographic hardware
-	
-	Atmel offers many solutions for secure memory and cryptographic operations chips, with serial interfaces for the IoT devices. We could benefit from this chips by storing the secret keys of the credentials inside the secure memory, and speed up the SHA256 and AES128 calculations, currently software implemented and slow compared to any hardware implementation. 
-	
-	
-	
-	\item Support Extended APDUs
-	
-	Currently, the APDU instruction handlers use the GET RESPONSE command to send large APDU Response Payloads, but we can reduce the number of APDUs exchanged supporting the Extended APDU format. Because the P2ABCE already sent some Extended APDUs, the APDU I/O interface in the PoC has support for Extended APDU Commands, but not for Extended Responses.
-	
-	\item Integrate the IoT+Idemix solution in FIWARE\footnote{\url{https://www.fiware.org/}}
-	
-	The idea is to integrate inside the Fiware Keyrock an Idemix Issuer, so both users and IoT's identities are managed in the IdM\footnote{Identity Management - KeyRock \url{https://catalogue.fiware.org/enablers/identity-management-keyrock}} system. The Issuer generates credentials based on the user’s attributes held in the Keyrock, and IoT devices can authenticate against Fi-ware services (using Idemix), or authenticate against other IoT devices (M2M).
-	
-	\begin{figure}[bth]
-		\begin{center}
-			\includegraphics[width=\linewidth]{gfx/fiware}
-			\caption{IoT+Idemix Fi-Ware integration.}
-		\end{center}
-		\label{fig:fiware}
-	\end{figure}
-	
-	\item Research P2ABCE policies for IoT applications
-	
-	The next step, after integrating Idemix with an Identity Management system, should be to design more complex applications to IoT scenarios. We talked about a smart building in the introduction, but the straightforward proofs we can present depend on the signed values in the credentials. The Zero-Knowledge Proofs cryptography is already implemented, we only have to extend the protocols to benefit from them.
-	
-	For example, a combination of authentication and arbitrary proof could be achieved by a combined proof of knowledge of a signed credential (current authentication system) and said arbitrary proof, although the values used in it aren't actually signed by the Issuer, the first proof gives credibility.
-	
-	Another solution for the same problem, similar to a PKI scheme, the IoT device receives a signed credential including an attribute which is his own public key. The IoT device can issue new credentials with the parameters it needs for the arbitrary proofs. The Verifier then certifies the new credential is signed by the IoT device's public key.
-	
-\end{itemize}
+In the implementation side, we would continue with a second PoC which aimed for more constrained systems, maybe starting with Arduino, or another line of development would be to implement more P2ABCE functionality inside the IoT device. It would be interesting to compare the execution of the current pure software PoC to that with cryptographic hardware support, e.g. using Atmel's chips for SHA, AES and secure memory.
 
+On the design aspect, now that an IoT device can perform P2ABCE operations, we should integrate it in a bigger project, like inside the IdM\footnote{Identity Management - KeyRock \url{https://catalogue.fiware.org/enablers/identity-management-keyrock}} system of FIWARE\footnote{\url{https://www.fiware.org/}}, to issue Idemix credentials to both users and IoT devices. And once the identification is achieved in a privacy-preserving fashion, more applications should be researched, like how the IoT device could benefit from the ZKP cryptography to prove information not issued in its credential, by expanding the P2ABCE presentation policies.
 
+\begin{figure}[bth]
+	\begin{center}
+		\includegraphics[width=\linewidth]{gfx/fiware}
+		\caption{IoT+Idemix Fi-Ware integration.}
+	\end{center}
+	\label{fig:fiware}
+\end{figure}
 
 
 
